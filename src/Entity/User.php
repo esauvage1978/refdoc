@@ -102,9 +102,29 @@ class User implements UserInterface, EntityInterface
      */
     private $subscription;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=MProcessus::class, mappedBy="validators")
+     * @ORM\JoinTable("mprocessusvalidators_user")
+     */
+    private $MProcessusValidators;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=MProcessus::class, mappedBy="contributors")
+     * @ORM\JoinTable("mprocessuscontributors_user")
+     */
+    private $MProcessusContributors;
+
+    /**
+     * @ORM\OneToMany(targetEntity=MPSubscription::class, mappedBy="user", orphanRemoval=true)
+     */
+    private $mPSubscriptions;
+
 
     public function __construct()
     {
+        $this->MProcessusValidators = new ArrayCollection();
+        $this->MProcessusContributors = new ArrayCollection();
+        $this->mPSubscriptions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -347,6 +367,93 @@ class User implements UserInterface, EntityInterface
     public function getAvatar(): string
     {
         return 'avatar/' .$this->getId() . '.png';
+    }
+
+    /**
+     * @return Collection|MProcessus[]
+     */
+    public function getMProcessusValidators(): Collection
+    {
+        return $this->MProcessusValidators;
+    }
+
+    public function addMProcessusValidator(MProcessus $mProcessusValidator): self
+    {
+        if (!$this->MProcessusValidators->contains($mProcessusValidator)) {
+            $this->MProcessusValidators[] = $mProcessusValidator;
+            $mProcessusValidator->addValidator($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMProcessusValidator(MProcessus $mProcessusValidator): self
+    {
+        if ($this->MProcessusValidators->contains($mProcessusValidator)) {
+            $this->MProcessusValidators->removeElement($mProcessusValidator);
+            $mProcessusValidator->removeValidator($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|MProcessus[]
+     */
+    public function getMProcessusContributors(): Collection
+    {
+        return $this->MProcessusContributors;
+    }
+
+    public function addMProcessusContributor(MProcessus $mProcessusContributor): self
+    {
+        if (!$this->MProcessusContributors->contains($mProcessusContributor)) {
+            $this->MProcessusContributors[] = $mProcessusContributor;
+            $mProcessusContributor->addContributor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMProcessusContributor(MProcessus $mProcessusContributor): self
+    {
+        if ($this->MProcessusContributors->contains($mProcessusContributor)) {
+            $this->MProcessusContributors->removeElement($mProcessusContributor);
+            $mProcessusContributor->removeContributor($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|MPSubscription[]
+     */
+    public function getMPSubscriptions(): Collection
+    {
+        return $this->mPSubscriptions;
+    }
+
+    public function addMPSubscription(MPSubscription $mPSubscription): self
+    {
+        if (!$this->mPSubscriptions->contains($mPSubscription)) {
+            $this->mPSubscriptions[] = $mPSubscription;
+            $mPSubscription->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMPSubscription(MPSubscription $mPSubscription): self
+    {
+        if ($this->mPSubscriptions->contains($mPSubscription)) {
+            $this->mPSubscriptions->removeElement($mPSubscription);
+            // set the owning side to null (unless already changed)
+            if ($mPSubscription->getUser() === $this) {
+                $mPSubscription->setUser(null);
+            }
+        }
+
+        return $this;
     }
 
 
