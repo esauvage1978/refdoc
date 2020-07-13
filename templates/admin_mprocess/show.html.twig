@@ -1,11 +1,12 @@
-{% extends 'admin_mprocessus/layout.html.twig' %}
+{% extends 'admin_mprocess/layout.html.twig' %}
 
-{% block page_subtitle %}Modification{% endblock %}
+
+{% block page_subtitle %}Consultation{% endblock %}
 
 {% block breadcrumb %}
     {% import "default/actions.html.twig" as actions %}
     {{ actions.admin(
-        'edit',
+        'show',
         is_granted('ROLE_GESTIONNAIRE'),
         item,
         domaine
@@ -13,5 +14,5 @@
 {% endblock %}
 
 {% block page_content %}
-    {{ include(domaine ~ '/_edit/_item.html.twig') }}
+    {{ include(domaine ~ '/_show/_item.html.twig') }}
 {% endblock %}

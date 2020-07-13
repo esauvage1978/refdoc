@@ -3,12 +3,12 @@
 namespace App\Manager;
 
 use App\Entity\EntityInterface;
-use App\Validator\MProcessusValidator;
+use App\Validator\MProcessValidator;
 use Doctrine\ORM\EntityManagerInterface;
 
-class MProcessusManager extends AbstractManager
+class MProcessManager extends AbstractManager
 {
-    public function __construct(EntityManagerInterface $manager,MProcessusValidator $validator)
+    public function __construct(EntityManagerInterface $manager,MProcessValidator $validator)
     {
         parent::__construct($manager,$validator);
     }

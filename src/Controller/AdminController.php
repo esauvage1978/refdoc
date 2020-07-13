@@ -19,7 +19,10 @@ class AdminController extends AbstractController
 
         $app_entries = [[
             'name' => 'Macro processus',
-            'route' => 'admin_mprocessus_list'
+            'route' => 'admin_mprocess_list'
+        ],[
+            'name' => 'Processus',
+            'route' => 'admin_process_list'
         ]];
 
         $action_entries = [];

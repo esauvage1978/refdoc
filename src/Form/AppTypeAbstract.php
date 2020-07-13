@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Corbeille;
+use App\Entity\MProcess;
 use App\Entity\Organisme;
 use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
@@ -73,11 +74,11 @@ abstract class AppTypeAbstract extends AbstractType
                 },
             ]);
     }
-    public function buildFormOrganisme(FormBuilderInterface $builder)
+    public function buildFormMProcess(FormBuilderInterface $builder)
     {
         $builder
-            ->add('organisme', EntityType::class, [
-                'class' => Organisme::class,
+            ->add('mprocess', EntityType::class, [
+                'class' => MProcess::class,
                 self::CHOICE_LABEL => 'fullname',
                 self::MULTIPLE => false,
                 self::ATTR => ['class' => 'select2'],
@@ -89,66 +90,7 @@ abstract class AppTypeAbstract extends AbstractType
                 },
             ]);
     }
-    public function buildFormReaders(FormBuilderInterface $builder)
-    {
-        $builder
-            ->add('readers', EntityType::class, [
-                'class' => Corbeille::class,
-                self::CHOICE_LABEL => 'fullname',
-                self::LABEL=>'Consultant',
-                self::MULTIPLE => true,
-                self::ATTR => ['class' => 'select2'],
-                self::REQUIRED => false,
-                self::QUERY_BUILDER => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('c')
-                        ->select('c', 'o')
-                        ->leftJoin('c.organisme', 'o')
-                        ->where('o.isEnable = true')
-                        ->andWhere('c.isEnable = true')
-                        ->andWhere('c.isShowRead = true')
-                        ->orderBy('o.ref', 'ASC')
-                        ->addOrderBy('c.name', 'ASC');
 
-                },
-            ]);
-    }
-    public function buildFormWriters(FormBuilderInterface $builder)
-    {
-        $builder
-            ->add('writers', EntityType::class, [
-                'class' => Corbeille::class,
-                self::LABEL=>'Pilote',
-                self::CHOICE_LABEL => 'fullname',
-                self::MULTIPLE => true,
-                self::ATTR => ['class' => 'select2'],
-                self::REQUIRED => false,
-                self::QUERY_BUILDER => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('c')
-                        ->select('c', 'o')
-                        ->leftJoin('c.organisme', 'o')
-                        ->where('o.isEnable = true')
-                        ->andWhere('c.isEnable = true')
-                        ->andWhere('c.isShowWrite = true')
-                        ->orderBy('o.ref', 'ASC')
-                        ->addOrderBy('c.name', 'ASC');
-                },
-            ]);
-    }
-    public function buildFormCorbeilles(FormBuilderInterface $builder)
-    {
-        $builder
-            ->add('corbeilles', EntityType::class, [
-                'class' => Corbeille::class,
-                self::CHOICE_LABEL => 'name',
-                self::MULTIPLE => true,
-                self::ATTR => ['class' => 'select2'],
-                self::REQUIRED => false,
-                self::QUERY_BUILDER => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('o')
-                        ->orderBy('o.name', 'ASC');
-                },
-            ]);
-    }
     public function buildFormUsers(FormBuilderInterface $builder)
     {
         $builder

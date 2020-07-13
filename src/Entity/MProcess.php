@@ -2,15 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\MProcessusRepository;
+use App\Repository\MProcessRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=MProcessusRepository::class)
+ * @ORM\Entity(repositoryClass=MProcessRepository::class)
  */
-class MProcessus implements EntityInterface
+class MProcess implements EntityInterface
 {
     /**
      * @ORM\Id()
@@ -40,27 +40,33 @@ class MProcessus implements EntityInterface
     private $ref;
 
     /**
-     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="MProcessusValidators")
-     * @ORM\JoinTable("mprocessusvalidators_user")
+     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="mProcessValidators")
+     * @ORM\JoinTable("mprocessvalidators_user")
      */
     private $validators;
 
     /**
-     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="MProcessusContributors")
-     * @ORM\JoinTable("mprocessuscontributors_user")
+     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="mProcessContributors")
+     * @ORM\JoinTable("mprocesscontributors_user")
      */
     private $contributors;
 
     /**
-     * @ORM\OneToMany(targetEntity=MPSubscription::class, mappedBy="mProcessus")
+     * @ORM\OneToMany(targetEntity=Subscription::class, mappedBy="mProcess")
      */
-    private $mPSubscriptions;
+    private $subscriptions;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Process::class, mappedBy="mProcess")
+     */
+    private $processes;
 
     public function __construct()
     {
         $this->validators = new ArrayCollection();
         $this->contributors = new ArrayCollection();
-        $this->mPSubscriptions = new ArrayCollection();
+        $this->subscriptions = new ArrayCollection();
+        $this->processes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -169,33 +175,70 @@ class MProcessus implements EntityInterface
     }
 
     /**
-     * @return Collection|MPSubscription[]
+     * @return Collection|Subscription[]
      */
-    public function getMPSubscriptions(): Collection
+    public function getSubscriptions(): Collection
     {
-        return $this->mPSubscriptions;
+        return $this->subscriptions;
     }
 
-    public function addMPSubscription(MPSubscription $mPSubscription): self
+    public function addSubscription(Subscription $subscription): self
     {
-        if (!$this->mPSubscriptions->contains($mPSubscription)) {
-            $this->mPSubscriptions[] = $mPSubscription;
-            $mPSubscription->setMProcessus($this);
+        if (!$this->subscriptions->contains($subscription)) {
+            $this->subscriptions[] = $subscription;
+            $subscription->setMProcess($this);
         }
 
         return $this;
     }
 
-    public function removeMPSubscription(MPSubscription $mPSubscription): self
+    public function removeSubscription(Subscription $subscription): self
     {
-        if ($this->mPSubscriptions->contains($mPSubscription)) {
-            $this->mPSubscriptions->removeElement($mPSubscription);
+        if ($this->subscriptions->contains($subscription)) {
+            $this->subscriptions->removeElement($subscription);
             // set the owning side to null (unless already changed)
-            if ($mPSubscription->getMProcessus() === $this) {
-                $mPSubscription->setMProcessus(null);
+            if ($subscription->getMProcess() === $this) {
+                $subscription->setMProcess(null);
             }
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection|Process[]
+     */
+    public function getProcesses(): Collection
+    {
+        return $this->processes;
+    }
+
+    public function addProcess(Process $process): self
+    {
+        if (!$this->processes->contains($process)) {
+            $this->processes[] = $process;
+            $process->setMProcess($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProcess(Process $process): self
+    {
+        if ($this->processes->contains($process)) {
+            $this->processes->removeElement($process);
+            // set the owning side to null (unless already changed)
+            if ($process->getMProcess() === $this) {
+                $process->setMProcess(null);
+            }
+        }
+
+        return $this;
+    }
+
+
+    public function getFullName(): ?string
+    {
+        return $this->getRef() . ' - ' . $this->getName();
     }
 }

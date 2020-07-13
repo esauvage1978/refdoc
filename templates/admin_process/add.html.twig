@@ -1,0 +1,83 @@
+{% extends 'admin_process/layout.html.twig' %}
+
+{% block page_subtitle %}Création{% endblock %}
+
+
+{% block breadcrumb %}
+    {% import "default/actions.html.twig" as actions %}
+    {{ actions.admin(
+        'add',
+        is_granted('ROLE_GESTIONNAIRE'),
+        null,
+        domaine
+    ) }}
+{% endblock %}
+
+
+{% block page_content %}
+    {{ include(domaine ~ '/_edit/_item.html.twig') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ absolute_url( asset('js/arborescence.js')) }}"></script>
+    <script type="text/javascript">
+        $(function () {
+
+            $('#cmb_grouping').change(function () {
+                var data = $('#cmb_grouping  option:selected').text();
+                $('#process_grouping').val(data);
+            });
+        });
+
+        $('#addDir').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var recipient = button.data('whatever') // Extract info from data-* attributes
+            // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+            // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+            var modal = $(this)
+
+            modal.find('#addDir_field').val(recipient)
+        });
+
+        $(function () {
+            $('#btn_addDir').click(function () {
+
+                if ($('#addDir_field_new').val() === "") {
+                    alert('Le libellé est vide');
+                    return;
+                }
+                $('#addDir').modal('toggle');
+                var selecteurCible = $('#addDir_field').val();
+                var data = $('#addDir_field_new').val();
+                $('#' + selecteurCible).append('<option selected value="' + data + '">'
+                    + data + '</option>');
+                $('#addDir_field').val("");
+                $('#' + selecteurCible).change();
+
+            });
+        });
+
+        $(function () {
+
+
+            $('#picture_updateAt_date_month').val(new Date().getMonth() + 1);
+            $('#picture_updateAt_date_day').val(new Date().getDay());
+            $('#picture_updateAt_date_year').val(new Date().getFullYear());
+            $('#picture_updateAt_time_hour').val(new Date().getHours());
+            $('#picture_updateAt_time_minute').val(new Date().getMinutes());
+
+
+        });
+
+        $(document).on('change', '.custom-file-input', function () {
+            let fileName = $(this).val().replace(/\\/g, '/').replace(/.*\//, '');
+            $(this).parent('.custom-file').find('.custom-file-label').text(fileName);
+        });
+
+        $('#process_mprocess').on("select2:selecting", function (e) {
+            arborescence('#cmb_grouping', "{{ path('ajax_fill_combobox_grouping') }}", e.params.args.data.id, true, '#process_grouping');
+        });
+
+    </script>
+{% endblock %}
