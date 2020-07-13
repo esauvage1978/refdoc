@@ -103,28 +103,44 @@ class User implements UserInterface, EntityInterface
     private $subscription;
 
     /**
-     * @ORM\ManyToMany(targetEntity=MProcessus::class, mappedBy="validators")
-     * @ORM\JoinTable("mprocessusvalidators_user")
+     * @ORM\ManyToMany(targetEntity=MProcess::class, mappedBy="validators")
+     * @ORM\JoinTable("mprocessvalidators_user")
      */
-    private $MProcessusValidators;
+    private $mProcessValidators;
 
     /**
-     * @ORM\ManyToMany(targetEntity=MProcessus::class, mappedBy="contributors")
-     * @ORM\JoinTable("mprocessuscontributors_user")
+     * @ORM\ManyToMany(targetEntity=MProcess::class, mappedBy="contributors")
+     * @ORM\JoinTable("mprocesscontributors_user")
      */
-    private $MProcessusContributors;
+    private $mProcessContributors;
 
     /**
-     * @ORM\OneToMany(targetEntity=MPSubscription::class, mappedBy="user", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Subscription::class, mappedBy="user", orphanRemoval=true)
      */
-    private $mPSubscriptions;
+    private $subscriptions;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Process::class, mappedBy="validators")
+     * @ORM\JoinTable("processvalidators_user")
+     *
+     */
+    private $processValidators;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Process::class, mappedBy="contributors")
+     * @ORM\JoinTable("processcontributors_user")
+     *
+     */
+    private $processContributors;
 
 
     public function __construct()
     {
-        $this->MProcessusValidators = new ArrayCollection();
-        $this->MProcessusContributors = new ArrayCollection();
-        $this->mPSubscriptions = new ArrayCollection();
+        $this->mProcessValidators = new ArrayCollection();
+        $this->mProcessContributors = new ArrayCollection();
+        $this->subscriptions = new ArrayCollection();
+        $this->processValidators = new ArrayCollection();
+        $this->processContributors = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -370,70 +386,70 @@ class User implements UserInterface, EntityInterface
     }
 
     /**
-     * @return Collection|MProcessus[]
+     * @return Collection|MProcess[]
      */
-    public function getMProcessusValidators(): Collection
+    public function getMProcessValidators(): Collection
     {
-        return $this->MProcessusValidators;
+        return $this->mProcessValidators;
     }
 
-    public function addMProcessusValidator(MProcessus $mProcessusValidator): self
+    public function addMProcessValidator(MProcess $mProcessValidator): self
     {
-        if (!$this->MProcessusValidators->contains($mProcessusValidator)) {
-            $this->MProcessusValidators[] = $mProcessusValidator;
-            $mProcessusValidator->addValidator($this);
+        if (!$this->mProcessValidators->contains($mProcessValidator)) {
+            $this->mProcessValidators[] = $mProcessValidator;
+            $mProcessValidator->addValidator($this);
         }
 
         return $this;
     }
 
-    public function removeMProcessusValidator(MProcessus $mProcessusValidator): self
+    public function removeMProcessValidator(MProcess $mProcessValidator): self
     {
-        if ($this->MProcessusValidators->contains($mProcessusValidator)) {
-            $this->MProcessusValidators->removeElement($mProcessusValidator);
-            $mProcessusValidator->removeValidator($this);
+        if ($this->mProcessValidators->contains($mProcessValidator)) {
+            $this->mProcessValidators->removeElement($mProcessValidator);
+            $mProcessValidator->removeValidator($this);
         }
 
         return $this;
     }
 
     /**
-     * @return Collection|MProcessus[]
+     * @return Collection|MProcess[]
      */
-    public function getMProcessusContributors(): Collection
+    public function getMProcessContributors(): Collection
     {
-        return $this->MProcessusContributors;
+        return $this->mProcessContributors;
     }
 
-    public function addMProcessusContributor(MProcessus $mProcessusContributor): self
+    public function addMProcessContributor(MProcess $mProcessContributor): self
     {
-        if (!$this->MProcessusContributors->contains($mProcessusContributor)) {
-            $this->MProcessusContributors[] = $mProcessusContributor;
-            $mProcessusContributor->addContributor($this);
+        if (!$this->mProcessContributors->contains($mProcessContributor)) {
+            $this->mProcessContributors[] = $mProcessContributor;
+            $mProcessContributor->addContributor($this);
         }
 
         return $this;
     }
 
-    public function removeMProcessusContributor(MProcessus $mProcessusContributor): self
+    public function removeMProcessContributor(MProcess $mProcessContributor): self
     {
-        if ($this->MProcessusContributors->contains($mProcessusContributor)) {
-            $this->MProcessusContributors->removeElement($mProcessusContributor);
-            $mProcessusContributor->removeContributor($this);
+        if ($this->mProcessContributors->contains($mProcessContributor)) {
+            $this->mProcessContributors->removeElement($mProcessContributor);
+            $mProcessContributor->removeContributor($this);
         }
 
         return $this;
     }
 
     /**
-     * @return Collection|MPSubscription[]
+     * @return Collection|Subscription[]
      */
     public function getMPSubscriptions(): Collection
     {
         return $this->mPSubscriptions;
     }
 
-    public function addMPSubscription(MPSubscription $mPSubscription): self
+    public function addMPSubscription(Subscription $mPSubscription): self
     {
         if (!$this->mPSubscriptions->contains($mPSubscription)) {
             $this->mPSubscriptions[] = $mPSubscription;
@@ -443,7 +459,7 @@ class User implements UserInterface, EntityInterface
         return $this;
     }
 
-    public function removeMPSubscription(MPSubscription $mPSubscription): self
+    public function removeMPSubscription(Subscription $mPSubscription): self
     {
         if ($this->mPSubscriptions->contains($mPSubscription)) {
             $this->mPSubscriptions->removeElement($mPSubscription);
@@ -451,6 +467,62 @@ class User implements UserInterface, EntityInterface
             if ($mPSubscription->getUser() === $this) {
                 $mPSubscription->setUser(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Process[]
+     */
+    public function getProcessValidators(): Collection
+    {
+        return $this->processValidators;
+    }
+
+    public function addProcessValidator(Process $processValidator): self
+    {
+        if (!$this->processValidators->contains($processValidator)) {
+            $this->processValidators[] = $processValidator;
+            $processValidator->addValidator($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProcessValidator(Process $processValidator): self
+    {
+        if ($this->processValidators->contains($processValidator)) {
+            $this->processValidators->removeElement($processValidator);
+            $processValidator->removeValidator($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Process[]
+     */
+    public function getProcessContributors(): Collection
+    {
+        return $this->processContributors;
+    }
+
+    public function addProcessContributor(Process $processContributor): self
+    {
+        if (!$this->processContributors->contains($processContributor)) {
+            $this->processContributors[] = $processContributor;
+            $processContributor->addContributor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProcessContributor(Process $processContributor): self
+    {
+        if ($this->processContributors->contains($processContributor)) {
+            $this->processContributors->removeElement($processContributor);
+            $processContributor->removeContributor($this);
         }
 
         return $this;

@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\MPSubscriptionRepository;
+use App\Repository\SubscriptionRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=MPSubscriptionRepository::class)
+ * @ORM\Entity(repositoryClass=SubscriptionRepository::class)
  */
-class MPSubscription implements EntityInterface
+class Subscription implements EntityInterface
 {
     /**
      * @ORM\Id()
@@ -34,9 +34,14 @@ class MPSubscription implements EntityInterface
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity=MProcessus::class, inversedBy="mPSubscriptions")
+     * @ORM\ManyToOne(targetEntity=MProcess::class, inversedBy="mPSubscriptions")
      */
-    private $mProcessus;
+    private $mProcess;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Process::class, inversedBy="subscriptions")
+     */
+    private $process;
 
     public function getId(): ?int
     {
@@ -79,14 +84,26 @@ class MPSubscription implements EntityInterface
         return $this;
     }
 
-    public function getMProcessus(): ?MProcessus
+    public function getMProcess(): ?MProcess
     {
-        return $this->mProcessus;
+        return $this->mProcess;
     }
 
-    public function setMProcessus(?MProcessus $mProcessus): self
+    public function setMProcess(?MProcess $mProcess): self
     {
-        $this->mProcessus = $mProcessus;
+        $this->mProcess = $mProcess;
+
+        return $this;
+    }
+
+    public function getProcess(): ?Process
+    {
+        return $this->process;
+    }
+
+    public function setProcess(?Process $process): self
+    {
+        $this->process = $process;
 
         return $this;
     }

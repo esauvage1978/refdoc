@@ -1,7 +1,8 @@
 {% extends 'base.html.twig' %}
 
+    {% import "macros/widgets.html.twig" as widgets %}
 
-{% set domaine = 'admin_mprocessus' %}
+{% set domaine = 'admin_mprocess' %}
 {% set domaineTitle = 'Macro processus' %}
 {% set tableName = domaine %}
 {% set route_add = domaine ~ '_add' %}
@@ -10,5 +11,5 @@
 {% set route_del = domaine ~ '_del' %}
 {% set route_list = domaine ~ '_list' %}
 
-{% block title %}{{ app_name }} - {{domaineTitle}}{% endblock %}
-{% block page_title %}<i class="fas fa-building"></i> {{domaineTitle}}{% endblock %}
+{% block title %}{{ app_name }} - {{ domaineTitle }}{% endblock %}
+{% block page_title %}{{ widgets.icon('mprocess') }} {{ domaineTitle }}{% endblock %}
