@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\Process;
@@ -14,7 +16,7 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ProcessRepository extends ServiceEntityRepository
 {
-    const ALIAS='p';
+    public const ALIAS = 'p';
 
     public function __construct(ManagerRegistry $registry)
     {
@@ -24,24 +26,23 @@ class ProcessRepository extends ServiceEntityRepository
     public function findAllForAdmin()
     {
         return $this->createQueryBuilder(self::ALIAS)
-            ->select( self::ALIAS)
+            ->select(self::ALIAS)
             ->orderBy(self::ALIAS . '.ref', 'ASC')
-            ->addOrderBy(self::ALIAS. '.name','ASC')
+            ->addOrderBy(self::ALIAS . '.name', 'ASC')
             ->getQuery()
-            ->getResult()
-            ;
+            ->getResult();
     }
 
     public function findAllFillComboboxGrouping(string $id)
     {
         $builder = $this->createQueryBuilder(self::ALIAS)
-            ->select('distinct '.self::ALIAS.'.grouping as id ,'. self::ALIAS.'.grouping as name');
+            ->select('distinct ' . self::ALIAS . '.grouping as id ,' . self::ALIAS . '.grouping as name');
 
         $builder = $builder
-            ->Where(self::ALIAS.'.mProcess = :val1')
-            ->andWhere(self::ALIAS.'.grouping != :gp')
-            ->setParameters(['val1'=> $id,'gp'=> ""])
-            ->orderBy(self::ALIAS.'.grouping', 'ASC');
+            ->Where(self::ALIAS . '.mProcess = :val1')
+            ->andWhere(self::ALIAS . '.grouping != :gp')
+            ->setParameters(['val1' => $id, 'gp' => ''])
+            ->orderBy(self::ALIAS . '.grouping', 'ASC');
 
         return $builder
             ->getQuery()

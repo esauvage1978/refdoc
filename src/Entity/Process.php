@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Repository\ProcessRepository;
@@ -19,38 +21,28 @@ class Process implements EntityInterface
      */
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    /** @ORM\Column(type="string", length=255) */
     private $name;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    /** @ORM\Column(type="boolean") */
     private $isEnable;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
+    /** @ORM\Column(type="text", nullable=true) */
     private $content;
 
     /**
      * @ORM\ManyToMany(targetEntity=User::class, inversedBy="processValidators")
      * @ORM\JoinTable("processvalidators_user")
-     *
      */
     private $validators;
 
     /**
      * @ORM\ManyToMany(targetEntity=User::class, inversedBy="processContributors")
      * @ORM\JoinTable("processcontributors_user")
-     *
      */
     private $contributors;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    /** @ORM\Column(type="string", length=255, nullable=true) */
     private $grouping;
 
     /**
@@ -59,14 +51,10 @@ class Process implements EntityInterface
      */
     private $mProcess;
 
-    /**
-     * @ORM\Column(type="string", length=5)
-     */
+    /** @ORM\Column(type="string", length=5) */
     private $ref;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Subscription::class, mappedBy="process")
-     */
+    /** @ORM\OneToMany(targetEntity=Subscription::class, mappedBy="process") */
     private $subscriptions;
 
     public function __construct()
@@ -127,7 +115,7 @@ class Process implements EntityInterface
 
     public function addValidator(User $validator): self
     {
-        if (!$this->validators->contains($validator)) {
+        if (! $this->validators->contains($validator)) {
             $this->validators[] = $validator;
         }
 
@@ -153,7 +141,7 @@ class Process implements EntityInterface
 
     public function addContributor(User $contributor): self
     {
-        if (!$this->contributors->contains($contributor)) {
+        if (! $this->contributors->contains($contributor)) {
             $this->contributors[] = $contributor;
         }
 
@@ -193,10 +181,9 @@ class Process implements EntityInterface
         return $this;
     }
 
-
     public function getFullName(): ?string
     {
-        return $this->getRef() . ' - ' . $this->getName();
+        return $this->getRef() . '  <i class="fa fa-minus"></i> ' . $this->getName();
     }
 
     public function getRef(): ?string
@@ -221,7 +208,7 @@ class Process implements EntityInterface
 
     public function addSubscription(Subscription $subscription): self
     {
-        if (!$this->subscriptions->contains($subscription)) {
+        if (! $this->subscriptions->contains($subscription)) {
             $this->subscriptions[] = $subscription;
             $subscription->setProcess($this);
         }

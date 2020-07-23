@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Security;
 
@@ -8,37 +9,25 @@ use Symfony\Component\Security\Core\Security;
 
 final class CurrentUser
 {
-
-    /**
-     * @var User|null
-     */
+    /** @var User|null */
     private $user;
 
-    /**
-     * @var Security
-     */
+    /** @var Security */
     private $security;
 
-    /**
-     * @param Security $security
-     */
     public function __construct(Security $security)
     {
-        $this->security=$security;
-        $this->user=$security->getUser();
+        $this->security = $security;
+        $this->user = $security->getUser();
     }
 
-
-    /**
-     * @return User|null
-     */
-    public function getUser()
+    public function getUser(): ?User
     {
         return $this->user;
     }
 
-    public function isAuthenticatedRemember():bool
+    public function isAuthenticatedRemember(): bool
     {
-        return $this->security->isGranted('IS_AUTHENTICATED_REMEMBERED')   ;
+        return $this->security->isGranted('IS_AUTHENTICATED_REMEMBERED');
     }
 }

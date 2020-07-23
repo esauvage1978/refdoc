@@ -1,48 +1,34 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Controller\Profil;
 
 use App\Controller\AbstractGController;
-use App\Repository\UserRepository;
 use App\Manager\UserManager;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @author Emmanuel SAUVAGE <emmanuel.sauvage@live.fr>
- * @version 1.0.0
- */
-/**
- * @Route("/profil/avatar")
- * @IsGranted("IS_AUTHENTICATED_FULLY")
- */
+use function json_encode;
+
 class AvatarController extends AbstractGController
 {
-    CONST DOMAINE='profil';
+    public const DOMAINE = 'profil';
 
     /**
-     * @Route("/", name="avatar")
-     *
-     * @param Request $request
-     * @param UserRepository $userRepository
-     * @return Response
+     * @Route("/profil/avatar", name="avatar")
      */
     public function show(Request $request, UserRepository $userRepository): Response
     {
-        return $this->render( self::DOMAINE . '/avatar.html.twig');
+        return $this->render(self::DOMAINE . '/avatar.html.twig');
     }
 
     /**
-     * @Route("/update", name="avatar_update")
-     *
-     * @param Request $request
-     * @param UserManager $userManager
-     * @return Response
+     * @Route("/profil/avatar/update", name="avatar_update")
      */
-    public function ajaxAction(Request $request, UserManager $userManager)
+    public function ajaxAction(Request $request, UserManager $userManager): Response
     {
         /**
          * var $user User
@@ -52,11 +38,9 @@ class AvatarController extends AbstractGController
         /* on récupère la valeur envoyée par la vue */
         $image = $request->request->get('dataImg');
 
-        $userManager->changeAvatar($user,$image);
+        $userManager->changeAvatar($user, $image);
 
-        $response = new Response(json_encode([
-            'retour' => 'Avatar mis à jour',
-        ]));
+        $response = new Response(json_encode(['retour' => 'Avatar mis à jour']));
 
         $response->headers->set('Content-Type', 'application/json');
 

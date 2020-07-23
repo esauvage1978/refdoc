@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\EventSubscriber;
 
 use App\Security\CurrentUser;
@@ -10,19 +12,13 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class KnpMenuBuilderSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var CurrentUser
-     */
+    /** @var CurrentUser */
     private $currentUser;
 
-    /**
-     * @var ItemInterface
-     */
+    /** @var ItemInterface */
     private $menu;
 
-    /**
-     * @var KnpMenuEvent
-     */
+    /** @var KnpMenuEvent */
     private $event;
 
     public function __construct(CurrentUser $currentUser)
@@ -37,7 +33,7 @@ class KnpMenuBuilderSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function onSetupMenu(KnpMenuEvent $event)
+    public function onSetupMenu(KnpMenuEvent $event): void
     {
         $this->event = $event;
         $this->menu = $this->event->getMenu();
@@ -46,6 +42,7 @@ class KnpMenuBuilderSubscriber implements EventSubscriberInterface
             $this->addHome();
             $this->addDashboard();
             $this->addProfil();
+            $this->addSubscription();
             $this->addAdmin();
             $this->addDoc();
             $this->addDeconnexion();
@@ -61,28 +58,29 @@ class KnpMenuBuilderSubscriber implements EventSubscriberInterface
         }
     }
 
-    private function addAdmin()
+    private function addAdmin(): void
     {
-        if (Role::isAdmin($this->currentUser->getUser())) {
-            $this->menu->addChild('admin', [
-                'route' => 'admin',
-                'label' => 'Administration',
-                'childOptions' => $this->event->getChildOptions()
-            ])->setLabelAttribute('icon', 'fas fa-wrench');
+        if (! Role::isAdmin($this->currentUser->getUser())) {
+            return;
         }
+
+        $this->menu->addChild('admin', [
+            'route' => 'admin',
+            'label' => 'Administration',
+            'childOptions' => $this->event->getChildOptions(),
+        ])->setLabelAttribute('icon', 'fas fa-wrench');
     }
 
-
-    private function addDashboard()
+    private function addDashboard(): void
     {
         $this->menu->addChild('dashboard', [
             'route' => 'dashboard',
             'label' => 'Tableau de bord',
-            'childOptions' => $this->event->getChildOptions()
+            'childOptions' => $this->event->getChildOptions(),
         ])->setLabelAttribute('icon', 'fas fa-tachometer-alt');
     }
 
-    private function addDeconnexion()
+    private function addDeconnexion(): void
     {
         $this->menu->addChild(
             'logout',
@@ -90,16 +88,16 @@ class KnpMenuBuilderSubscriber implements EventSubscriberInterface
         )->setLabelAttribute('icon', 'fas fa-sign-out-alt');
     }
 
-    private function addDoc()
+    private function addDoc(): void
     {
         $this->menu->addChild('documentation', [
             'route' => 'documentation',
             'label' => 'Documentation',
-            'childOptions' => $this->event->getChildOptions()
+            'childOptions' => $this->event->getChildOptions(),
         ])->setLabelAttribute('icon', 'fas fa-book');
     }
 
-    private function addConnexion()
+    private function addConnexion(): void
     {
         $this->menu->addChild(
             'login',
@@ -107,22 +105,30 @@ class KnpMenuBuilderSubscriber implements EventSubscriberInterface
         )->setLabelAttribute('icon', 'fas fa-sign-in-alt');
     }
 
-    private function addHome()
+    private function addHome(): void
     {
         $this->menu->addChild('home', [
             'route' => 'home',
             'label' => 'Page d\'accueil',
-            'childOptions' => $this->event->getChildOptions()
+            'childOptions' => $this->event->getChildOptions(),
         ])->setLabelAttribute('icon', 'fas fa-home');
     }
 
-    private function addProfil()
+    private function addProfil(): void
     {
         $this->menu->addChild('profil', [
             'route' => 'profil',
             'label' => 'Votre compte',
-            'childOptions' => $this->event->getChildOptions()
+            'childOptions' => $this->event->getChildOptions(),
         ])->setLabelAttribute('icon', 'fas fa-user');
     }
 
+    private function addSubscription(): void
+    {
+        $this->menu->addChild('subscription', [
+            'route' => 'mySubscription',
+            'label' => 'Vos abonnements',
+            'childOptions' => $this->event->getChildOptions(),
+        ])->setLabelAttribute('icon', 'fab fa-chromecast');
+    }
 }

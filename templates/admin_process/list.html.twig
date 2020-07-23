@@ -1,13 +1,14 @@
 {% extends 'admin_process/layout.html.twig' %}
 {% import "macros/datatables.html.twig" as tables %}
+{% import "macros/subscription.html.twig" as sub %}
 {% set columns = {
     'Macro processus': {'class': 'alwaysVisible', 'orderBy': true},
     'Référence': {'class': 'alwaysVisible text-center', 'orderBy': true},
     'Processus': {'class': 'alwaysVisible', 'orderBy': true},
     'Description': {'class': 'alwaysVisible', 'orderBy': true},
-    '<i class="fa fa-boxes"  data-toggle="tooltip" data-placement="top" title="Nombre de valideurs"></i>': {'class': 'alwaysVisible text-center', 'orderBy': false},
-    '<i class="fa fa-users"  data-toggle="tooltip" data-placement="top" title="Nombre de contributeurs"></i>': {'class': 'alwaysVisible text-center', 'orderBy': false},
-    '<i class="fa fa-users"  data-toggle="tooltip" data-placement="top" title="Nombre d\'abonnement"></i>': {'class': 'alwaysVisible text-center', 'orderBy': false},
+    '<i class="fas fa-user-check"  data-toggle="tooltip" data-placement="top" title="Nombre de valideurs"></i>': {'class': 'alwaysVisible text-center', 'orderBy': false},
+    '<i class="fas fa-user-edit"  data-toggle="tooltip" data-placement="top" title="Nombre de contributeurs"></i>': {'class': 'alwaysVisible text-center', 'orderBy': false},
+    '<i class="fab fa-chromecast"  data-toggle="tooltip" data-placement="top" title="Nombre d\'abonnement"></i>': {'class': 'alwaysVisible text-center', 'orderBy': false},
     'actions': {'class': 'alwaysVisible', 'orderBy': false}
 } %}
     {% import '@AdminLTE/Macros/buttons.html.twig'  as btn %}
@@ -15,7 +16,7 @@
 
 
 {% block breadcrumb %}
-    {% import "default/actions.html.twig" as actions %}
+    {% import domaine~"/actions.html.twig" as actions %}
     {{ actions.admin(
         'list',
         is_granted('ROLE_GESTIONNAIRE'),
@@ -37,7 +38,7 @@
             <td class="align-middle">
                 <a href="{{ path('admin_mprocess_show',{id:item.mprocess.id}) }}"
                    class="text-{{ item.mprocess.isEnable ? 'primary' : 'danger text-bold' }}">
-                    {{ item.mprocess.ref }} {{ item.mprocess.name }}
+                    {{ item.mprocess.fullname | raw }}
                 </a>
             </td>
             <td class="align-middle text-center ">{{ item.ref }}</td>
@@ -65,7 +66,9 @@
                     <small class="badge  bg-info">{{ item.contributors.count }}</small>
                 {% endif %}
             </td>
-            <td></td>
+            <td class="align-middle text-center">
+                {{ sub.nbr(item) }}
+            </td>
             <td class=" d-flex  justify-content-end ">
                 {% if is_granted('ROLE_GESTIONNAIRE') %}
                     {{ btn.link_button(

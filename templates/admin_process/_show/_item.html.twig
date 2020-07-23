@@ -6,8 +6,17 @@
                 {% block card_class %} card-primary card-outline{% endblock %}
                 {% block card_body_class %} box-profile{% endblock %}
                 {% block card_body %}
+                    <p class="text-center">
+                        <a href="{{ path('admin_mprocess_show',{id:item.mprocess.id}) }}">
+                            {{ item.mprocess.fullname | raw }}
+                        </a>
+                    </p>
                     <h3 class="profile-username text-center">{{ item.Name }}</h3>
-
+                    <p class="text-center">
+                        <small class=" text-muted">
+                            {{ item.grouping }}
+                        </small>
+                    </p>
                     <small class="float-right">
                         {% if item.isEnable %}
                             <span class="text-success">Visible</span>
@@ -22,12 +31,15 @@
                 {% embed 'widgets/card-widget.html.twig' %}
                     {% block card_body %}
                         {{ item.content |raw }}
+
                     {% endblock %}
                 {% endembed %}
             {% endif %}
 
+
             {% embed 'widgets/card-widget.html.twig' %}
                 {% block card_title %}Valideurs{% endblock %}
+                {% block card_body_class %}p-0{% endblock %}
                 {% block card_body %}
                     {% import "macros/user.html.twig" as usr %}
                     {{ usr.views(item.validators) }}
@@ -36,9 +48,25 @@
 
             {% embed 'widgets/card-widget.html.twig' %}
                 {% block card_title %}Contributeurs{% endblock %}
+                {% block card_body_class %}p-0{% endblock %}
                 {% block card_body %}
                     {% import "macros/user.html.twig" as usr %}
                     {{ usr.views(item.contributors) }}
+                {% endblock %}
+            {% endembed %}
+
+            {% embed 'widgets/card-widget.html.twig' %}
+                {% block card_title %}Abonnés{% endblock %}
+                {% block card_body_class %}p-0{% endblock %}
+                {% block card_body %}
+                    <div class="users-list">
+                        {% import "macros/user.html.twig" as usr %}
+                        {% for s in item.subscriptions %}
+                            {% if s.isEnable %}
+                                {{ usr.view(s.user) }}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
                 {% endblock %}
             {% endembed %}
         </div>

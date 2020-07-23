@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Repository\SubscriptionRepository;
+use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -17,43 +20,38 @@ class Subscription implements EntityInterface
      */
     private $id;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    /** @ORM\Column(type="datetime") */
     private $createdAt;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    private $IsEnable;
+    /** @ORM\Column(type="boolean") */
+    private $isEnable;
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="mPSubscriptions")
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="subscriptions")
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=MProcess::class, inversedBy="mPSubscriptions")
-     */
+    /** @ORM\ManyToOne(targetEntity=MProcess::class, inversedBy="subscriptions") */
     private $mProcess;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Process::class, inversedBy="subscriptions")
-     */
+    /** @ORM\ManyToOne(targetEntity=Process::class, inversedBy="subscriptions") */
     private $process;
+
+    /** @ORM\Column(type="datetime", nullable=true) */
+    private $modifyAt;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    public function setCreatedAt(DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
 
@@ -62,12 +60,12 @@ class Subscription implements EntityInterface
 
     public function getIsEnable(): ?bool
     {
-        return $this->IsEnable;
+        return $this->isEnable;
     }
 
-    public function setIsEnable(bool $IsEnable): self
+    public function setIsEnable(bool $isEnable): self
     {
-        $this->IsEnable = $IsEnable;
+        $this->isEnable = $isEnable;
 
         return $this;
     }
@@ -104,6 +102,18 @@ class Subscription implements EntityInterface
     public function setProcess(?Process $process): self
     {
         $this->process = $process;
+
+        return $this;
+    }
+
+    public function getModifyAt(): ?DateTimeInterface
+    {
+        return $this->modifyAt;
+    }
+
+    public function setModifyAt(?DateTimeInterface $modifyAt): self
+    {
+        $this->modifyAt = $modifyAt;
 
         return $this;
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -12,10 +14,11 @@ class DashboardController extends AbstractController
      * @Route("/dashboard", name="dashboard")
      * @IsGranted("ROLE_USER")
      */
-    public function index(
-    ) {
-        return $this->render('dashboard/index.html.twig',
-            ['options' => null]
+    public function index()
+    {
+        return $this->render(
+            'dashboard/index.html.twig',
+            ['options' => '']
         );
     }
 }

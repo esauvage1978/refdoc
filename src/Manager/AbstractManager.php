@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Manager;
 
 use App\Entity\EntityInterface;
@@ -8,21 +10,16 @@ use Doctrine\ORM\EntityManagerInterface;
 
 abstract class AbstractManager implements InterfaceManager
 {
-    /**
-     * @var EntityManagerInterface
-     */
+    /** @var EntityManagerInterface */
     protected $manager;
 
-    /**
-     * @var LocalValidatorInterface
-     */
+    /** @var LocalValidatorInterface */
     protected $validator;
-
 
     public function __construct(
         EntityManagerInterface $manager,
         LocalValidatorInterface $validator
-) {
+    ) {
         $this->manager = $manager;
         $this->validator = $validator;
     }
@@ -31,7 +28,7 @@ abstract class AbstractManager implements InterfaceManager
     {
         $this->initialise($entity);
 
-        if (!$this->validator->isValid($entity)) {
+        if (! $this->validator->isValid($entity)) {
             return false;
         }
 
@@ -41,18 +38,14 @@ abstract class AbstractManager implements InterfaceManager
         return true;
     }
 
-
-
-    public function getErrors(EntityInterface $entity)
+    public function getErrors(EntityInterface $entity): ?string
     {
         return $this->validator->getErrors($entity);
     }
 
-    public function remove(EntityInterface $entity)
+    public function remove(EntityInterface $entity): void
     {
         $this->manager->remove($entity);
         $this->manager->flush();
     }
-
-
 }

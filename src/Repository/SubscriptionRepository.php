@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\Subscription;
@@ -14,37 +16,24 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class SubscriptionRepository extends ServiceEntityRepository
 {
+    public const ALIAS = 's';
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Subscription::class);
     }
 
-    // /**
-    //  * @return MPSubscription[] Returns an array of MPSubscription objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function findAllSubscription(string $id)
     {
-        return $this->createQueryBuilder('m')
-            ->andWhere('m.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('m.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $builder = $this->createQueryBuilder(self::ALIAS)
+            ->select(self::ALIAS, MProcessRepository::ALIAS, ProcessRepository::ALIAS)
+            ->leftJoin(self::ALIAS . '.mProcess', MProcessRepository::ALIAS)
+            ->leftJoin(self::ALIAS . '.process', ProcessRepository::ALIAS)
+            ->Where(self::ALIAS . '.user != :u')
+            ->setParameters(['u' => $id]);
 
-    /*
-    public function findOneBySomeField($value): ?MPSubscription
-    {
-        return $this->createQueryBuilder('m')
-            ->andWhere('m.exampleField = :val')
-            ->setParameter('val', $value)
+        return $builder
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getResult();
     }
-    */
 }

@@ -1,22 +1,24 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Security;
 
 use App\Entity\User;
+use InvalidArgumentException;
+
+use function in_array;
 
 final class Role
 {
-    const ROLE_USER = 'ROLE_USER';
-    const ROLE_EDITEUR = 'ROLE_EDITEUR';
-    const ROLE_GESTIONNAIRE = 'ROLE_GESTIONNAIRE';
-    const ROLE_ADMIN = 'ROLE_ADMIN';
+    public const ROLE_USER = 'ROLE_USER';
+    public const ROLE_GESTIONNAIRE = 'ROLE_GESTIONNAIRE';
+    public const ROLE_ADMIN = 'ROLE_ADMIN';
 
     public static function hasData(string $data): bool
     {
         $datas = [
             self::ROLE_USER,
-            self::ROLE_EDITEUR,
             self::ROLE_GESTIONNAIRE,
             self::ROLE_ADMIN,
         ];
@@ -24,75 +26,68 @@ final class Role
         if (in_array($data, $datas)) {
             return true;
         }
+
         return false;
+    }
+
+    public static function checkData(string $data)
+    {
+        if (!Role::hasData($data)) {
+            throw new InvalidArgumentException('Ce paramètre est incconnu : ' . $data);
+        }
+
+    }
+
+    public static function getDatas(): array
+    {
+        return [
+            'Utilisateur' => self::ROLE_USER,
+            'Gestionnaire' => self::ROLE_GESTIONNAIRE,
+            'Administrateur' => self::ROLE_ADMIN,
+        ];
     }
 
     /**
      * Défini si l'utilisateur est administrateur
-     *
-     * @param User $user
-     * @return bool
      */
-    public static function isAdmin(?User $user)
+    public static function isAdmin(?User $user): bool
     {
-        if (null === $user) {
+        if ($user === null) {
             return false;
         }
 
         if (in_array(self::ROLE_ADMIN, $user->getRoles())) {
             return true;
         }
+
         return false;
     }
 
     /**
      * Défini si l'utilisateur est gestionnaire
-     *
-     * @param User $user
-     * @return bool
      */
-    public static function isGestionnaire(?User $user)
+    public static function isGestionnaire(?User $user): bool
     {
-        if (null === $user) {
+        if ($user === null) {
             return false;
         }
-        if (in_array(self::ROLE_GESTIONNAIRE, $user->getRoles()) OR self::isAdmin($user)) {
-            return true;
-        }
-        return false;
-    }
 
-    /**
-     * Défini si l'utilisateur a l'habilitation éditeur
-     *
-     * @param User $user
-     * @return bool
-     */
-    public static function isEditeur(?User $user)
-    {
-        if (null === $user) {
-            return false;
-        }
-        if (in_array(self::ROLE_EDITEUR, $user->getRoles()) OR self::isAdmin($user) OR self::isGestionnaire($user)) {
-            return true;
-        }
-        return false;
+        return in_array(self::ROLE_GESTIONNAIRE, $user->getRoles()) or self::isAdmin($user);
     }
 
     /**
      * Défini si l'utilisateur a l'habilitation utilisateur
-     *
-     * @param User $user
-     * @return bool
      */
-    public static function isUser(?User $user)
+    public static function isUser(?User $user): bool
     {
-        if (null === $user) {
+        if ($user === null) {
             return false;
         }
-        if (in_array(self::ROLE_USER, $user->getRoles()) OR self::isAdmin($user) OR self::isGestionnaire($user) OR self::isEditeur($user)) {
+
+        if (self::hasData(self::ROLE_USER)) {
             return true;
         }
+
         return false;
     }
 }

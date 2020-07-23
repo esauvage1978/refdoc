@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\Profil;
 
 use App\Controller\AbstractGController;
-use App\Controller\AppControllerAbstract;
 use App\Event\UserPasswordForgetEvent;
 use App\Form\Profil\PasswordForgetFormType;
 use App\Form\Profil\PasswordRecoverFormType;
@@ -14,10 +15,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
-/**
- * @author Emmanuel SAUVAGE <emmanuel.sauvage@live.fr>
- * @version 1.0.0
- */
 class PasswordForgetController extends AbstractGController
 {
     /**
@@ -27,15 +24,15 @@ class PasswordForgetController extends AbstractGController
         Request $request,
         UserRepository $userRepository,
         UserManager $userManager,
-        EventDispatcherInterface $dispatcher): Response
-    {
+        EventDispatcherInterface $dispatcher
+    ): Response {
         $form = $this->createForm(PasswordForgetFormType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $user = $userRepository->findOneBy(['email' => $form->getData()['email']]);
 
-            if (null !== $user) {
+            if ($user !== null) {
                 $this->addFlash(self::SUCCESS, 'Le mail de récupération du mot de passe est envoyé !');
 
                 $userManager->initialisePasswordForget($user);
@@ -46,6 +43,7 @@ class PasswordForgetController extends AbstractGController
 
                 return $this->redirectToRoute('user_login');
             }
+
             $this->addFlash(self::DANGER, 'L\'utilisateur n\'a pas été trouvé.');
         }
 
@@ -56,32 +54,29 @@ class PasswordForgetController extends AbstractGController
 
     /**
      * @Route("/password-recover/{token}", name="password_recover")
-     *
-     * @param Request $request
-     * @param string $token
-     * @param UserRepository $userRepository
-     * @param UserManager $userManager
-     * @return Response
      */
     public function recoverAction(
         Request $request,
         string $token,
         UserRepository $userRepository,
-        UserManager $userManager): Response
-    {
+        UserManager $userManager
+    ): Response {
         $form = $this->createForm(PasswordRecoverFormType::class);
         $form->handleRequest($request);
-        $user = $userRepository->findOneBy(['forget_token'=>$token]);
+        $user = $userRepository->findOneBy(['forget_token' => $token]);
 
-        if (!$user) {
+        if (! $user) {
             $this->addFlash(self::WARNING, 'L\'adresse de récupération du mot de passe est incorrecte !');
 
             return $this->redirectToRoute('home');
         }
+
         if ($form->isSubmitted() && $form->isValid()) {
-            $userManager->initialisePasswordRecover($user,
+            $userManager->initialisePasswordRecover(
+                $user,
                 $form->getData()['plainPassword'],
-                $form->getData()['plainPasswordConfirmation']);
+                $form->getData()['plainPasswordConfirmation']
+            );
 
             if ($userManager->save($user)) {
                 $this->addFlash(self::SUCCESS, 'Votre mot de passe est changé. Vous pouvez vous connecter !');
@@ -91,8 +86,7 @@ class PasswordForgetController extends AbstractGController
         }
 
         return $this->render('profil/passwordRecover.html.twig', [
-            self::FORM => $form->createView()
+            self::FORM => $form->createView(),
         ]);
     }
-
 }

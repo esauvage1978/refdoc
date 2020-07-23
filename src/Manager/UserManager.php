@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Manager;
 
 use App\Entity\User;
-use App\Helper\ArrayDiff;
 use App\Helper\ParamsInServices;
 use App\Repository\UserRepository;
 use App\Security\Role;
@@ -12,36 +13,37 @@ use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
+use function base64_decode;
+use function copy;
+use function date_format;
+use function explode;
+use function file_exists;
+use function file_put_contents;
+use function in_array;
+use function is_null;
+use function md5;
+use function rand;
+use function random_bytes;
+use function str_replace;
+use function uniqid;
+use function unlink;
+
 class UserManager
 {
-
-
-    /**
-     * @var UserPasswordEncoderInterface
-     */
+    /** @var UserPasswordEncoderInterface */
     private $passwordEncoder;
 
-    /**
-     * @var EntityManagerInterface
-     */
+    /** @var EntityManagerInterface */
     private $manager;
 
-    /**
-     * @var UserValidator
-     */
+    /** @var UserValidator */
     private $validator;
 
-    /**
-     * @var ParamsInServices
-     */
+    /** @var ParamsInServices */
     private $params;
 
-    /**
-     * @var UserRepository
-     */
+    /** @var UserRepository */
     private $userRepository;
-
-
 
     public function __construct(
         EntityManagerInterface $manager,
@@ -61,7 +63,7 @@ class UserManager
     {
         $this->initialise($user, $oldUserMail);
 
-        if (!$this->validator->isValid($user)) {
+        if (! $this->validator->isValid($user)) {
             return false;
         }
 
@@ -73,7 +75,7 @@ class UserManager
         return true;
     }
 
-    private function actionAfterSave($item)
+    private function actionAfterSave($item): void
     {
         $this->checkAvatar($item);
     }
@@ -82,17 +84,18 @@ class UserManager
     {
         $this->encodePassword($user);
 
-        if (null === $user->getCreatedAt()) {
-            $user->setCreatedAt(new \DateTime());
+        if ($user->getCreatedAt() === null) {
+            $user->setCreatedAt(new DateTime());
             $user->setisEnable(true);
             $user->setSubscription(false);
         } else {
-            $user->setModifiedAt(new \DateTime());
+            $user->setModifiedAt(new DateTime());
         }
 
-
-        if (!$user->getEmailValidatedToken() or
-            ($user->getEmail() !== $oldUserMail and null !== $oldUserMail)) {
+        if (
+            ! $user->getEmailValidatedToken() or
+            ($user->getEmail() !== $oldUserMail and $oldUserMail !== null)
+        ) {
             $user
                 ->setEmailValidated(false)
                 ->setEmailValidatedToken(md5(random_bytes(50)));
@@ -103,32 +106,34 @@ class UserManager
         return true;
     }
 
-
     public function checkAvatar(User $user): bool
     {
-        if(is_null($user->getId())) return false;
+        if (is_null($user->getId())) {
+            return false;
+        }
 
-        if (!file_exists($this->params->get(ParamsInServices::DIRECTORY_AVATAR) .'/' . $user->getId() . '.png')) {
+        if (! file_exists($this->params->get(ParamsInServices::ES_DIRECTORY_AVATAR) . '/' . $user->getId() . '.png')) {
             copy(
-                $this->params->get(ParamsInServices::DIRECTORY_AVATAR) .'/__default_'. rand(1,16).'.png',
-                $this->params->get(ParamsInServices::DIRECTORY_AVATAR) .'/' . $user->getId() . '.png'
+                $this->params->get(ParamsInServices::ES_DIRECTORY_AVATAR) . '/__default_' . rand(1, 16) . '.png',
+                $this->params->get(ParamsInServices::ES_DIRECTORY_AVATAR) . '/' . $user->getId() . '.png'
             );
         }
 
         return true;
     }
 
-    public function changeAvatar(User $user, $image)
+    public function changeAvatar(User $user, $image): void
     {
         $image = str_replace(' ', '+', $image);
-        list($type, $data) = explode(';', $image);
-        list(, $data) = explode(',', $data);
+        [$type, $data] = explode(';', $image);
+        [, $data] = explode(',', $data);
         $data = base64_decode($data);
-        if (file_exists($this->params->get(ParamsInServices::DIRECTORY_AVATAR) .'/' . $user->getId() . '.png')) {
-            unlink($this->params->get(ParamsInServices::DIRECTORY_AVATAR) .'/' . $user->getId() . '.png');
+        if (file_exists($this->params->get(ParamsInServices::ES_DIRECTORY_AVATAR) . '/' . $user->getId() . '.png')) {
+            unlink($this->params->get(ParamsInServices::ES_DIRECTORY_AVATAR) . '/' . $user->getId() . '.png');
         }
+
         file_put_contents(
-            $this->params->get(ParamsInServices::DIRECTORY_AVATAR) .'/' . $user->getId() . '.png',
+            $this->params->get(ParamsInServices::ES_DIRECTORY_AVATAR) . '/' . $user->getId() . '.png',
             $data
         );
     }
@@ -138,15 +143,21 @@ class UserManager
         return $this->passwordEncoder->isPasswordValid($user, $pwd);
     }
 
-    public function encodePassword(User $user): string
+    public function encodePassword(User $user): bool
     {
         $plainPassword = $user->getPlainPassword();
+
+        if (empty($user->getPassword()) and empty($plainPassword)) {
+            $plainPassword = uniqid();
+        }
+
         if ($plainPassword) {
             $user->setPassword(
                 $this->passwordEncoder->encodePassword(
                     $user,
                     $plainPassword
-                ));
+                )
+            );
         }
 
         return true;
@@ -157,7 +168,7 @@ class UserManager
         return $this->validator->getErrors($entity);
     }
 
-    public function remove(User $entity)
+    public function remove(User $entity): void
     {
         $this->manager->remove($entity);
         $this->manager->flush();
@@ -167,7 +178,7 @@ class UserManager
     {
         $user->setEmailValidated(true);
         $user->setEmailValidatedToken(date_format(new DateTime(), 'Y-m-d H:i:s'));
-        if(!in_array(Role::ROLE_USER,$user->getRoles())) {
+        if (! in_array(Role::ROLE_USER, $user->getRoles())) {
             $user->setRoles([Role::ROLE_USER]);
         }
 
@@ -204,5 +215,4 @@ class UserManager
 
         return true;
     }
-
 }

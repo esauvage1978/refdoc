@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Kimai time-tracking app.
  *
@@ -14,9 +16,7 @@ use Twig\TwigFilter;
 
 final class IconExtension extends AbstractExtension
 {
-    /**
-     * @var string[]
-     */
+    /** @var string[] */
     private static $icons = [
         'about' => 'fas fa-info-circle',
         'activity' => 'fas fa-tasks',
@@ -27,7 +27,7 @@ final class IconExtension extends AbstractExtension
         'back' => 'fas fa-long-arrow-alt-left',
         'backpack' => 'fas fa-suitcase',
         'calendar' => 'far fa-calendar-alt',
-        'check_big'=>'far fa-check-circle fa-4x',
+        'check_big' => 'far fa-check-circle fa-4x',
         'clock' => 'far fa-clock',
         'configuration' => 'fas fa-cogs',
         'contact' => 'fas fa-users',
@@ -50,7 +50,7 @@ final class IconExtension extends AbstractExtension
         'fax' => 'fas fa-fax',
         'gestionnaire' => 'fa fa-user-secret',
         'filter' => 'fas fa-filter',
-        'gpi'=>'fas fa-bullhorn',
+        'gpi' => 'fas fa-bullhorn',
         'help' => 'far fa-question-circle',
         'history' => 'fas fa-history',
         'home' => 'fas fa-home',
@@ -65,7 +65,7 @@ final class IconExtension extends AbstractExtension
         'manual' => 'fas fa-book',
         'mobile' => 'fas fa-mobile',
         'money' => 'far fa-money-bill-alt',
-        'mprocess' => 'fas fa-building',
+        'mprocess' => 'fas fa-sitemap',
         'nocheck_big' => 'far fa-times-circle fa-4x',
         'ods' => 'fas fa-table',
         'off' => 'fas fa-toggle-off',
@@ -79,7 +79,7 @@ final class IconExtension extends AbstractExtension
         'phone' => 'fas fa-phone',
         'plugin' => 'fas fa-plug',
         'print' => 'fas fa-print',
-        'process' => 'fas fa-project-diagram',
+        'process' => 'fas fa-square',
         'profil' => 'fas fa-user',
         'profile' => 'fas fa-user-edit',
         'profile-stats' => 'far fa-chart-bar',
@@ -87,7 +87,7 @@ final class IconExtension extends AbstractExtension
         'repeat' => 'fas fa-redo-alt',
         'right' => 'fas fa-chevron-right',
         'roles' => 'fas fa-user-shield',
-        'save'=>'fas fa-save',
+        'save' => 'fas fa-save',
         'search' => 'fas fa-search',
         'settings' => 'fas fa-cog',
         'shop' => 'fas fa-shopping-cart',
@@ -109,7 +109,7 @@ final class IconExtension extends AbstractExtension
         'user' => 'fas fa-user-friends',
         'visibility' => 'far fa-eye',
         'warning' => 'fas fa-exclamation-triangle',
-        'workflow'=>'fas fa-bezier-curve',
+        'workflow' => 'fas fa-bezier-curve',
         'xlsx' => 'fas fa-file-excel',
 
     ];

@@ -1,11 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
+use DateTime;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+
+use function array_unique;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
@@ -21,92 +27,69 @@ class User implements UserInterface, EntityInterface
 
     private $username;
 
-    /**
-     * @ORM\Column(type="string", length=180, unique=true)
-     */
+    /** @ORM\Column(type="string", length=180, unique=true) */
     private $email;
 
-    /**
-     * @ORM\Column(type="json")
-     */
+    /** @ORM\Column(type="json") */
     private $roles = [];
 
     /**
-     * @var string The hashed password
      * @ORM\Column(type="string")
+     *
+     * @var string The hashed password
      */
     private $password;
 
-    /**
-     * @ORM\Column(type="string", length=100)
-     */
+    /** @ORM\Column(type="string", length=100) */
     private $name;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    /** @ORM\Column(type="boolean") */
     private $emailValidated;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    /** @ORM\Column(type="string", length=255, nullable=true) */
     private $emailValidatedToken;
 
-    /**
-     * @ORM\Column(type="string", length=50, nullable=true)
-     */
+    /** @ORM\Column(type="string", length=50, nullable=true) */
     private $forget_token;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+    /** @ORM\Column(type="datetime", nullable=true) */
     private $loginAt;
 
-    /**
-     * @var ?string
-     */
+    /** @var ?string */
     private $plainPassword;
 
-    /**
-     * @var ?string
-     */
+    /** @var ?string */
     private $plainPasswordConfirmation;
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+    /** @ORM\Column(type="datetime", nullable=true) */
     private $createdAt;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+    /** @ORM\Column(type="datetime", nullable=true) */
     private $modifiedAt;
 
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    /** @ORM\Column(type="boolean") */
     private $isEnable;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
+    /** @ORM\Column(type="text", nullable=true) */
     private $content;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    /** @ORM\Column(type="string", length=255, nullable=true) */
     private $phone;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    /** @ORM\Column(type="boolean") */
     private $subscription;
 
     /**
-     * @ORM\ManyToMany(targetEntity=MProcess::class, mappedBy="validators")
-     * @ORM\JoinTable("mprocessvalidators_user")
+     * @ORM\ManyToMany(targetEntity=MProcess::class, mappedBy="dirValidators")
+     * @ORM\JoinTable("mprocessdirvalidators_user")
      */
-    private $mProcessValidators;
+    private $mProcessDirValidators;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=MProcess::class, mappedBy="poleValidators")
+     * @ORM\JoinTable("mprocesspolevalidators_user")
+     */
+    private $mProcessPoleValidators;
 
     /**
      * @ORM\ManyToMany(targetEntity=MProcess::class, mappedBy="contributors")
@@ -114,29 +97,25 @@ class User implements UserInterface, EntityInterface
      */
     private $mProcessContributors;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Subscription::class, mappedBy="user", orphanRemoval=true)
-     */
+    /** @ORM\OneToMany(targetEntity=Subscription::class, mappedBy="user", orphanRemoval=true) */
     private $subscriptions;
 
     /**
      * @ORM\ManyToMany(targetEntity=Process::class, mappedBy="validators")
      * @ORM\JoinTable("processvalidators_user")
-     *
      */
     private $processValidators;
 
     /**
      * @ORM\ManyToMany(targetEntity=Process::class, mappedBy="contributors")
      * @ORM\JoinTable("processcontributors_user")
-     *
      */
     private $processContributors;
 
-
     public function __construct()
     {
-        $this->mProcessValidators = new ArrayCollection();
+        $this->mProcessPoleValidators = new ArrayCollection();
+        $this->mProcessDirValidators = new ArrayCollection();
         $this->mProcessContributors = new ArrayCollection();
         $this->subscriptions = new ArrayCollection();
         $this->processValidators = new ArrayCollection();
@@ -236,14 +215,14 @@ class User implements UserInterface, EntityInterface
     /**
      * @see UserInterface
      */
-    public function getSalt()
+    public function getSalt(): void
     {
     }
 
     /**
      * @see UserInterface
      */
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
     }
 
@@ -283,36 +262,36 @@ class User implements UserInterface, EntityInterface
         return $this;
     }
 
-    public function getLoginAt(): ?\DateTimeInterface
+    public function getLoginAt(): ?DateTimeInterface
     {
         return $this->loginAt;
     }
 
-    public function setLoginAt(?\DateTimeInterface $loginAt): self
+    public function setLoginAt(?DateTimeInterface $loginAt): self
     {
         $this->loginAt = $loginAt;
 
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTime
+    public function getCreatedAt(): ?DateTime
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(?\DateTimeInterface $createdAt): self
+    public function setCreatedAt(?DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    public function getModifiedAt(): ?\DateTimeInterface
+    public function getModifiedAt(): ?DateTimeInterface
     {
         return $this->modifiedAt;
     }
 
-    public function setModifiedAt(?\DateTimeInterface $modifiedAt): self
+    public function setModifiedAt(?DateTimeInterface $modifiedAt): self
     {
         $this->modifiedAt = $modifiedAt;
 
@@ -367,7 +346,6 @@ class User implements UserInterface, EntityInterface
         return $this;
     }
 
-
     public function getSubscription(): ?bool
     {
         return $this->subscription;
@@ -382,32 +360,60 @@ class User implements UserInterface, EntityInterface
 
     public function getAvatar(): string
     {
-        return 'avatar/' .$this->getId() . '.png';
+        return 'avatar/' . $this->getId() . '.png';
     }
 
     /**
      * @return Collection|MProcess[]
      */
-    public function getMProcessValidators(): Collection
+    public function getMProcessPoleValidators(): Collection
     {
-        return $this->mProcessValidators;
+        return $this->mProcessPoleValidators;
     }
 
-    public function addMProcessValidator(MProcess $mProcessValidator): self
+    public function addMProcessPoleValidator(MProcess $mProcessPoleValidator): self
     {
-        if (!$this->mProcessValidators->contains($mProcessValidator)) {
-            $this->mProcessValidators[] = $mProcessValidator;
-            $mProcessValidator->addValidator($this);
+        if (! $this->mProcessPoleValidators->contains($mProcessPoleValidator)) {
+            $this->mProcessPoleValidators[] = $mProcessPoleValidator;
+            $mProcessPoleValidator->addPoleValidator($this);
         }
 
         return $this;
     }
 
-    public function removeMProcessValidator(MProcess $mProcessValidator): self
+    public function removeMProcessPoleValidator(MProcess $mProcessPoleValidator): self
     {
-        if ($this->mProcessValidators->contains($mProcessValidator)) {
-            $this->mProcessValidators->removeElement($mProcessValidator);
-            $mProcessValidator->removeValidator($this);
+        if ($this->mProcessPoleValidators->contains($mProcessPoleValidator)) {
+            $this->mProcessPoleValidators->removeElement($mProcessPoleValidator);
+            $mProcessPoleValidator->removePoleValidator($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|MProcess[]
+     */
+    public function getMProcessDirValidators(): Collection
+    {
+        return $this->mProcessDirValidators;
+    }
+
+    public function addMProcessDirValidator(MProcess $mProcessDirValidator): self
+    {
+        if (! $this->mProcessDirValidators->contains($mProcessDirValidator)) {
+            $this->mProcessDirValidators[] = $mProcessDirValidator;
+            $mProcessDirValidator->addDirValidator($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMProcessDirValidator(MProcess $mProcessDirValidator): self
+    {
+        if ($this->mProcessDirValidators->contains($mProcessDirValidator)) {
+            $this->mProcessDirValidators->removeElement($mProcessDirValidator);
+            $mProcessDirValidator->removeDirValidator($this);
         }
 
         return $this;
@@ -423,7 +429,7 @@ class User implements UserInterface, EntityInterface
 
     public function addMProcessContributor(MProcess $mProcessContributor): self
     {
-        if (!$this->mProcessContributors->contains($mProcessContributor)) {
+        if (! $this->mProcessContributors->contains($mProcessContributor)) {
             $this->mProcessContributors[] = $mProcessContributor;
             $mProcessContributor->addContributor($this);
         }
@@ -444,28 +450,28 @@ class User implements UserInterface, EntityInterface
     /**
      * @return Collection|Subscription[]
      */
-    public function getMPSubscriptions(): Collection
+    public function getSubscriptions(): Collection
     {
-        return $this->mPSubscriptions;
+        return $this->subscriptions;
     }
 
-    public function addMPSubscription(Subscription $mPSubscription): self
+    public function addSubscription(Subscription $subscription): self
     {
-        if (!$this->mPSubscriptions->contains($mPSubscription)) {
-            $this->mPSubscriptions[] = $mPSubscription;
-            $mPSubscription->setUser($this);
+        if (! $this->subscriptions->contains($subscription)) {
+            $this->subscriptions[] = $subscription;
+            $subscription->setUser($this);
         }
 
         return $this;
     }
 
-    public function removeMPSubscription(Subscription $mPSubscription): self
+    public function removeSubscription(Subscription $subscription): self
     {
-        if ($this->mPSubscriptions->contains($mPSubscription)) {
-            $this->mPSubscriptions->removeElement($mPSubscription);
+        if ($this->subscriptions->contains($subscription)) {
+            $this->subscriptions->removeElement($subscription);
             // set the owning side to null (unless already changed)
-            if ($mPSubscription->getUser() === $this) {
-                $mPSubscription->setUser(null);
+            if ($subscription->getUser() === $this) {
+                $subscription->setUser(null);
             }
         }
 
@@ -482,7 +488,7 @@ class User implements UserInterface, EntityInterface
 
     public function addProcessValidator(Process $processValidator): self
     {
-        if (!$this->processValidators->contains($processValidator)) {
+        if (! $this->processValidators->contains($processValidator)) {
             $this->processValidators[] = $processValidator;
             $processValidator->addValidator($this);
         }
@@ -510,7 +516,7 @@ class User implements UserInterface, EntityInterface
 
     public function addProcessContributor(Process $processContributor): self
     {
-        if (!$this->processContributors->contains($processContributor)) {
+        if (! $this->processContributors->contains($processContributor)) {
             $this->processContributors[] = $processContributor;
             $processContributor->addContributor($this);
         }
@@ -527,8 +533,4 @@ class User implements UserInterface, EntityInterface
 
         return $this;
     }
-
-
-
-
 }

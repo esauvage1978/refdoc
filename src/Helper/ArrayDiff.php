@@ -1,27 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Helper;
 
-/**
- * @author Emmanuel SAUVAGE <emmanuel.sauvage@live.fr>
- * @version 1.0.0
- */
+use function array_udiff_assoc;
+
 class ArrayDiff
 {
-    /**
-     * @var array
-     */
+    /** @var array */
     private $oldData;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     private $newData;
 
-    public function __construct(array $oldData=[],array $newData=[])
+    public function __construct(array $oldData = [], array $newData = [])
     {
-        $this->oldData=$oldData;
-        $this->newData=$newData;
+        $this->oldData = $oldData;
+        $this->newData = $newData;
     }
 
     public function getDeleteDiff()
@@ -29,7 +25,9 @@ class ArrayDiff
         return array_udiff_assoc(
             $this->oldData,
             $this->newData,
-            function($a, $b) {return $a === $b ? 0 : 1;}
+            static function ($a, $b) {
+                return $a === $b ? 0 : 1;
+            }
         );
     }
 
@@ -38,7 +36,9 @@ class ArrayDiff
         return array_udiff_assoc(
             $this->newData,
             $this->oldData,
-            function($a, $b) {return $a === $b ? 0 : 1;}
+            static function ($a, $b) {
+                return $a === $b ? 0 : 1;
+            }
         );
     }
 }

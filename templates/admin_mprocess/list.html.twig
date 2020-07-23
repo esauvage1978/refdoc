@@ -1,12 +1,15 @@
 {% extends 'admin_mprocess/layout.html.twig' %}
 {% import "macros/datatables.html.twig" as tables %}
+{% import "macros/subscription.html.twig" as sub %}
 {% set columns = {
     'Référence': {'class': 'alwaysVisible text-center', 'orderBy': true},
     'Macro processus': {'class': 'alwaysVisible', 'orderBy': true},
     'Description': {'class': 'alwaysVisible', 'orderBy': true},
-    '<i class="fa fa-boxes"  data-toggle="tooltip" data-placement="top" title="Nombre de valideurs"></i>': {'class': 'alwaysVisible text-center', 'orderBy': false},
-    '<i class="fa fa-users"  data-toggle="tooltip" data-placement="top" title="Nombre de contributeurs"></i>': {'class': 'alwaysVisible text-center', 'orderBy': false},
-    '<i class="fa fa-users"  data-toggle="tooltip" data-placement="top" title="Nombre d\'abonnement"></i>': {'class': 'alwaysVisible text-center', 'orderBy': false},
+    '<i class="fas fa-square"  data-toggle="tooltip" data-placement="top" title="Nombre de processus"></i>': {'class': 'alwaysVisible text-center', 'orderBy': false},
+    '<i class="fas fa-user-tie"  data-toggle="tooltip" data-placement="top" title="Agents de Direciton"></i>': {'class': 'alwaysVisible text-center', 'orderBy': false},
+    '<i class="fas fa-user-check"  data-toggle="tooltip" data-placement="top" title="Managers stratégiques"></i>': {'class': 'alwaysVisible text-center', 'orderBy': false},
+    '<i class="fas fa-user-edit"  data-toggle="tooltip" data-placement="top" title="Contributeurs"></i>': {'class': 'alwaysVisible text-center', 'orderBy': false},
+    '<i class="fab fa-chromecast"  data-toggle="tooltip" data-placement="top" title="Abonnés"></i>': {'class': 'alwaysVisible text-center', 'orderBy': false},
     'actions': {'class': 'alwaysVisible', 'orderBy': false}
 } %}
     {% import '@AdminLTE/Macros/buttons.html.twig'  as btn %}
@@ -14,7 +17,7 @@
 
 
 {% block breadcrumb %}
-    {% import "default/actions.html.twig" as actions %}
+    {% import domaine~"/actions.html.twig" as actions %}
     {{ actions.admin(
         'list',
         is_granted('ROLE_GESTIONNAIRE'),
@@ -42,10 +45,24 @@
             </td>
             <td class="align-middle">{{ item.content | raw }}</td>
             <td class="align-middle text-center">
-                {% if   item.validators.count==0 %}
+                {% if   item.processes.count==0 %}
                     <span class="text-light"><i class="fas fa-circle"></i></span>
                 {% else %}
-                    <small class="badge  bg-info">{{ item.validators.count }}</small>
+                    <small class="badge  bg-info">{{ item.processes.count }}</small>
+                {% endif %}
+            </td>
+            <td class="align-middle text-center">
+                {% if   item.dirValidators.count==0 %}
+                    <span class="text-light"><i class="fas fa-circle"></i></span>
+                {% else %}
+                    <small class="badge  bg-info">{{ item.dirValidators.count }}</small>
+                {% endif %}
+            </td>
+            <td class="align-middle text-center">
+                {% if   item.poleValidators.count==0 %}
+                    <span class="text-light"><i class="fas fa-circle"></i></span>
+                {% else %}
+                    <small class="badge  bg-info">{{ item.poleValidators.count }}</small>
                 {% endif %}
             </td>
             <td class="align-middle text-center">
@@ -55,7 +72,10 @@
                     <small class="badge  bg-info">{{ item.contributors.count }}</small>
                 {% endif %}
             </td>
-            <td></td>
+            <td class="align-middle text-center">
+                {{ sub.nbr(item) }}
+            </td>
+
             <td class=" d-flex  justify-content-end ">
                 {% if is_granted('ROLE_GESTIONNAIRE') %}
                     {{ btn.link_button(
