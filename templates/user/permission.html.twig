@@ -1,8 +1,10 @@
 {% extends 'user/layout.html.twig' %}
-    {% import "macros/widgets.html.twig" as widgets %}
 
-{% block title %}{{ app_name }} - Permissions aux rubriques et sous rubriques{% endblock %}
-{% block page_title %} {{ widgets.icon('permissions') }} Permissions aux rubriques et sous rubriques  {% endblock %}
+{% import "macros/widgets.html.twig" as widgets %}
+
+
+
+{% block page_subtitle %}Permissions de {{ item.name }} {% endblock %}
 
 {% block breadcrumb %}
     {% import "user/actions.html.twig" as actions %}
@@ -10,26 +12,148 @@
         'permission',
         is_granted('ROLE_ADMIN'),
         item,
-        domaine
+        'user'
     ) }}
 {% endblock %}
 
+
 {% block page_content %}
 
-    {% if is_granted('ROLE_GESTIONNAIRE') %}
-        <div class="col-12">
-            <div class="alert alert-info alert-dismissible ">
-                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                <h5><i class="icon fas fa-info"></i> Information!</h5>
-                <p>Les données affichées sont informatives.</p>
-                <p> Avec l'habilitation gestionnaire ou administrateur, toutes les rubriques sont consultables et
-                    modifiables.</p>
-            </div>
-        </div>
-    {% endif %}
-
     <div class="row justify-content-center">
-        {% import "macros/permission.html.twig" as per %}
-        {{ per.show(items, itemsConsult, itemsModif,itemsConsultU, itemsModifU) }}
+        
+
+        {% embed 'widgets/card-widget.html.twig' %}
+            {% import "macros/widgets.html.twig" as widgets %}
+            {% block card_body_class %}p-0{% endblock %}
+            {% block card_body %}
+                <div class="list-group">
+
+                    {% for  mp in mps %}
+                        <div  class="list-group-item list-group-item-action d-flex justify-content-between align-items-center ">
+                            <span class='mr-5'>   
+                                <a href="{{ path('admin_mprocess_show',{id:mp.id}) }}" >
+                                    {{ widgets.icon('mprocess') }}
+                                    {{ mp.fullname | raw}}
+                                </a>
+                            </span>
+                            <span>
+                                <a href="{{path('toogle_permission_mp_dirvalidatorn',{id:item.id,'mp_id':mp.id})}}" class='js-mp-direction mr-1'> 
+                                <span></span>
+                                    {% if mp in mps_direction %} 
+                                        <i class="fas fa-user-tie fa-2x  text-success" title='Agent de Direction'></i>
+                                    {% else %}
+                                        <i class="fas fa-user-tie fa-2x  text-secondary"></i>
+                                    {% endif %}
+                                </a>
+                                <a href="{{path('toogle_permission_mp_polevalidator',{id:item.id,'mp_id':mp.id})}}" class='js-mp-strategique'> 
+                                    <span></span>
+                                    {% if mp in mps_strategique %}
+                                        <i class="fas fa-user-check fa-2x text-success" title='Manager stratégique'></i>
+                                    {% else %}
+                                        <i class="fas fa-user-check fa-2x text-secondary"></i>
+                                    {% endif %}
+                                </a>
+                                <a href="{{path('toogle_permission_mp_contributor',{id:item.id,'mp_id':mp.id})}}"
+                                class='js-mp-contributor'>
+                                    <span></span>
+                                    {% if mp in mps_contributor %}
+                                        <i class="fas fa-user-edit fa-2x text-success" title='Contributeur'></i>
+                                    {% else %}
+                                        <i class="fas fa-user-edit fa-2x text-secondary"></i>
+                                    {% endif %}     
+                                </a>                               
+                                
+                            </span>
+                        </div>
+                        {% for p in mp.processes %}
+                            {% if p.isEnable %}
+                                <div  class="list-group-item list-group-item-action d-flex justify-content-between align-items-center ">
+                                    <span class='text-sm ml-5 mr-5'>  
+                                        <a href="{{ path('admin_process_show',{id:p.id}) }}" > 
+                                            {{ widgets.icon('process') }}
+                                            {{ p.fullname | raw}}
+                                        </a>
+                                    </span>
+                                    <span>
+                                        <a href="{{path('toogle_permission_p_validator',{id:item.id,'p_id':p.id})}}" class='js-p-validator'> 
+                                            <span></span>
+                                            {% if p in ps_validator %}
+                                                <i class="fas fa-user-check fa-2x text-success" title='Valideur'></i>
+                                            {% else %}
+                                                <i class="fas fa-user-check fa-2x text-secondary"></i>
+                                            {% endif %}
+                                        </a>
+                                        <a href="{{path('toogle_permission_p_contributor',{id:item.id,'p_id':p.id})}}"
+                                        class='js-p-contributor'>
+                                            <span></span>
+                                            {% if p in ps_contributor %}
+                                                <i class="fas fa-user-edit fa-2x text-success" title='Contributeur'></i>
+                                            {% else %}
+                                                <i class="fas fa-user-edit fa-2x text-secondary"></i>
+                                            {% endif %}     
+                                        </a>                               
+                                        
+                                    </span>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+
+                    {% endfor %}
+
+                </div>
+            {% endblock %}
+        {% endembed %}
     </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+        <script src="{{ absolute_url( asset('/vendor/axios/dist/axios.min.js')) }}"></script>
+    <script>
+
+        
+
+        function onClickToggle(event,obj, icone){
+            event.preventDefault();
+
+            const url= obj.href;
+            const htmlIcone= obj.querySelector('i');
+            const spanMessage= obj.querySelector('span');
+
+            axios.get(url).then(function(response) {
+                if(!response.data.value) {
+                    htmlIcone.classList= icone+" fa-2x text-secondary";
+                } else {
+                    htmlIcone.classList= icone +" fa-2x text-success";
+                }
+            }).catch(function(error){
+                spanMessage.textContent = 'Une erreur s\'est produite, merci de contacter l\'administrateur : ' . error;
+            })
+        }
+
+        function onClickToggleDirection(event){onClickToggle(event,this,'fas fa-user-tie');}
+        function onClickToggleStrategique(event){onClickToggle(event,this,'fas fa-user-check');}
+        function onClickToggleValidator(event){onClickToggle(event,this,'fas fa-user-check');}
+        function onClickToggleContributor(event){onClickToggle(event,this,'fas fa-user-edit');}
+
+
+
+        document.querySelectorAll("a.js-mp-direction").forEach(function(link){
+            link.addEventListener('click',onClickToggleDirection);
+        })
+        document.querySelectorAll("a.js-mp-strategique").forEach(function(link){
+            link.addEventListener('click',onClickToggleStrategique);
+        })
+        document.querySelectorAll("a.js-mp-contributor").forEach(function(link){
+            link.addEventListener('click',onClickToggleContributor);
+        })
+        document.querySelectorAll("a.js-p-validator").forEach(function(link){
+            link.addEventListener('click',onClickToggleValidator);
+        })
+        document.querySelectorAll("a.js-p-contributor").forEach(function(link){
+            link.addEventListener('click',onClickToggleContributor);
+        })
+
+    </script>
 {% endblock %}

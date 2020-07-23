@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,18 +15,19 @@ class DocumentationController extends AbstractController
     public function index()
     {
         //les fichiers sont à déposer dans public/doc
-        $docs = [[
-            'name' => 'Guide pour la recherche',
-            'url' => '',
-            'date' => ''
-        ], [
-            'name' => 'Guide du compte utilisateur',
-            'url' => '',
-            'date' => ''
-        ]];
+        $docs = [
+            [
+                'name' => 'Guide pour la recherche',
+                'url' => '',
+                'date' => '',
+            ],
+            [
+                'name' => 'Guide du compte utilisateur',
+                'url' => '',
+                'date' => '',
+            ],
+        ];
 
-        return $this->render('documentation/index.html.twig', [
-            'docs' => $docs,
-        ]);
+        return $this->render('documentation/index.html.twig', ['docs' => $docs]);
     }
 }

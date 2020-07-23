@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\Process;
@@ -8,20 +10,14 @@ use App\Manager\ProcessManager;
 use App\Repository\ProcessRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * Class AdminProcessController
- * @package App\Controller
- */
 class AdminProcessController extends AbstractGController
 {
-    public function __construct
-    (
+    public function __construct(
         ProcessRepository $repository,
         ProcessManager $manager
-    ){
+    ) {
         $this->repository = $repository;
         $this->manager = $manager;
         $this->domaine = 'admin_process';
@@ -37,12 +33,21 @@ class AdminProcessController extends AbstractGController
     }
 
     /**
+     * @Route("/admin/process/permission", name="admin_process_list_permission", methods={"GET"})
+     * @IsGranted("ROLE_USER")
+     */
+    public function listPermission()
+    {
+        return $this->listAction('list_permission');
+    }
+
+    /**
      * @Route("/admin/process/add", name="admin_process_add", methods={"GET","POST"})
      * @IsGranted("ROLE_GESTIONNAIRE")
      */
     public function add(Request $request)
     {
-        return $this->editAction($request, new Process(), ProcessType::class,false);
+        return $this->editAction($request, new Process(), ProcessType::class, false);
     }
 
     /**
@@ -62,7 +67,6 @@ class AdminProcessController extends AbstractGController
     {
         return $this->showAction($request, $item);
     }
-
 
     /**
      * @Route("/admin/process/{id}/edit", name="admin_process_edit", methods={"GET","POST"})

@@ -4,7 +4,7 @@
 
 
 {% block breadcrumb %}
-    {% import "default/actions.html.twig" as actions %}
+    {% import domaine~"/actions.html.twig" as actions %}
     {{ actions.admin(
         'add',
         is_granted('ROLE_GESTIONNAIRE'),

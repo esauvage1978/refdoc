@@ -1,25 +1,20 @@
 {% macro view(item) %}
-
-    <a href="{{ path('user_show', {'id': item.id}) }}" class="p-1 user-animate ">
-        <div class="image">
-            <img  class="img-circle img-bordered-sm"
-                 src="{{ asset(item.avatar) }}" style="width: 48px"
-                 alt="avatar">
-            <span class="text-bold {% if item.isEnable is same as(false) %}text-warning {% endif %}">
-                {{ item.name }}
-            </span>
-        </div>
+    <a href="{{ path('user_show', {'id': item.id}) }}" class="user user-animate">
+        <img class="img-circle img-bordered-sm img-md" src="{{ asset(item.avatar) }}"
+             alt="User Image" style="flex-wrap: wrap">
+        <span class="">{{ item.name }}</span>
     </a>
 {% endmacro %}
 
 {% macro views(items) %}
     {% import _self as usr %}
-    <div class="{{ row_lst }}">
+    <div class="users-list">
         {% for item in items %}
             {{ usr.view(item) }}
         {% endfor %}
     </div>
 {% endmacro %}
+
 
 {% macro messageEmailValidated(item) %}
     {% if item.emailvalidated == false %}
@@ -87,6 +82,16 @@
                     <span class="{{ item.isEnable?'':'text-danger' }}">{{ item.email }}</span>
                 </a>
             </div>
+            {% if 'ROLE_ADMIN' in item.roles or 'ROLE_GESTIONNAIRE' in item.roles %}
+            <p>
+                {% if 'ROLE_ADMIN' in item.roles %}
+                    <span class="badge badge-light bg-fuchsia">Administrateur</span>
+                {% endif %}
+                {% if 'ROLE_GESTIONNAIRE' in item.roles %}
+                    <span class="badge badge-light bg-lime">Gestionnaire</span>
+                {% endif %}
+            </p>
+            {% endif %}
         {% endblock %}
         {% block card_footer %}
             {% if item.phone %}

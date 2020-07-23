@@ -1,25 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\Profil;
 
 use App\Controller\AbstractGController;
 use App\Form\Profil\PasswordChangeFormType;
 use App\Manager\UserManager;
 use App\Repository\UserRepository;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-/**
- * @author Emmanuel SAUVAGE <emmanuel.sauvage@live.fr>
- * @version 1.0.0
- */
-/**
- * @Route("/profil")
- * @IsGranted("IS_AUTHENTICATED_FULLY")
- */
 class PasswordChangeController extends AbstractGController
 {
     /**
@@ -29,8 +22,8 @@ class PasswordChangeController extends AbstractGController
         Request $request,
         UserRepository $userRepository,
         UserManager $userManager,
-        UserPasswordEncoderInterface $encoder): Response
-    {
+        UserPasswordEncoderInterface $encoder
+    ): Response {
         $user = $this->getUser();
 
         $form = $this->createForm(PasswordChangeFormType::class);

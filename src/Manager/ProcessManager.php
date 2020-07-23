@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Manager;
 
 use App\Entity\EntityInterface;
@@ -8,15 +10,17 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class ProcessManager extends AbstractManager
 {
-    public function __construct(EntityManagerInterface $manager,ProcessValidator $validator)
+    public function __construct(EntityManagerInterface $manager, ProcessValidator $validator)
     {
-        parent::__construct($manager,$validator);
+        parent::__construct($manager, $validator);
     }
 
     public function initialise(EntityInterface $entity): void
     {
-        if(empty($entity->getRef())) {
-            $entity->setRef('000');
+        if (! empty($entity->getRef())) {
+            return;
         }
+
+        $entity->setRef('000');
     }
 }

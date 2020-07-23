@@ -4,7 +4,7 @@
 
 
 {% block breadcrumb %}
-    {% import "default/actions.html.twig" as actions %}
+    {% import domaine~"/actions.html.twig" as actions %}
     {{ actions.admin(
         'add',
         is_granted('ROLE_GESTIONNAIRE'),
@@ -78,6 +78,5 @@
         $('#process_mprocess').on("select2:selecting", function (e) {
             arborescence('#cmb_grouping', "{{ path('ajax_fill_combobox_grouping') }}", e.params.args.data.id, true, '#process_grouping');
         });
-
     </script>
 {% endblock %}

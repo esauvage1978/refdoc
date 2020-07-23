@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Form\Admin;
 
 use App\Entity\MProcess;
@@ -10,24 +12,24 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class MProcessType extends AppTypeAbstract
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $this->buildFormName($builder);
         $this->buildFormIsEnable($builder);
-        $this->buildFormValidators($builder);
+        $this->buildFormDirValidators($builder);
+        $this->buildFormPoleValidators($builder);
         $this->buildFormContributors($builder);
 
         $builder
             ->add('ref', TextType::class, [
                 self::LABEL => 'Référence',
                 self::REQUIRED => true,
-                self::ATTR => [self::PLACEHOLDER=>'000']
+                self::ATTR => [self::PLACEHOLDER => '000'],
             ]);
         $builder = $this->buildFormContent($builder);
-;
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => MProcess::class,

@@ -5,8 +5,8 @@ twig:
     exception_controller: null
     form_themes: ['bootstrap_3_layout.html.twig']
     globals:
-        app_name: '%env(APPLICATION_NAME)%'
-        app_name_description: '%env(APPLICATION_DESCRIPTION)%'
+        app_name: '%env(ES_APP_NAME)%'
+        app_name_description: '%env(ES_APP_CONTENT)%'
         col_1_2: 'col-sm-12 col-md-12 col-lg-8 col-xl-6'
         col_2_2: 'col-sm-12 col-md-12 col-lg-4'
         col_1_1: 'col-sm-12'

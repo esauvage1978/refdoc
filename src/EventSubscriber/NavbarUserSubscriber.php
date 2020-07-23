@@ -1,11 +1,6 @@
 <?php
 
-/*
- * This file is part of the AdminLTE-Bundle demo.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+declare(strict_types=1);
 
 namespace App\EventSubscriber;
 
@@ -18,11 +13,11 @@ use KevinPapst\AdminLTEBundle\Model\UserModel;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Core\Security;
 
+use function assert;
+
 class NavbarUserSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var CurrentUser
-     */
+    /** @var CurrentUser */
     protected $currentUser;
 
     /**
@@ -44,17 +39,14 @@ class NavbarUserSubscriber implements EventSubscriberInterface
         ];
     }
 
-    /**
-     * @param ShowUserEvent $event
-     */
-    public function onShowUser(ShowUserEvent $event)
+    public function onShowUser(ShowUserEvent $event): void
     {
-        if (null === $this->currentUser->getUser()) {
+        if ($this->currentUser->getUser() === null) {
             return;
         }
 
-        /* @var $myUser User */
         $myUser = $this->currentUser->getUser();
+        assert($myUser instanceof User);
 
         $user = new UserModel();
         $user

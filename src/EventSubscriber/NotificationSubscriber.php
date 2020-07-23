@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the AdminLTE-Bundle demo.
  *
@@ -9,11 +11,7 @@
 
 namespace App\EventSubscriber;
 
-use App\Repository\BackpackDtoRepository;
 use App\Security\CurrentUser;
-use App\Security\Role;
-use App\Service\BackpackCounter;
-use App\Service\BackpackMakerDto;
 use KevinPapst\AdminLTEBundle\Event\NotificationListEvent;
 use KevinPapst\AdminLTEBundle\Helper\Constants;
 use KevinPapst\AdminLTEBundle\Model\NotificationModel;
@@ -25,25 +23,14 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  */
 class NotificationSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var AuthorizationCheckerInterface
-     */
+    /** @var AuthorizationCheckerInterface */
     private $auth;
-    /**
-     * @var CurrentUser
-     */
+    /** @var CurrentUser */
     private $currentUser;
 
-
-
-    /**
-     * NotificationSubscriber constructor.
-     * @param CurrentUser $currentUser
-     */
     public function __construct(
         CurrentUser $currentUser
-    )
-    {
+    ) {
         $this->currentUser = $currentUser;
     }
 
@@ -57,21 +44,14 @@ class NotificationSubscriber implements EventSubscriberInterface
         ];
     }
 
-    /**
-     * @param NotificationListEvent $event
-     */
-    public function onNotifications(NotificationListEvent $event)
+    public function onNotifications(NotificationListEvent $event): void
     {
-
-        if (!$this->currentUser->isAuthenticatedRemember()) {
+        if (! $this->currentUser->isAuthenticatedRemember()) {
             $notification = new NotificationModel('Vous n\'êtes pas connecté !', Constants::TYPE_ERROR, 'fas fa-key');
             $notification->setId(1);
             $event->addNotification($notification);
+
             return;
         }
-
-
     }
-
-
 }

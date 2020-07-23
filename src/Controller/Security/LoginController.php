@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Controller\Security;
 
@@ -12,8 +13,6 @@ class LoginController extends AbstractController
 {
     /**
      * @Route("/login", name="user_login")
-     * @param AuthenticationUtils $authenticationUtils
-     * @return Response
      */
     public function loginAction(AuthenticationUtils $authenticationUtils): Response
     {
@@ -26,7 +25,7 @@ class LoginController extends AbstractController
     /**
      * @Route("/logout", name="user_logout", methods={"GET"})
      */
-    public function logout()
+    public function logout(): void
     {
     }
 }

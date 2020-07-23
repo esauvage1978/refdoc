@@ -1,0 +1,61 @@
+{% extends 'admin_mprocess/layout.html.twig' %}
+{% import "macros/widgets.html.twig" as widgets %}
+
+{% block title %}{{ app_name }} - Permission sur les macros processus{% endblock %}
+{% block page_title %}{{ widgets.icon('mprocess') }} Permission sur les macros processus{% endblock %}
+
+
+{% block breadcrumb %}
+    {% import domaine~"/actions.html.twig" as actions %}
+    {{ actions.admin(
+        'list_permission',
+        is_granted('ROLE_GESTIONNAIRE'),
+        null,
+        domaine
+    ) }}
+{% endblock %}
+
+{% block page_content %}
+    <div class="row justify-content-center">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th class="text-center">
+                    Macro processus
+                </th>
+                <th >
+                    Agent de Direction
+                </th>
+                <th >
+                    Manager stratégique
+                </th>
+                <th >
+                    Contributeurs
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% import "macros/user.html.twig" as user %}
+            {% for item in items %}
+                <tr>
+                    <td class="align-middle">
+                        <a href="{{ path(route_show,{id:item.id}) }}">
+                            {{ item.fullname | raw }}
+                        </a>
+                    </td>
+                    <td class="align-middle">
+                        {{ user.views(item.dirValidators) }}
+                    </td>
+                    <td class="align-middle">
+                        {{ user.views(item.poleValidators) }}
+                    </td>
+                    <td class="align-middle">
+                         {{ user.views(item.contributors) }}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

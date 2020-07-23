@@ -1,21 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Event;
 
 use App\Entity\User;
 use Symfony\Contracts\EventDispatcher\Event;
 
-/**
- * @author Emmanuel SAUVAGE <emmanuel.sauvage@live.fr>
- * @version 1.0.0
- */
 class UserPasswordForgetEvent extends Event
 {
     public const NAME = 'user.passwordforget';
 
-    /**
-     * @var User
-     */
+    /** @var User */
     protected $user;
 
     public function __construct(User $user)
@@ -23,10 +19,7 @@ class UserPasswordForgetEvent extends Event
         $this->user = $user;
     }
 
-    /**
-     * @return User
-     */
-    public function getUser()
+    public function getUser(): User
     {
         return $this->user;
     }

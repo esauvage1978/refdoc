@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Repository\MProcessRepository;
@@ -19,51 +21,52 @@ class MProcess implements EntityInterface
      */
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    /** @ORM\Column(type="string", length=255) */
     private $name;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    /** @ORM\Column(type="boolean") */
     private $isEnable;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
+    /** @ORM\Column(type="text", nullable=true) */
     private $content;
 
-    /**
-     * @ORM\Column(type="string", length=5)
-     */
+    /** @ORM\Column(type="string", length=5) */
     private $ref;
 
     /**
-     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="mProcessValidators")
-     * @ORM\JoinTable("mprocessvalidators_user")
+     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="mProcessPoleValidators")
+     * @ORM\JoinTable("mprocesspolevalidators_user")
+     * @ORM\OrderBy({"name" = "ASC"})
      */
-    private $validators;
+    private $poleValidators;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="mProcessDirValidators")
+     * @ORM\JoinTable("mprocessdirvalidators_user")
+     * @ORM\OrderBy({"name" = "ASC"})
+     */
+    private $dirValidators;
 
     /**
      * @ORM\ManyToMany(targetEntity=User::class, inversedBy="mProcessContributors")
      * @ORM\JoinTable("mprocesscontributors_user")
+     * @ORM\OrderBy({"name" = "ASC"})
      */
     private $contributors;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Subscription::class, mappedBy="mProcess")
-     */
+    /** @ORM\OneToMany(targetEntity=Subscription::class, mappedBy="mProcess") */
     private $subscriptions;
 
     /**
      * @ORM\OneToMany(targetEntity=Process::class, mappedBy="mProcess")
+     * @ORM\OrderBy({"ref" = "ASC"})
      */
     private $processes;
 
     public function __construct()
     {
-        $this->validators = new ArrayCollection();
+        $this->dirValidators = new ArrayCollection();
+        $this->poleValidators = new ArrayCollection();
         $this->contributors = new ArrayCollection();
         $this->subscriptions = new ArrayCollection();
         $this->processes = new ArrayCollection();
@@ -125,24 +128,50 @@ class MProcess implements EntityInterface
     /**
      * @return Collection|User[]
      */
-    public function getValidators(): Collection
+    public function getDirValidators(): Collection
     {
-        return $this->validators;
+        return $this->dirValidators;
     }
 
-    public function addValidator(User $validator): self
+    public function addDirValidator(User $dirValidator): self
     {
-        if (!$this->validators->contains($validator)) {
-            $this->validators[] = $validator;
+        if (! $this->dirValidators->contains($dirValidator)) {
+            $this->dirValidators[] = $dirValidator;
         }
 
         return $this;
     }
 
-    public function removeValidator(User $validator): self
+    public function removeDirValidator(User $dirValidator): self
     {
-        if ($this->validators->contains($validator)) {
-            $this->validators->removeElement($validator);
+        if ($this->dirValidators->contains($dirValidator)) {
+            $this->dirValidators->removeElement($dirValidator);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getPoleValidators(): Collection
+    {
+        return $this->poleValidators;
+    }
+
+    public function addPoleValidator(User $poleValidator): self
+    {
+        if (! $this->poleValidators->contains($poleValidator)) {
+            $this->poleValidators[] = $poleValidator;
+        }
+
+        return $this;
+    }
+
+    public function removePoleValidator(User $poleValidator): self
+    {
+        if ($this->poleValidators->contains($poleValidator)) {
+            $this->poleValidators->removeElement($poleValidator);
         }
 
         return $this;
@@ -158,7 +187,7 @@ class MProcess implements EntityInterface
 
     public function addContributor(User $contributor): self
     {
-        if (!$this->contributors->contains($contributor)) {
+        if (! $this->contributors->contains($contributor)) {
             $this->contributors[] = $contributor;
         }
 
@@ -184,7 +213,7 @@ class MProcess implements EntityInterface
 
     public function addSubscription(Subscription $subscription): self
     {
-        if (!$this->subscriptions->contains($subscription)) {
+        if (! $this->subscriptions->contains($subscription)) {
             $this->subscriptions[] = $subscription;
             $subscription->setMProcess($this);
         }
@@ -215,7 +244,7 @@ class MProcess implements EntityInterface
 
     public function addProcess(Process $process): self
     {
-        if (!$this->processes->contains($process)) {
+        if (! $this->processes->contains($process)) {
             $this->processes[] = $process;
             $process->setMProcess($this);
         }
@@ -236,8 +265,12 @@ class MProcess implements EntityInterface
         return $this;
     }
 
-
     public function getFullName(): ?string
+    {
+        return $this->getRef() . '  <i class="fa fa-minus"></i> ' . $this->getName();
+    }
+
+    public function getFullNameSelect(): ?string
     {
         return $this->getRef() . ' - ' . $this->getName();
     }

@@ -3,21 +3,19 @@
     {% set actions = {} %}
 
     {% set actions = actions|merge({ 'home': {url: path('home'),class:'btn-secondary',attr:{title:'Accueil'}}}) %}
+    
     {% set actions = actions|merge({'divider': null}) %}
-    {% if twigTemplace!='permission' %}
-        {% set actions = actions|merge({ 'permissions': {url: path('my_permission'),class:'btn-secondary',attr:{title:'Liste des permissions'}}}) %}
-    {% endif %}
 
     {% if twigTemplace!='index' %}
         {% set actions = actions|merge({ 'profil': {url: path('profil'),class:'btn-secondary',attr:{title:'votre profil'}}}) %}
     {% endif %}
 
     {% if twigTemplace!='administrateur' %}
-        {% set actions = actions|merge({ 'administrateur': {url: path('administrateur'),class:'btn-secondary',attr:{title:'Liste des administrateurs'}}}) %}
+        {% set actions = actions|merge({ 'administrateur': {url: path('role_administrateur'),class:'btn-secondary',attr:{title:'Liste des administrateurs'}}}) %}
     {% endif %}
 
     {% if twigTemplace!='gestionnaire' %}
-        {% set actions = actions|merge({ 'gestionnaire': {url: path('gestionnaire'),class:'btn-secondary',attr:{title:'Liste des gestionnaires'}}}) %}
+        {% set actions = actions|merge({ 'gestionnaire': {url: path('role_gestionnaire'),class:'btn-secondary',attr:{title:'Liste des gestionnaires'}}}) %}
     {% endif %}
     
     {% set actions = actions|merge({'divider2': null}) %}

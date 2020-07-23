@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\User;
@@ -14,7 +16,12 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class UserRepository extends ServiceEntityRepository
 {
-    const ALIAS = 'u';
+    public const ALIAS = 'u';
+    public const ALIAS_MP_DV = 'u_mp_dv';
+    public const ALIAS_MP_PV = 'u_mp_pv';
+    public const ALIAS_MP_C = 'u_mp_c';
+    public const ALIAS_P_V = 'u_p_v';
+    public const ALIAS_P_C = 'u_p_c';
 
     public function __construct(ManagerRegistry $registry)
     {
@@ -29,37 +36,54 @@ class UserRepository extends ServiceEntityRepository
             )
             ->orderBy(self::ALIAS . '.name', 'ASC')
             ->getQuery()
-            ->getResult()
-            ;
+            ->getResult();
     }
 
     /**
      * @return User[] Returns an array of User objects
      */
-    public function findAllForContactGestionnaire()
+    public function findAllForContactGestionnaire(): array
     {
         return $this->createQueryBuilder(self::ALIAS)
-            ->Where(self::ALIAS.'.roles like :val1')
-            ->AndWhere(self::ALIAS.'.roles not like :val2')
+            ->Where(self::ALIAS . '.roles like :val1')
+            ->OrWhere(self::ALIAS . '.roles like :val2')
             ->setParameter('val1', '%"ROLE_GESTIONNAIRE"%')
             ->setParameter('val2', '%ROLE_ADMIN%')
-            ->orderBy(self::ALIAS.'.name', 'ASC')
+            ->orderBy(self::ALIAS . '.name', 'ASC')
             ->getQuery()
-            ->getResult()
-            ;
+            ->getResult();
     }
+
     /**
      * @return User[] Returns an array of User objects
      */
-    public function findAllForContactAdmin()
+    public function findAllForContactUtilisateur(): array
     {
         return $this->createQueryBuilder(self::ALIAS)
-            ->Where(self::ALIAS.'.roles like :val1')
-            ->setParameter('val1', '%ROLE_ADMIN%')
-            ->orderBy(self::ALIAS.'.name', 'ASC')
+            ->Where(self::ALIAS . '.roles like :val1')
+            ->OrWhere(self::ALIAS . '.roles like :val2')
+            ->OrWhere(self::ALIAS . '.roles like :val3')
+            ->setParameters([
+                'val1' => '%"ROLE_GESTIONNAIRE"%',
+                'val2' => '%ROLE_ADMIN%',
+                'val3' => '%"ROLE_USER"%',
+            ])
+            ->orderBy(self::ALIAS . '.name', 'ASC')
             ->getQuery()
-            ->getResult()
-            ;
+            ->getResult();
+    }
+
+    /**
+     * @return User[] Returns an array of User objects
+     */
+    public function findAllForContactAdmin(): array
+    {
+        return $this->createQueryBuilder(self::ALIAS)
+            ->Where(self::ALIAS . '.roles like :val1')
+            ->setParameter('val1', '%ROLE_ADMIN%')
+            ->orderBy(self::ALIAS . '.name', 'ASC')
+            ->getQuery()
+            ->getResult();
     }
 
     public function findAllUserSubscription()
@@ -68,13 +92,11 @@ class UserRepository extends ServiceEntityRepository
             ->select(
                 self::ALIAS
             )
-            ->where(self::ALIAS.'.isEnable=true')
-            ->andWhere(self::ALIAS.'.subscription=true')
-            ->andWhere(self::ALIAS.'.emailValidated=true')
+            ->where(self::ALIAS . '.isEnable=true')
+            ->andWhere(self::ALIAS . '.subscription=true')
+            ->andWhere(self::ALIAS . '.emailValidated=true')
             ->orderBy(self::ALIAS . '.name', 'ASC')
             ->getQuery()
-            ->getResult()
-            ;
+            ->getResult();
     }
-
 }

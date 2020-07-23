@@ -1,45 +1,47 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\Profil;
 
-use App\Controller\AbstractGController;
 use App\Entity\User;
-use App\Form\Profil\ProfilType;
+use function assert;
+use App\Dto\ProcessDto;
+use App\Dto\MProcessDto;
 use App\Manager\UserManager;
+use App\Form\Profil\ProfilType;
+use App\Repository\MProcessRepository;
+use App\Controller\AbstractGController;
+use App\Repository\ProcessDtoRepository;
+use App\Repository\MProcessDtoRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @author Emmanuel SAUVAGE <emmanuel.sauvage@live.fr>
- * @version 1.0.0
- */
-/**
- * @Route("/profil")
- * @IsGranted("IS_AUTHENTICATED_FULLY")
- */
+
 class ProfilController extends AbstractGController
 {
     /**
-     * @Route("/", name="profil")
-     *
-     * @var Request $request
-     * @var UserManager $userManager
-     *
+     * @Route("/profil", name="profil")
      * @return Response
-     *
+     * @var UserManager $userManager
+     * @var Request $request
      */
-    public function profileHomeAction(Request $request,  UserManager $manager): Response
+    public function profileHomeAction(
+        Request $request,
+        UserManager $manager,
+        MProcessDtoRepository $mProcessDtoRepository,
+        ProcessDtoRepository $processDtoRepository 
+         ): Response
     {
-        /** @var User $user */
         $user = $this->getUser();
-        $oldUserMail=(clone $user)->getEmail();
+        assert($user instanceof User);
+        $oldUserMail = (clone $user)->getEmail();
         $form = $this->createForm(ProfilType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($manager->save($user,$oldUserMail)) {
+            if ($manager->save($user, $oldUserMail)) {
                 $this->addFlash(self::SUCCESS, self::MSG_MODIFY);
             } else {
                 $this->addFlash(self::DANGER, self::MSG_MODIFY_ERROR . $manager->getErrors($user));
@@ -48,9 +50,9 @@ class ProfilController extends AbstractGController
 
         return $this->render('profil/index.html.twig', [
             'item' => $user,
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'mps'=> $mProcessDtoRepository->findAllForDto((new MProcessDto)->setIsEnable(MProcessDto::TRUE)),
+            'ps' => $processDtoRepository->findAllForDto((new ProcessDto)->setVisible(ProcessDto::TRUE))
         ]);
     }
-
-
 }

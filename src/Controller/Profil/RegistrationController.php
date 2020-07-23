@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\Profil;
 
 use App\Controller\AbstractGController;
@@ -14,10 +16,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
-/**
- * @author Emmanuel SAUVAGE <emmanuel.sauvage@live.fr>
- * @version 1.0.0
- */
 class RegistrationController extends AbstractGController
 {
     /**
@@ -26,8 +24,8 @@ class RegistrationController extends AbstractGController
     public function registrerAction(
         Request $request,
         UserManager $userManager,
-        EventDispatcherInterface $dispatcher): Response
-    {
+        EventDispatcherInterface $dispatcher
+    ): Response {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
@@ -41,24 +39,26 @@ class RegistrationController extends AbstractGController
 
                 return $this->redirectToRoute('user_login');
             }
-            $this->addFlash(self::DANGER, self::MSG_CREATE_ERROR.$userManager->getErrors($user));
+
+            $this->addFlash(self::DANGER, self::MSG_CREATE_ERROR . $userManager->getErrors($user));
         }
 
         return $this->render('profil/registration.html.twig', [
             'form' => $form->createView(),
         ]);
     }
+
     /**
      * @route("/email/{token}", name="profil_email_validated")
      */
     public function profilEmailValidatedAction(
         string $token,
         UserRepository $userRepository,
-        UserManager $userManager): Response
-    {
+        UserManager $userManager
+    ): Response {
         $user = $userRepository->findOneBy(['emailValidatedToken' => $token]);
 
-        if (null === $user) {
+        if ($user === null) {
             $this->addFlash('warning', 'L\'adresse d\'activation est incorrecte!');
         } else {
             $userManager->validateEmail($user);
@@ -66,7 +66,7 @@ class RegistrationController extends AbstractGController
             if ($userManager->save($user)) {
                 $this->addFlash('success', 'Votre compte est activé. Vous pouvez vous connecter!');
             } else {
-                $this->addFlash('danger', 'Echec de la mise à jour'.$userManager->getErrors($user));
+                $this->addFlash('danger', 'Echec de la mise à jour' . $userManager->getErrors($user));
             }
         }
 

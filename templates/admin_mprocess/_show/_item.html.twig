@@ -27,18 +27,60 @@
             {% endif %}
 
             {% embed 'widgets/card-widget.html.twig' %}
-                {% block card_title %}Valideurs{% endblock %}
+                {% block card_title %}Processus{% endblock %}
+                {% block card_tools %}
+                    {% if is_granted('ROLE_GESTIONNAIRE') %}
+                        <a href="{{ path('admin_process_add') }}">
+                            <i class="far fa-plus-square"></i> Ajouter un processus
+                        </a>
+                    {% endif %}
+                {% endblock %}
+                {% block card_body_class %}p-0{% endblock %}
+                {% block card_body %}
+                    {% import "macros/process.html.twig" as proc %}
+                    {{ proc.views(item.processes) }}
+                {% endblock %}
+            {% endembed %}
+
+            {% embed 'widgets/card-widget.html.twig' %}
+                {% block card_title %}Agent de Direction{% endblock %}
+                {% block card_body_class %}p-0{% endblock %}
                 {% block card_body %}
                     {% import "macros/user.html.twig" as usr %}
-                    {{ usr.views(item.validators) }}
+                    {{ usr.views(item.DirValidators) }}
+                {% endblock %}
+            {% endembed %}
+
+            {% embed 'widgets/card-widget.html.twig' %}
+                {% block card_title %}Manager stratégique{% endblock %}
+                {% block card_body_class %}p-0{% endblock %}
+                {% block card_body %}
+                    {% import "macros/user.html.twig" as usr %}
+                    {{ usr.views(item.poleValidators) }}
                 {% endblock %}
             {% endembed %}
 
             {% embed 'widgets/card-widget.html.twig' %}
                 {% block card_title %}Contributeurs{% endblock %}
+                {% block card_body_class %}p-0{% endblock %}
                 {% block card_body %}
                     {% import "macros/user.html.twig" as usr %}
                     {{ usr.views(item.contributors) }}
+                {% endblock %}
+            {% endembed %}
+
+            {% embed 'widgets/card-widget.html.twig' %}
+                {% block card_title %}Abonnés{% endblock %}
+                {% block card_body_class %}p-0{% endblock %}
+                {% block card_body %}
+                    <div class="users-list">
+                        {% import "macros/user.html.twig" as usr %}
+                        {% for s in item.subscriptions %}
+                            {% if s.isEnable %}
+                                {{ usr.view(s.user) }}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
                 {% endblock %}
             {% endembed %}
         </div>

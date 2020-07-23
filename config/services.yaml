@@ -4,16 +4,16 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    directory_avatar : '%kernel.project_dir%/public/avatar/'
+    es.directory.avatar : '%kernel.project_dir%/public/avatar/'
 
-    application.name: '%env(APPLICATION_NAME)%'
-    mailer.mail: '%env(MAILER_MAIL)%'
-    mailer.name: '%env(MAILER_NAME)%'
-    mailer.prefixe: '%env(MAILER_PREFIXE)%'
-    mailer.smtp.host: '%env(MAILER_SMTP_HOST)%'
-    mailer.smtp.port: '%env(MAILER_SMTP_PORT)%'
-    mailer.smtp.username: '%env(MAILER_SMTP_USERNAME)%'
-    mailer.smtp.password: '%env(MAILER_SMTP_PASSWORD)%'
+    es.app.name: '%env(ES_APP_NAME)%'
+    es.mailer.name: '%env(ES_MAILER_NAME)%'
+    es.mailer.object.prefixe: '%env(ES_MAILER_OBJECT_PREFIXE)%'
+    es.mailer.smtp.host: '%env(ES_MAILER_SMTP_HOST)%'
+    es.mailer.smtp.port: '%env(ES_MAILER_SMTP_PORT)%'
+    es.mailer.user.name: '%env(ES_MAILER_USER_NAME)%'
+    es.mailer.user.mail: '%env(ES_MAILER_USER_MAIL)%'
+    es.mailer.user.password: '%env(ES_MAILER_USER_PASSWORD)%'
 
 
 services:

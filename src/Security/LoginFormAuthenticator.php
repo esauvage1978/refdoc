@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Security;
 
@@ -22,10 +23,9 @@ use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
 class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
 {
-    const PWRD = 'password';
-    const EMAIL = 'email';
-    const ROUTE = 'user_login';
-
+    public const PWRD = 'password';
+    public const EMAIL = 'email';
+    public const ROUTE = 'user_login';
     use TargetPathTrait;
 
     private $entityManager;
@@ -43,7 +43,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
 
     public function supports(Request $request)
     {
-        return self::ROUTE === $request->attributes->get('_route')
+        return $request->attributes->get('_route') === self::ROUTE
             && $request->isMethod('POST');
     }
 
@@ -65,13 +65,13 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
         $token = new CsrfToken('authenticate', $credentials['csrf_token']);
-        if (!$this->csrfTokenManager->isTokenValid($token)) {
+        if (! $this->csrfTokenManager->isTokenValid($token)) {
             throw new InvalidCsrfTokenException();
         }
 
         $user = $this->entityManager->getRepository(User::class)->findOneBy([self::EMAIL => $credentials[self::EMAIL]]);
 
-        if (!$user) {
+        if (! $user) {
             // fail authentication with a custom error
             throw new CustomUserMessageAuthenticationException('L\'utilisateur n\'a pas été trouvé.');
         }

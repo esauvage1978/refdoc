@@ -1,39 +1,34 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Mail;
 
 use App\Helper\ParamsInServices;
 use Symfony\Component\Mailer\Transport\Smtp\EsmtpTransport;
 
-/**
- * @author Emmanuel SAUVAGE <emmanuel.sauvage@live.fr>
- * @version 1.0.0
- */
 class MailerTransport
 {
-    /**
-     * @var EsmtpTransport
-     */
+    /** @var EsmtpTransport */
     private $transport;
 
-    /**
-     * @var ParamsInServices
-     */
+    /** @var ParamsInServices */
     private $paramsInServices;
 
-    public function __construct( ParamsInServices $paramsInServices)
+    public function __construct(ParamsInServices $paramsInServices)
     {
-        $this->paramsInServices=$paramsInServices;
+        $this->paramsInServices = $paramsInServices;
     }
 
     public function getTransport()
     {
+        $port=intval( $this->paramsInServices->get(ParamsInServices::ES_MAILER_SMTP_PORT));
         $this->transport = new EsmtpTransport(
-            $this->paramsInServices->get(ParamsInServices::MAILER_SMTP_HOST),
-            $this->paramsInServices->get(ParamsInServices::MAILER_SMTP_PORT)
+            $this->paramsInServices->get(ParamsInServices::ES_MAILER_SMTP_HOST),
+            $port
         );
-        $this->transport->setUsername($this->paramsInServices->get(ParamsInServices::MAILER_SMTP_USERNAME));
-        $this->transport->setPassword($this->paramsInServices->get(ParamsInServices::MAILER_SMTP_PASSWORD));
+        $this->transport->setUsername($this->paramsInServices->get(ParamsInServices::ES_MAILER_USER_NAME));
+        $this->transport->setPassword($this->paramsInServices->get(ParamsInServices::ES_MAILER_USER_PASSWORD));
 
         return $this->transport;
     }

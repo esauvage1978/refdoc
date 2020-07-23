@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Form;
 
-use App\Entity\Corbeille;
 use App\Entity\MProcess;
 use App\Entity\Organisme;
 use App\Entity\User;
@@ -16,40 +17,45 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 abstract class AppTypeAbstract extends AbstractType
 {
-    const LABEL = 'label';
-    const DATA = 'data';
-    const REQUIRED = 'required';
-    const ROW_ATTR = 'row_attr';
-    const ATTR = 'attr';
-    const CHOICE_LABEL = 'choice_label';
-    const MULTIPLE = 'multiple';
-    const CSS_CLASS = 'class';
-    const ROWS = 'rows';
-    const GROUP_BY = 'group_by';
-    const QUERY_BUILDER = 'query_builder';
-    const DISABLED = 'disabled';
-    const MAXLENGTH = 'maxlength';
-    const PLACEHOLDER = 'placeholder';
+    public const LABEL = 'label';
+    public const DATA = 'data';
+    public const REQUIRED = 'required';
+    public const ROW_ATTR = 'row_attr';
+    public const ATTR = 'attr';
+    public const CHOICE_LABEL = 'choice_label';
+    public const MULTIPLE = 'multiple';
+    public const CSS_CLASS = 'class';
+    public const ROWS = 'rows';
+    public const GROUP_BY = 'group_by';
+    public const QUERY_BUILDER = 'query_builder';
+    public const DISABLED = 'disabled';
+    public const MAXLENGTH = 'maxlength';
+    public const PLACEHOLDER = 'placeholder';
 
-    public function buildFormName(FormBuilderInterface $builder)
+    public function buildFormName(FormBuilderInterface $builder): void
     {
         $builder
             ->add('name', TextType::class, [
                 self::LABEL => 'Nom',
                 self::REQUIRED => true,
-                self::ATTR=>[self::MAXLENGTH=>255],
+                self::ATTR => [self::MAXLENGTH => 255],
             ]);
     }
-    public function buildFormIsEnable(FormBuilderInterface $builder)
+
+    public function buildFormIsEnable(FormBuilderInterface $builder): void
     {
         $builder
-            ->add('isEnable', CheckboxType::class,
+            ->add(
+                'isEnable',
+                CheckboxType::class,
                 [
                     self::LABEL => ' ',
                     self::REQUIRED => false,
-                ]);
+                ]
+            );
     }
-    public function buildFormContent(FormBuilderInterface $builder)
+
+    public function buildFormContent(FormBuilderInterface $builder): void
     {
         $builder
             ->add('content', TextareaType::class, [
@@ -58,7 +64,8 @@ abstract class AppTypeAbstract extends AbstractType
                 self::ATTR => [self::ROWS => 3, self::CSS_CLASS => 'textarea'],
             ]);
     }
-    public function buildFormOrganismes(FormBuilderInterface $builder)
+
+    public function buildFormOrganismes(FormBuilderInterface $builder): void
     {
         $builder
             ->add('organismes', EntityType::class, [
@@ -67,23 +74,7 @@ abstract class AppTypeAbstract extends AbstractType
                 self::MULTIPLE => true,
                 self::ATTR => ['class' => 'select2'],
                 self::REQUIRED => false,
-                self::QUERY_BUILDER => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('o')
-                        ->orderBy('o.ref', 'ASC')
-                        ->addOrderBy('o.name', 'ASC');
-                },
-            ]);
-    }
-    public function buildFormMProcess(FormBuilderInterface $builder)
-    {
-        $builder
-            ->add('mprocess', EntityType::class, [
-                'class' => MProcess::class,
-                self::CHOICE_LABEL => 'fullname',
-                self::MULTIPLE => false,
-                self::ATTR => ['class' => 'select2'],
-                self::REQUIRED => true,
-                self::QUERY_BUILDER => function (EntityRepository $er) {
+                self::QUERY_BUILDER => static function (EntityRepository $er) {
                     return $er->createQueryBuilder('o')
                         ->orderBy('o.ref', 'ASC')
                         ->addOrderBy('o.name', 'ASC');
@@ -91,50 +82,109 @@ abstract class AppTypeAbstract extends AbstractType
             ]);
     }
 
-    public function buildFormUsers(FormBuilderInterface $builder)
+    public function buildFormMProcess(FormBuilderInterface $builder): void
+    {
+        $builder
+            ->add('mprocess', EntityType::class, [
+                'class' => MProcess::class,
+                self::CHOICE_LABEL => 'fullnameSelect',
+                self::MULTIPLE => false,
+                self::ATTR => ['class' => 'select2'],
+                self::REQUIRED => true,
+                self::QUERY_BUILDER => static function (EntityRepository $er) {
+                    return $er->createQueryBuilder('o')
+                        ->orderBy('o.ref', 'ASC')
+                        ->addOrderBy('o.name', 'ASC');
+                },
+            ]);
+    }
+
+    public function buildFormUsers(FormBuilderInterface $builder): void
     {
         $builder
             ->add('users', EntityType::class, [
                 'class' => User::class,
-                self::LABEL=>'Utilisateurs',
+                self::LABEL => 'Utilisateurs',
                 self::CHOICE_LABEL => 'name',
                 self::MULTIPLE => true,
                 self::ATTR => ['class' => 'select2'],
                 self::REQUIRED => false,
-                self::QUERY_BUILDER => function (EntityRepository $er) {
+                self::QUERY_BUILDER => static function (EntityRepository $er) {
                     return $er->createQueryBuilder('u')
                         ->orderBy('u.name', 'ASC');
                 },
             ]);
     }
-    public function buildFormContributors(FormBuilderInterface $builder)
+
+    public function buildFormContributors(FormBuilderInterface $builder): void
     {
         $builder
             ->add('contributors', EntityType::class, [
                 'class' => User::class,
-                self::LABEL=>'Contributeurs',
+                self::LABEL => 'Contributeurs',
                 self::CHOICE_LABEL => 'name',
                 self::MULTIPLE => true,
                 self::ATTR => ['class' => 'select2'],
                 self::REQUIRED => false,
-                self::QUERY_BUILDER => function (EntityRepository $er) {
+                self::QUERY_BUILDER => static function (EntityRepository $er) {
                     return $er->createQueryBuilder('u')
                         ->orderBy('u.name', 'ASC');
                 },
             ]);
     }
-    public function buildFormValidators(FormBuilderInterface $builder)
+
+    public function buildFormValidators(FormBuilderInterface $builder): void
     {
         $builder
             ->add('validators', EntityType::class, [
                 'class' => User::class,
-                self::LABEL=>'Valideurs',
+                self::LABEL => 'Valideurs',
                 self::CHOICE_LABEL => 'name',
                 self::MULTIPLE => true,
                 self::ATTR => ['class' => 'select2'],
                 self::REQUIRED => false,
-                self::QUERY_BUILDER => function (EntityRepository $er) {
+                self::QUERY_BUILDER => static function (EntityRepository $er) {
                     return $er->createQueryBuilder('u')
+                        ->Where('u.isEnable=:ie')
+                        ->setParameter('ie', '1')
+                        ->orderBy('u.name', 'ASC');
+                },
+            ]);
+    }
+
+    public function buildFormDirValidators(FormBuilderInterface $builder): void
+    {
+        $builder
+            ->add('dirValidators', EntityType::class, [
+                'class' => User::class,
+                self::LABEL => 'Valideurs de la Direction',
+                self::CHOICE_LABEL => 'name',
+                self::MULTIPLE => true,
+                self::ATTR => ['class' => 'select2'],
+                self::REQUIRED => false,
+                self::QUERY_BUILDER => static function (EntityRepository $er) {
+                    return $er->createQueryBuilder('u')
+                        ->Where('u.isEnable=:ie')
+                        ->setParameter('ie', '1')
+                        ->orderBy('u.name', 'ASC');
+                },
+            ]);
+    }
+
+    public function buildFormPoleValidators(FormBuilderInterface $builder): void
+    {
+        $builder
+            ->add('poleValidators', EntityType::class, [
+                'class' => User::class,
+                self::LABEL => 'Valideurs stratégiques',
+                self::CHOICE_LABEL => 'name',
+                self::MULTIPLE => true,
+                self::ATTR => ['class' => 'select2'],
+                self::REQUIRED => false,
+                self::QUERY_BUILDER => static function (EntityRepository $er) {
+                    return $er->createQueryBuilder('u')
+                        ->Where('u.isEnable=:ie')
+                        ->setParameter('ie', '1')
                         ->orderBy('u.name', 'ASC');
                 },
             ]);

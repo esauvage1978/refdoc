@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Form\Profil;
 
@@ -11,23 +12,19 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class PasswordForgetFormType extends AppTypeAbstract
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('email', TextType::class, [
                 self::ATTR => [self::PLACEHOLDER => 'Email'],
                 'constraints' => [
-                    new NotBlank([
-                        'message' => 'Merci de saisir votre adresse mail ',
-                    ]),
-                    ],
-                   ])
-        ;
+                    new NotBlank(['message' => 'Merci de saisir votre adresse mail ']),
+                ],
+            ]);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults([
-        ]);
+        $resolver->setDefaults([]);
     }
 }

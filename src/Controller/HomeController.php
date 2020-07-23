@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -11,26 +13,18 @@ class HomeController extends AbstractController
     /**
      * @Route("/", name="home")
      */
-    public function index(
-    )
+    public function index()
     {
         return $this->render('home/index.html.twig', []);
     }
 
-    /**
-     * @return Response
-     */
     public function searchFormAction(): Response
     {
         return $this->render('home/search-form.html.twig', []);
     }
 
-    /**
-     * @return Response
-     */
     public function message(): Response
     {
         return $this->render('home/search-form.html.twig', []);
     }
-
 }
