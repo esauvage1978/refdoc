@@ -1,0 +1,12 @@
+{% macro menu(twigTemplace) %}
+    {% import "macros/widgets.html.twig" as widgets %}
+    {% set actions = {} %}
+
+    {% set actions = actions|merge({ 'home': {url: path('home'),class:'btn-secondary',attr:{title:'Accueil'}}}) %}
+    
+    {% set actions = actions|merge({'divider': null}) %}
+
+    {% set actions = actions|merge({ 'admin': {url: path('admin'),class:'btn-secondary',attr:{title:'Administration'}}}) %}
+
+    {{ widgets.page_actions(actions) }}
+{% endmacro %}

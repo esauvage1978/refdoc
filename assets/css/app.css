@@ -126,3 +126,8 @@ h1 > small {
     padding: 0 5px 0 5px;
     background-color:#f7f7f7;
 }
+
+.flat {
+    box-shadow: 0 0 0 0 !important;
+    border: 0px !important;
+}

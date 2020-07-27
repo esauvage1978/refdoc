@@ -7,6 +7,13 @@ namespace App\Security;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Security;
 
+/**
+ * Récupère l'utilisateur connecté 
+ *
+ * (c) Emmanuel Sauvage <emmanuel.sauvage@live.fr>
+ * 24/07/2020
+ *
+ */
 final class CurrentUser
 {
     /** @var User|null */

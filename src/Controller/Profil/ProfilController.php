@@ -17,7 +17,7 @@ use App\Repository\MProcessDtoRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 class ProfilController extends AbstractGController
 {
@@ -26,6 +26,7 @@ class ProfilController extends AbstractGController
      * @return Response
      * @var UserManager $userManager
      * @var Request $request
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function profileHomeAction(
         Request $request,
@@ -35,7 +36,6 @@ class ProfilController extends AbstractGController
          ): Response
     {
         $user = $this->getUser();
-        assert($user instanceof User);
         $oldUserMail = (clone $user)->getEmail();
         $form = $this->createForm(ProfilType::class, $user);
         $form->handleRequest($request);

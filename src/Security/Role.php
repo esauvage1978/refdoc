@@ -9,6 +9,13 @@ use InvalidArgumentException;
 
 use function in_array;
 
+/**
+ * Liste les différents rôles 
+ *
+ * (c) Emmanuel Sauvage <emmanuel.sauvage@live.fr>
+ * 24/07/2020
+ *
+ */
 final class Role
 {
     public const ROLE_USER = 'ROLE_USER';
@@ -33,9 +40,8 @@ final class Role
     public static function checkData(string $data)
     {
         if (!Role::hasData($data)) {
-            throw new InvalidArgumentException('Ce paramètre est incconnu : ' . $data);
+            throw new InvalidArgumentException('Ce rôle est incconnu : ' . $data);
         }
-
     }
 
     public static function getDatas(): array
@@ -52,15 +58,16 @@ final class Role
      */
     public static function isAdmin(?User $user): bool
     {
-        if ($user === null) {
-            return false;
-        }
+        return $user !== null and self::hasAdmin($user);
+    }
 
-        if (in_array(self::ROLE_ADMIN, $user->getRoles())) {
-            return true;
-        }
 
-        return false;
+    /**
+     * Défini si l'utilisateur est administrateur dans la liste de ses rôles
+     */
+    public static function hasAdmin(?User $user): bool
+    {
+        return  $user !== null  and in_array(self::ROLE_ADMIN, $user->getRoles());
     }
 
     /**
@@ -68,11 +75,15 @@ final class Role
      */
     public static function isGestionnaire(?User $user): bool
     {
-        if ($user === null) {
-            return false;
-        }
+        return $user !== null  and (self::hasGestionnaire($user) or self::isAdmin($user));
+    }
 
-        return in_array(self::ROLE_GESTIONNAIRE, $user->getRoles()) or self::isAdmin($user);
+    /**
+     * Défini si l'utilisateur est gestionnaire dans la liste de ses rôles
+     */
+    public static function hasGestionnaire(?User $user): bool
+    {
+        return $user !== null  and in_array(self::ROLE_GESTIONNAIRE, $user->getRoles());
     }
 
     /**
@@ -80,14 +91,15 @@ final class Role
      */
     public static function isUser(?User $user): bool
     {
-        if ($user === null) {
-            return false;
-        }
+        return $user !== null  and (self::hasUser($user) or self::isGestionnaire($user) or self::isAdmin($user));
+    }
 
-        if (self::hasData(self::ROLE_USER)) {
-            return true;
-        }
 
-        return false;
+    /**
+     * Défini si l'utilisateur a l'habilitation utilisateur dans la liste de ses rôles
+     */
+    public static function hasUser(?User $user): bool
+    {
+        return  $user !== null  and in_array(self::ROLE_USER, $user->getRoles());
     }
 }

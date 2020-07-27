@@ -17,6 +17,13 @@ use function array_merge;
 use function dump;
 use function in_array;
 
+/**
+ * Classe permettant l'envoi d'un mail 
+ *
+ * (c) Emmanuel Sauvage <emmanuel.sauvage@live.fr>
+ * 24/07/2020
+ *
+ */
 class Mail
 {
     public const USERS_TO = 'users_to';
@@ -92,7 +99,7 @@ class Mail
      */
     private function getParamsTwig()
     {
-        if (! in_array('application_name', $this->paramsTwig)) {
+        if (!in_array('application_name', $this->paramsTwig)) {
             $this->paramsTwig = array_merge(
                 $this->paramsTwig,
                 ['application_name' => $this->paramsInServices->get(ParamsInServices::ES_APP_NAME)]
@@ -170,8 +177,9 @@ class Mail
             }
         }
 
+
         return empty($this->usersTo)
-            ?  new Address($this->paramsInServices->get(ParamsInServices::ES_MAILER_USER_MAIL), $this->paramsInServices->get(ParamsInServices::ES_MAILER_USER_NAME))
+            ? $this->getContactApp()
             : $this->usersTo;
     }
 
@@ -189,7 +197,19 @@ class Mail
     private function getUserFrom()
     {
         return empty($this->userFrom)
-            ?   new Address($this->paramsInServices->get(ParamsInServices::ES_MAILER_USER_MAIL), $this->paramsInServices->get(ParamsInServices::ES_MAILER_USER_NAME))
+            ? $this->getContactApp()
             : $this->userFrom;
+    }
+
+
+    //######################################
+    //   CONTACT APP
+    //######################################
+    private function getContactApp(): Address
+    {
+        $contact_mail = $this->paramsInServices->get(ParamsInServices::ES_MAILER_USER_MAIL);
+        $contact_name = $this->paramsInServices->get(ParamsInServices::ES_MAILER_USER_NAME);
+
+        return new Address($contact_mail, $contact_name);
     }
 }

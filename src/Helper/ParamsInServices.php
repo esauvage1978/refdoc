@@ -9,6 +9,13 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 use function in_array;
 
+/**
+ * Récupération des paramètres présents dans le fichier config/service.yaml
+ *
+ * (c) Emmanuel Sauvage <emmanuel.sauvage@live.fr>
+ * 24/07/2020
+ *
+ */
 class ParamsInServices
 {
     public const ES_APP_NAME = 'es.app.name';

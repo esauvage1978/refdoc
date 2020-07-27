@@ -8,17 +8,9 @@
 
     {% if twigTemplace!='index' %}
         {% set actions = actions|merge({ 'profil': {url: path('profil'),class:'btn-secondary',attr:{title:'votre profil'}}}) %}
+        {% set actions = actions|merge({'divider2': null}) %}
     {% endif %}
 
-    {% if twigTemplace!='administrateur' %}
-        {% set actions = actions|merge({ 'administrateur': {url: path('role_administrateur'),class:'btn-secondary',attr:{title:'Liste des administrateurs'}}}) %}
-    {% endif %}
-
-    {% if twigTemplace!='gestionnaire' %}
-        {% set actions = actions|merge({ 'gestionnaire': {url: path('role_gestionnaire'),class:'btn-secondary',attr:{title:'Liste des gestionnaires'}}}) %}
-    {% endif %}
-    
-    {% set actions = actions|merge({'divider2': null}) %}
 
     {% if twigTemplace!='password' %}
         {% set actions = actions|merge({ 'password': {url: path('password_change'),class:'btn-secondary',attr:{title:'Changer de mot de passe'}}}) %}

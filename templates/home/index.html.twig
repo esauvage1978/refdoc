@@ -1,20 +1,27 @@
 {% extends 'base.html.twig' %}
-{% block title %}{{ app_name }} - Page d'accueil{% endblock %}
-{% block page_title %}<i class="fas fa-home"></i> Page d'accueil{% endblock %}
-
-{% block page_content %}
-    <div id="app">Oups... Problème</div>
-    {% if not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
-        {% import "macros/default.html.twig" as dft %}
-        {{ dft.no_connexion() }}
-    {% else %}
-
-        {% if is_granted('ROLE_USER') %}
-            {% import "macros/subscription.html.twig" as sub %}
-            {{ sub.has(app.user) }}
-        {% endif %}
-        
-    {% endif %}
+{% block title %}
+	{{ app_name }}
+	- Page d'accueil
+{% endblock %}
+{% block page_title %}
+	<i class="fas fa-home"></i>
+	Page d'accueil
 {% endblock %}
 
+{% block page_content %}
+	{% if not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+		{% import "macros/default.html.twig" as dft %}
+		{{ dft.no_connexion() }}
+	{% else %}
 
+		{% import "macros/user.html.twig" as user %}
+		{{ user.messageEmailValidated(app.user) }}
+
+
+		{% if is_granted('ROLE_USER') %}
+			{% import "macros/subscription.html.twig" as sub %}
+			{{ sub.has(app.user) }}
+		{% endif %}
+
+	{% endif %}
+{% endblock %}

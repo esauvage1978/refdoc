@@ -8,6 +8,13 @@ use App\Entity\User;
 
 use function in_array;
 
+/**
+ * Classe permettant l'envoi d'un mail en rapport avec les utilisateurs
+ *
+ * (c) Emmanuel Sauvage <emmanuel.sauvage@live.fr>
+ * 24/07/2020
+ *
+ */
 class UserMail
 {
     public const LOGIN = 'user/login';
@@ -24,7 +31,7 @@ class UserMail
 
     public function send(User $user, string $context, string $subject): int
     {
-        if (! in_array($context, [self::LOGIN, self::VALIDATE, self::REGISTRATION, self::PASSWORDFORGET])) {
+        if (!in_array($context, [self::LOGIN, self::VALIDATE, self::REGISTRATION, self::PASSWORDFORGET])) {
             return -1;
         }
 

@@ -34,7 +34,21 @@ class AdminController extends AbstractController
             ],
         ];
 
-        $action_entries = [];
+        $action_entries = [
+            [
+                'name' => 'Liste des administrateurs',
+                'route' => 'role_administrateur',
+            ],
+            [
+                'name' => 'Liste des gestionnaires',
+                'route' => 'role_gestionnaire',
+            ],
+            [
+                'name' => 'Liste des utilisateurs',
+                'route' => 'role_utilisateur',
+            ],
+        ];
+
 
         return $this->render('admin/index.html.twig', [
             'general_entries' => $general_entries,
