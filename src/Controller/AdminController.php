@@ -20,7 +20,10 @@ class AdminController extends AbstractController
             [
                 'name' => 'Utilisateur',
                 'route' => 'user_list',
-            ],
+            ], [
+                'name' => 'Informations générales',
+                'route' => 'gpi_list'
+            ]
         ];
 
         $app_entries = [

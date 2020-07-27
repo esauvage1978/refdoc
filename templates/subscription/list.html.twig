@@ -90,7 +90,7 @@
 			{% endembed %}
 		</div>
 		<div class=" col-sm-12 col-xl-3">
-			{{ sub.help() }}
+			{{ render(controller('App\\Controller\\GPIController::showGPIAction', { 'page': 'subscription'})) }}
 		</div>
 	</div>
 {% endblock %}

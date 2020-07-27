@@ -1,0 +1,19 @@
+{% macro alerts(items) %}
+    {% import _self as gpi %}
+    {% if items |length >0 %}
+        {% for item in items %}
+            {{ gpi.alert(item) }}
+        {% endfor %}
+    {% endif %}
+{% endmacro %}
+
+{% macro alert(item) %}
+    {% import "macros/widgets.html.twig" as widgets %}
+    <div class="alert alert-{{ item.type }} ">
+        <h5>{{ item.name | raw }}</h5>
+        {% if item.showDate %}
+            <small class="float-right">{{ widgets.showLongDate(item.modifyAt) }}</small>
+        {% endif %}
+        {{ item.content | raw }}
+    </div>
+{% endmacro %}
