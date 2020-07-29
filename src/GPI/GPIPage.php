@@ -11,12 +11,13 @@ final class GPIPage
     const BACKPACK_HISTORY = 'backpack_history';
     const BACKPACK_HISTORY_WORKFLOW = 'backpack_history_workflow';
     const BACKPACK_COMMENTS = 'backpack_comments';
+    const CATEGORY_CREATE = 'category_add';
+    const CATEGORY_EDIT = 'category_edit';
     const DASHBOARD = 'dashboard';
     const DOCUMENTATION = 'documentation';
     const HOME = 'home';
     const PROFIL = 'profil';
     const SUBSCRIPTION = 'subscription';
-
     public static function getDatas(): array
     {
         return [
@@ -32,6 +33,8 @@ final class GPIPage
             'Porte-document : Modification' => self::BACKPACK_EDIT,
             'Profil' => self::PROFIL,
             'Tableau de bord' => self::DASHBOARD,
+            'Type de document : création' => self::CATEGORY_CREATE,
+            'Type de document : Modification' => self::CATEGORY_EDIT,
         ];
     }
 
@@ -56,6 +59,8 @@ final class GPIPage
             self::ADMINISTRATION,
             self::PROFIL,
             self::SUBSCRIPTION,
+            self::CATEGORY_CREATE,
+            self::CATEGORY_EDIT,
         ];
 
         if (in_array($data, $datas)) {

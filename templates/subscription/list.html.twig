@@ -41,7 +41,10 @@
 		<div class="col-sm-12 col-xl-7">
 			{% embed 'widgets/card-widget.html.twig' %}
 				{% import "macros/widgets.html.twig" as widgets %}
-				{% block card_body_class %}p-0
+{% block card_class %}flat
+{% endblock %}
+{% block card_body_class %}p-0
+
 				{% endblock %}
 				{% block card_body %}
 					<div class="list-group">

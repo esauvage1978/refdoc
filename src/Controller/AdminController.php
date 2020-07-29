@@ -35,6 +35,10 @@ class AdminController extends AbstractController
                 'name' => 'Processus',
                 'route' => 'admin_process_list',
             ],
+            [
+                'name' => 'Type de document',
+                'route' => 'admin_category_list',
+            ],
         ];
 
         $action_entries = [

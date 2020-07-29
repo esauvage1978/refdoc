@@ -78,7 +78,6 @@ abstract class AbstractGController extends AbstractController
 
             $this->addFlash(self::DANGER, self::MSG_MODIFY_ERROR . $this->manager->getErrors($item));
         }
-
         return $this->render($this->domaine . '/' . ($edit ? 'edit' : 'add') . '.html.twig', [
             'item' => $item,
             'form' => $form->createView(),

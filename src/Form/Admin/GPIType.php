@@ -38,7 +38,6 @@ class GPIType extends AppTypeAbstract
                     self::REQUIRED => false,
                 ]
             );
-        $builder = $this->buildFormContent($builder);
 ;
     }
 

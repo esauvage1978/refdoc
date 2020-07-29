@@ -32,34 +32,34 @@ abstract class AppTypeAbstract extends AbstractType
     public const MAXLENGTH = 'maxlength';
     public const PLACEHOLDER = 'placeholder';
 
-    public function buildFormName(FormBuilderInterface $builder): void
+    public function buildFormName(FormBuilderInterface $builder,$label='Nom'): void
     {
         $builder
             ->add('name', TextType::class, [
-                self::LABEL => 'Nom',
+                self::LABEL => $label,
                 self::REQUIRED => true,
                 self::ATTR => [self::MAXLENGTH => 255],
             ]);
     }
 
-    public function buildFormIsEnable(FormBuilderInterface $builder): void
+    public function buildFormIsEnable(FormBuilderInterface $builder, $label=' '): void
     {
         $builder
             ->add(
                 'isEnable',
                 CheckboxType::class,
                 [
-                    self::LABEL => ' ',
+                    self::LABEL => $label,
                     self::REQUIRED => false,
                 ]
             );
     }
 
-    public function buildFormContent(FormBuilderInterface $builder): void
+    public function buildFormContent(FormBuilderInterface $builder, $label= 'Description'): void
     {
         $builder
             ->add('content', TextareaType::class, [
-                self::LABEL => 'Description',
+                self::LABEL => $label,
                 self::REQUIRED => false,
                 self::ATTR => [self::ROWS => 3, self::CSS_CLASS => 'textarea'],
             ]);

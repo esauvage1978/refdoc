@@ -16,6 +16,7 @@ class MProcessType extends AppTypeAbstract
     {
         $this->buildFormName($builder);
         $this->buildFormIsEnable($builder);
+        $this->buildFormContent($builder);
         $this->buildFormDirValidators($builder);
         $this->buildFormPoleValidators($builder);
         $this->buildFormContributors($builder);
@@ -26,7 +27,6 @@ class MProcessType extends AppTypeAbstract
                 self::REQUIRED => true,
                 self::ATTR => [self::PLACEHOLDER => '000'],
             ]);
-        $builder = $this->buildFormContent($builder);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

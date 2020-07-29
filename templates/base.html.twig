@@ -1,32 +1,26 @@
 {% extends '@AdminLTE/layout/default-layout.html.twig' %}
 
-        {% block logo_mini %}
-            <img src="{{ asset(admin_lte_context.default_brand_logo) }}" alt="Logo"
-                 class="brand-image img-circle elevation-3" style="opacity: .8">
-            <span class="brand-text font-weight-light">{{ app_name }}</span>
-        {% endblock %}
+{% block logo_mini %}
+	<img src="{{ asset(admin_lte_context.default_brand_logo) }}" alt="Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+	<span class="brand-text font-weight-light">{{ app_name }}</span>
+{% endblock %}
 
-        {% block navbar_search %}
-            {% block sidebar_search %}
-                {{ render(controller('App\\Controller\\HomeController::searchFormAction')) }}
-            {% endblock %}
-        {% endblock %}
+{% block navbar_search %}
+	{% block sidebar_search %}
+		{{ render(controller('App\\Controller\\HomeController::searchFormAction')) }}
+	{% endblock %}
+{% endblock %}
 
-        {% block stylesheets %}
-            {{ parent() }}
+{% block stylesheets %}
+	{{ encore_entry_link_tags('app') }}
+{% endblock %}
 
-            {% for css in encore_entry_css_files('app') %}
-                <link rel="stylesheet" href="{{ preload(asset(css), { as: 'style' }) }}">
-            {% endfor %}
-        {% endblock %}
+{% block javascripts %}
+	{{ encore_entry_script_tags('app') }}
+{% endblock %}
 
-        {% block javascripts %}
-            {{ parent() }}
-            {{ encore_entry_script_tags('app') }}
 
-        {% endblock %}
+{% block footer %}
 
-    {% block footer %}
-
-        {% include 'home/_footer.html.twig' %}
-    {% endblock %}
+	{% include 'home/_footer.html.twig' %}
+{% endblock %}
