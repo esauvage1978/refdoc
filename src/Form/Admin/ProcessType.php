@@ -16,6 +16,7 @@ class ProcessType extends AppTypeAbstract
     {
         $this->buildFormName($builder);
         $this->buildFormMProcess($builder);
+        $this->buildFormContent($builder);
         $this->buildFormIsEnable($builder);
         $this->buildFormValidators($builder);
         $this->buildFormContributors($builder);
@@ -30,7 +31,6 @@ class ProcessType extends AppTypeAbstract
                 self::LABEL => 'Groupement',
                 self::REQUIRED => false,
             ]);
-        $builder = $this->buildFormContent($builder);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
