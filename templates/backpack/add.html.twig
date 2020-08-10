@@ -1,0 +1,95 @@
+{% extends 'backpack/layout.html.twig' %}
+
+
+{% block page_subtitle %}Création{% endblock %}
+
+
+{% block breadcrumb %}
+    {% import "backpack/actions.html.twig" as actions %}
+    {{ actions.backpack(
+        'add',
+        'draft',
+        true,
+        null,
+        null
+    ) }}
+{% endblock %}
+
+
+{% block page_content %}
+<div class="row justify-content-center">
+	<div class="" style="width:960px">
+
+        {{ render(controller('App\\Controller\\GPIController::showGPIAction', { 'page': 'backpack_add'})) }}
+
+		{{ include(domaine ~ '/_edit/_item_start.html.twig') }}
+	</div>
+</div>
+
+
+{% endblock %}
+
+{%  block javascripts %}
+    {{ parent() }}
+<script src="{{ absolute_url( asset('/vendor/axios/dist/axios.min.js')) }}"></script>
+
+    <script type="text/javascript">
+
+
+        var nbrMP=0;
+        var nbrP=0;
+
+
+$('backpack_new_category').prop("required",true)
+
+
+
+                
+        function fillComboboxMP(selecteur, route, selectedId="") {
+            axios.get(route).then(function (response) {
+                $(selecteur).append('<option  value=""></option>');
+
+                $.each(response.data.value, function (index, value) {
+
+                    if(selectedId === value.id ) {
+                        selected='selected';
+                    } else {
+                        selected='';
+                    }
+                    $(selecteur).append('<option ' + selected + ' value="' + value.id + '">'
+                        + value.name + '</option>');
+                });
+            }).catch(function (error) {
+                console.log(error);
+            })
+        }
+        fillComboboxMP('#cmb_mp', "{{ path('ajax_fill_combobox_mp') }}", true);
+        $('#cmb_mp').change(function () {
+            $('#backpack_new_mProcess').val($('#cmb_mp').val());
+        });
+
+        $('#mp').on('ifChecked', function () { 
+            $('#cmb_mp').prop("required",true)
+            $('#backpack_new_process').prop( "disabled", true );
+            $('#backpack_new_mProcess').prop( "disabled", false );
+        $("#backpack_new_process").val('0');
+         })
+
+
+        // For onUncheck callback
+        $('#mp').on('ifUnchecked', function () { 
+        $('#cmb_mp').prop("required",false)
+        $('#backpack_new_mProcess').prop( "disabled", true );
+        $('#backpack_new_process').prop( "disabled", false );
+        $("#backpack_new_mProcess").val('0');
+         })
+
+
+
+        $('#backpack_new_updateAt_date_month').val(new Date().getMonth()+1);
+        $('#backpack_new_updateAt_date_day').val(new Date().getDay());
+        $('#backpack_new_updateAt_date_year').val(new Date().getFullYear());
+        $('#backpack_new_updateAt_time_hour').val(new Date().getHours());
+        $('#backpack_new_updateAt_time_minute').val(new Date().getMinutes());
+    </script>
+{% endblock %}

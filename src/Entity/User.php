@@ -112,6 +112,11 @@ class User implements UserInterface, EntityInterface
      */
     private $processContributors;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Backpack::class, mappedBy="owner")
+     */
+    private $backpacks;
+
     public function __construct()
     {
         $this->mProcessPoleValidators = new ArrayCollection();
@@ -120,6 +125,7 @@ class User implements UserInterface, EntityInterface
         $this->subscriptions = new ArrayCollection();
         $this->processValidators = new ArrayCollection();
         $this->processContributors = new ArrayCollection();
+        $this->backpacks = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -529,6 +535,37 @@ class User implements UserInterface, EntityInterface
         if ($this->processContributors->contains($processContributor)) {
             $this->processContributors->removeElement($processContributor);
             $processContributor->removeContributor($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Backpack[]
+     */
+    public function getBackpacks(): Collection
+    {
+        return $this->backpacks;
+    }
+
+    public function addBackpack(Backpack $backpack): self
+    {
+        if (!$this->backpacks->contains($backpack)) {
+            $this->backpacks[] = $backpack;
+            $backpack->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBackpack(Backpack $backpack): self
+    {
+        if ($this->backpacks->contains($backpack)) {
+            $this->backpacks->removeElement($backpack);
+            // set the owning side to null (unless already changed)
+            if ($backpack->getOwner() === $this) {
+                $backpack->setOwner(null);
+            }
         }
 
         return $this;

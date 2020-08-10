@@ -63,6 +63,11 @@ class MProcess implements EntityInterface
      */
     private $processes;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Backpack::class, mappedBy="mProcess")
+     */
+    private $backpacks;
+
     public function __construct()
     {
         $this->dirValidators = new ArrayCollection();
@@ -70,6 +75,7 @@ class MProcess implements EntityInterface
         $this->contributors = new ArrayCollection();
         $this->subscriptions = new ArrayCollection();
         $this->processes = new ArrayCollection();
+        $this->backpacks = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -267,11 +273,42 @@ class MProcess implements EntityInterface
 
     public function getFullName(): ?string
     {
-        return $this->getRef() . '  <i class="fa fa-minus"></i> ' . $this->getName();
+        return $this->getRef() . ' - ' . $this->getName();
     }
 
     public function getFullNameSelect(): ?string
     {
         return $this->getRef() . ' - ' . $this->getName();
+    }
+
+    /**
+     * @return Collection|Backpack[]
+     */
+    public function getBackpacks(): Collection
+    {
+        return $this->backpacks;
+    }
+
+    public function addBackpack(Backpack $backpack): self
+    {
+        if (!$this->backpacks->contains($backpack)) {
+            $this->backpacks[] = $backpack;
+            $backpack->setMProcess($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBackpack(Backpack $backpack): self
+    {
+        if ($this->backpacks->contains($backpack)) {
+            $this->backpacks->removeElement($backpack);
+            // set the owning side to null (unless already changed)
+            if ($backpack->getMProcess() === $this) {
+                $backpack->setMProcess(null);
+            }
+        }
+
+        return $this;
     }
 }

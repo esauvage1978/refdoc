@@ -8,7 +8,7 @@ use InvalidArgumentException;
 
 use function in_array;
 
-class AbstractDto implements DtoInterface
+abstract class AbstractDto implements DtoInterface
 {
     public const FALSE = 'false';
     public const TRUE = 'true';

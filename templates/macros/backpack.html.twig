@@ -1,0 +1,15 @@
+{%  macro identification(item) %}
+    {% import "macros/widgets.html.twig" as widgets %}
+    {% import "macros/user.html.twig" as user %}
+    <div class="row ">
+        <div class="col-12 d-flex justify-content-around  align-items-center">
+<div class="users-list">
+
+                {{ user.view(item.owner) }}
+            </div>
+            <small class="text-muted ">
+                Modifié le <strong>{{ widgets.showLongDate (item.updateAt) }}</strong>
+            </small>
+        </div>
+    </div>
+{% endmacro %}

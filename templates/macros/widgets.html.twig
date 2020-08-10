@@ -107,6 +107,10 @@
     {% endapply %}
 {% endmacro %}
 
+{% macro badge_state(state) %}
+	{%- import _self as macro -%}
+	{{ macro.badge( (state | workflowGetIconOfState) ~ ' ' ~ (state | workflowGetNameOfState) , state | workflowGetColorOfState) }}
+{% endmacro %}
 
 
 {% macro badge(title, color) %}
