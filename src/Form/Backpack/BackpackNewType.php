@@ -67,7 +67,6 @@ class BackpackNewType extends AppTypeAbstract
                 self::LABEL => 'Processus',
                 self::MULTIPLE => false,
                 self::REQUIRED => false,
-                self::ATTR => ['disabled' => 'true'],
                 self::QUERY_BUILDER => function (EntityRepository $er) {
                     return $er->createQueryBuilder('c')
                         ->select('c')

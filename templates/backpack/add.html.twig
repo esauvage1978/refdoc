@@ -64,11 +64,17 @@
                 console.log(error);
             })
         }
-        fillComboboxMP('#cmb_mp', "{{ path('ajax_fill_combobox_mp') }}", "");
+        fillComboboxMP('#cmb_mp', "{{ path('ajax_cmb_mp_for_contribute') }}", "");
+        fillComboboxMP('#cmb_p', "{{ path('ajax_cmb_p_for_contribute') }}", "");
+
        
 
         $('#cmb_mp').change(function () {
             $('#backpack_new_mProcess').val($('#cmb_mp').val());
+        });
+
+        $('#cmb_p').change(function () {
+            $('#backpack_new_process').val($('#cmb_p').val());
         });
 
         $('#mp').on('ifChecked', function () { 

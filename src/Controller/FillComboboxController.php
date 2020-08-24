@@ -42,12 +42,12 @@ class FillComboboxController extends AbstractGController
     }
 
     /**
-     * @Route("/ajax/getmp", name="ajax_fill_combobox_mp", methods={"GET","POST"})
+     * @Route("/ajax/getmpforcontribute", name="ajax_cmb_mp_for_contribute", methods={"GET","POST"})
      *
      * @return Response
      * @IsGranted("ROLE_USER")
      */
-    public function AjaxGetMP(Request $request, MProcessDtoRepository $mProcessDtoRepository): Response
+    public function AjaxGetMPForContribute(Request $request, MProcessDtoRepository $mProcessDtoRepository): Response
     {
         $dto = new MProcessDto();
         /**
@@ -59,9 +59,7 @@ class FillComboboxController extends AbstractGController
             ->setForUpdate(MProcessDto::TRUE)
             ->setVisible(MProcessDto::TRUE);
 
-        if (!Role::isGestionnaire($user)) {
             $dto->setUserDto((new UserDto())->setId($this->getUser()->getId()));
-        }
 
         return $this->json([
             'code' => 200,
@@ -72,12 +70,12 @@ class FillComboboxController extends AbstractGController
     }
 
     /**
-     * @Route("/ajax/getp", name="ajax_fill_combobox_p", methods={"GET","POST"})
+     * @Route("/ajax/getpforcontribute", name="ajax_cmb_p_for_contribute", methods={"GET","POST"})
      *
      * @return Response
      * @IsGranted("ROLE_USER")
      */
-    public function AjaxGetP(Request $request, ProcessDtoRepository $processDtoRepository): Response
+    public function AjaxGetPForContribute(Request $request, ProcessDtoRepository $processDtoRepository): Response
     {
         $dto = new ProcessDto();
         /**
@@ -89,9 +87,7 @@ class FillComboboxController extends AbstractGController
             ->setForUpdate(ProcessDto::TRUE)
             ->setVisible(ProcessDto::TRUE);
 
-        if (!Role::isGestionnaire($user)) {
-            $dto->setUserDto((new UserDto())->setId($this->getUser()->getId()));
-        }
+        $dto->setUserDto((new UserDto())->setId($this->getUser()->getId()));
 
         return $this->json([
             'code' => 200,

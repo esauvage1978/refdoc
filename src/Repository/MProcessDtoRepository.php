@@ -159,7 +159,7 @@ class MProcessDtoRepository extends ServiceEntityRepository implements DtoReposi
     private function initialise_selectCombobox(): void
     {
         $this->builder = $this->createQueryBuilder(self::ALIAS)
-            ->select('distinct ' . self::ALIAS .'.id, concat(' . self::ALIAS . '.ref,\' - \',' . self::ALIAS . '.name)')
+            ->select('distinct ' . self::ALIAS . '.id, concat(' . self::ALIAS . '.ref,\' - \',' . self::ALIAS . '.name) as name')
             ->leftJoin(self::ALIAS . '.processes', ProcessRepository::ALIAS);
     }
 
@@ -179,6 +179,8 @@ class MProcessDtoRepository extends ServiceEntityRepository implements DtoReposi
 
         $this->initialise_where_enable();
 
+        $this->initialise_where_user_can_update();
+
         $this->initialise_where_search();
 
         $this->initialise_where_subscription();
@@ -188,6 +190,27 @@ class MProcessDtoRepository extends ServiceEntityRepository implements DtoReposi
         }
 
         $this->builder->setParameters($this->params);
+    }
+
+
+    private function initialise_where_user_can_update()
+    {
+        if (!empty($this->dto->getForUpdate())) {
+            $u = $this->dto->getUserDto();
+            if (!empty($u) && !empty($u->getId())) {
+
+                $qWC = $this->createQueryBuilder(self::ALIAS . '1')
+                    ->select(self::ALIAS . '1.id')
+                    ->join(self::ALIAS . '1.contributors', UserRepository::ALIAS_MP_C)
+                    ->where(UserRepository::ALIAS_MP_C . '.id= :idUser');
+
+                $this->addParams('idUser', $u->getId());
+
+                $this->builder
+                    ->andWhere(
+                        self::ALIAS . '.id IN (' . $qWC->getDQL() . ')'   );
+            }
+        }
     }
 
     private function initialise_where_subscription(): void
@@ -205,15 +228,13 @@ class MProcessDtoRepository extends ServiceEntityRepository implements DtoReposi
 
     private function initialise_where_enable(): void
     {
-        if (! empty($this->dto->getVisible())) {
+        if (!empty($this->dto->getVisible())) {
             $this->builder->andWhere(self::ALIAS . '.isEnable= true');
-            $this->builder->andWhere(ProcessRepository::ALIAS . '.isEnable= true');
-        } elseif (! empty($this->dto->getHide())) {
+        } elseif (!empty($this->dto->getHide())) {
             $this->builder->andWhere(self::ALIAS . '.isEnable= false');
-            $this->builder->andWhere(ProcessRepository::ALIAS . '.isEnable= false');
         } else {
             $e = $this->dto->getIsEnable();
-            if (! empty($e)) {
+            if (!empty($e)) {
                 if ($e === MProcessDto::TRUE) {
                     $this->builder->andWhere(self::ALIAS . '.isEnable= true');
                 } elseif ($e === MProcessDto::FALSE) {
@@ -222,7 +243,7 @@ class MProcessDtoRepository extends ServiceEntityRepository implements DtoReposi
             }
 
             $e = $this->dto->getProcessDto();
-            if (! empty($e)) {
+            if (!empty($e)) {
                 if ($e->getIsEnable() === MProcessDto::TRUE) {
                     $this->builder->andWhere(ProcessRepository::ALIAS . '.isEnable= true');
                 } elseif ($e->getIsEnable() === MProcessDto::FALSE) {
@@ -243,11 +264,11 @@ class MProcessDtoRepository extends ServiceEntityRepository implements DtoReposi
         $builder
             ->andWhere(
                 self::ALIAS . '.content like :search' .
-                ' OR ' . self::ALIAS . '.name like :search' .
-                ' OR ' . self::ALIAS . '.ref like :search' .
-                ' OR ' . ProcessRepository::ALIAS . '.ref like :search' .
-                ' OR ' . ProcessRepository::ALIAS . '.grouping like :search' .
-                ' OR ' . ProcessRepository::ALIAS . '.name like :search'
+                    ' OR ' . self::ALIAS . '.name like :search' .
+                    ' OR ' . self::ALIAS . '.ref like :search' .
+                    ' OR ' . ProcessRepository::ALIAS . '.ref like :search' .
+                    ' OR ' . ProcessRepository::ALIAS . '.grouping like :search' .
+                    ' OR ' . ProcessRepository::ALIAS . '.name like :search'
             );
 
         $this->addParams('search', '%' . $dto->getWordSearch() . '%');
