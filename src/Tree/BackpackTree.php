@@ -63,12 +63,13 @@ class BackpackTree extends AbstractTree
             $open = $this->item->getId() === $item->getId();
 
 
-            $this->mprocess($item);
-            $this->Dir1($item);
-            $this->Dir2($item);
-            $this->Dir3($item);
-            $this->Dir4($item);
-            $this->Dir5($item);
+            $this->GetBrancheMprocess($item);
+            $this->GetBrancheProcess($item);
+            //$this->Dir1($item);
+           // $this->Dir2($item);
+            //$this->Dir3($item);
+            //$this->Dir4($item);
+            //$this->Dir5($item);
 
             $filesNumber = $item->getBackpackFiles()->count() + $item->getBackpackLinks()->count();
             $fileSpan = $filesNumber > 0 ? "&nbsp;<span class=\"small text-info ml-2 pl-1 pr-1 rounded border-bottom border-info\"><i class=\"fas fa-paperclip\"></i> {$filesNumber}</span>&nbsp;" : '';
@@ -143,7 +144,7 @@ class BackpackTree extends AbstractTree
     }
 
 
-    private function mprocess(Backpack $backpack)
+    private function GetBrancheMprocess(Backpack $backpack)
     {
         $data_courant = $backpack->getMProcess()->getFullName();
         $this->mprocess_id = 'mp_' . $backpack->getMProcess()->getid();
@@ -151,7 +152,8 @@ class BackpackTree extends AbstractTree
         if ($data_courant != $this->mprocess_last) {
             $parent =  '#';
             $this->addBranche($this->mprocess_id, $data_courant, $parent, $this->developed, $backpack->getMProcess()->getIsEnable());
-
+            $this->process_id='';
+            $this->process_last = '';
             $this->dir1_id = '';
             $this->dir1_last = '';
             $this->dir2_id = '';
@@ -166,6 +168,47 @@ class BackpackTree extends AbstractTree
 
         $this->mprocess_last = $data_courant;
     }
+
+    private function GetBrancheProcess(Backpack $backpack)
+    {
+        $data_courant = $backpack->getProcess();
+
+        if ($data_courant === '' || $data_courant === null) {
+            $this->dir1_id = '';
+            $this->dir1_last = '';
+            $this->dir2_id = '';
+            $this->dir2_last = '';
+            $this->dir3_id = '';
+            $this->dir3_last = '';
+            $this->dir4_id = '';
+            $this->dir4_last = '';
+            $this->dir5_id = '';
+            $this->dir5_last = '';
+            return;
+        }
+
+        $data_courant = $backpack->getProcess()->getFullName();
+        $this->process_id = 'p_' . $backpack->getProcess()->getid();
+
+        if ($data_courant != $this->process_last) {
+            $parent =  $this->mprocess_id;
+            $this->addBranche($this->process_id, $data_courant, $parent, $this->developed, $backpack->getProcess()->getIsEnable());
+
+            $this->dir1_id = '';
+            $this->dir1_last = '';
+            $this->dir2_id = '';
+            $this->dir2_last = '';
+            $this->dir3_id = '';
+            $this->dir3_last = '';
+            $this->dir4_id = '';
+            $this->dir4_last = '';
+            $this->dir5_id = '';
+            $this->dir5_last = '';
+        }
+
+        $this->process_last = $data_courant;
+    }
+
 
     private function Dir1(Backpack $backpack)
     {
