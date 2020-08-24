@@ -7,8 +7,10 @@ namespace App\Controller;
 use App\Dto\UserDto;
 use App\Entity\User;
 use App\Security\Role;
+use App\Dto\ProcessDto;
 use App\Dto\MProcessDto;
 use App\Repository\ProcessRepository;
+use App\Repository\ProcessDtoRepository;
 use App\Repository\MProcessDtoRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -67,5 +69,34 @@ class FillComboboxController extends AbstractGController
             'message' => 'données transmises'
         ], 200);
                 
+    }
+
+    /**
+     * @Route("/ajax/getp", name="ajax_fill_combobox_p", methods={"GET","POST"})
+     *
+     * @return Response
+     * @IsGranted("ROLE_USER")
+     */
+    public function AjaxGetP(Request $request, ProcessDtoRepository $processDtoRepository): Response
+    {
+        $dto = new ProcessDto();
+        /**
+         * @var User $user
+         */
+        $user = $this->getUser();
+
+        $dto
+            ->setForUpdate(ProcessDto::TRUE)
+            ->setVisible(ProcessDto::TRUE);
+
+        if (!Role::isGestionnaire($user)) {
+            $dto->setUserDto((new UserDto())->setId($this->getUser()->getId()));
+        }
+
+        return $this->json([
+            'code' => 200,
+            'value' => $processDtoRepository->findForCombobox($dto),
+            'message' => 'données transmises'
+        ], 200);
     }
 }

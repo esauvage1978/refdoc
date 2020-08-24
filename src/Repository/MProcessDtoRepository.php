@@ -159,7 +159,7 @@ class MProcessDtoRepository extends ServiceEntityRepository implements DtoReposi
     private function initialise_selectCombobox(): void
     {
         $this->builder = $this->createQueryBuilder(self::ALIAS)
-            ->select('distinct ' . self::ALIAS . '.id, ' . self::ALIAS . '.name')
+            ->select('distinct ' . self::ALIAS .'.id, concat(' . self::ALIAS . '.ref,\' - \',' . self::ALIAS . '.name)')
             ->leftJoin(self::ALIAS . '.processes', ProcessRepository::ALIAS);
     }
 

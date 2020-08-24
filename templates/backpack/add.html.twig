@@ -40,7 +40,8 @@
         var nbrP=0;
 
 
-$('backpack_new_category').prop("required",true)
+        $('cmb_mp').prop("required",true)
+        $('#cmb_p').prop( "disabled", true );
 
 
 
@@ -63,25 +64,28 @@ $('backpack_new_category').prop("required",true)
                 console.log(error);
             })
         }
-        fillComboboxMP('#cmb_mp', "{{ path('ajax_fill_combobox_mp') }}", true);
+        fillComboboxMP('#cmb_mp', "{{ path('ajax_fill_combobox_mp') }}", "");
+       
+
         $('#cmb_mp').change(function () {
             $('#backpack_new_mProcess').val($('#cmb_mp').val());
         });
 
         $('#mp').on('ifChecked', function () { 
             $('#cmb_mp').prop("required",true)
-            $('#backpack_new_process').prop( "disabled", true );
-            $('#backpack_new_mProcess').prop( "disabled", false );
-        $("#backpack_new_process").val('0');
+            $('#cmb_p').prop( "disabled", true );
+            $('#cmb_mp').prop( "disabled", false );
+            $("#cmb_p").val('0');
+
          })
 
 
         // For onUncheck callback
         $('#mp').on('ifUnchecked', function () { 
         $('#cmb_mp').prop("required",false)
-        $('#backpack_new_mProcess').prop( "disabled", true );
-        $('#backpack_new_process').prop( "disabled", false );
-        $("#backpack_new_mProcess").val('0');
+        $('#cmb_mp').prop( "disabled", true );
+        $('#cmb_p').prop( "disabled", false );
+        $("#cmb_mp").val('0');
          })
 
 
