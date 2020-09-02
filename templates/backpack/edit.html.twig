@@ -1,10 +1,11 @@
 {% extends 'backpack/layout.html.twig' %}
 
-{% block page_subtitle %}Modification{% endblock %}
+{% block page_subtitle %}Modification
+{% endblock %}
 
 {% block breadcrumb %}
-    {% import "backpack/actions.html.twig" as actions %}
-    {{ actions.backpack(
+	{% import "backpack/actions.html.twig" as actions %}
+	{{ actions.backpack(
         'edit',
         item.currentState,
         item.owner==app.user,
@@ -15,74 +16,99 @@
 
 {% block page_content %}
 
-<div class="row justify-content-center">
-	<div class="" style="width:960px">
+	<div class="row justify-content-center">
+		<div class="" style="width:960px">
 
-		{{ render(controller('App\\Controller\\GPIController::showGPIAction', { 'page': 'backpack_add'})) }}
+			{{ render(controller('App\\Controller\\GPIController::showGPIAction', { 'page': 'backpack_add'})) }}
 
-		{{ include(domaine ~ '/_edit/_item.html.twig') }}
+			{{ include(domaine ~ '/_edit/_item_draft.html.twig') }}
+
+		</div>
 	</div>
-</div>
 
 {% endblock %}
 
 {%  block javascripts %}
-	{{ parent() }}
-	<script src="{{ absolute_url( asset('/vendor/axios/dist/axios.min.js')) }}"></script>
+{{ parent() }}
+<script src="{{ absolute_url( asset('/vendor/axios/dist/axios.min.js')) }}"></script>
 
-	<script type="text/javascript">
+<script type="text/javascript">
+
+	var nbrMP = 0;
+	var nbrP = 0;
+
+//initialisation des variables avec les valeurs des id des process et mprocess
+	var idMp={{ item.mProcess is null ?0:item.mProcess.id }};
+	var idP={{ item.process is null ?0:item.process.id }};
 
 
-		var nbrMP = 0;
-var nbrP = 0;
+// initialisation de l'affichage
+	$('cmb_mp').prop("required", true);
 
 
-$('backpack_new_category').prop("required", true)
+	function fillComboboxMP(selecteur, route, selectedId = "") {
+		axios.get(route).then(function (response) {
+		$(selecteur).append('<option  value=""></option>');
+
+		$.each(response.data.value, function (index, value) {
+		if (selectedId === value.id) {
+			selected = 'selected';
+		} else {
+			selected = '';
+		}
+		$(selecteur).append('<option ' + selected + ' value="' + value.id + '" >' + value.name + '</option>');
+		});
+		}).catch(function (error) {
+		console.log(error);
+		})
+	}
+
+//complétude des combo et selection du mprocess et process par rapport à l'item
+	fillComboboxMP('#cmb_mp', "{{ path('ajax_cmb_mp_for_contribute') }}", idMp);
+	fillComboboxMP('#cmb_p', "{{ path('ajax_cmb_p_for_contribute') }}", idP);
 
 
-function fillComboboxMP(selecteur, route, selectedId = "") {
-axios.get(route).then(function (response) {
-$(selecteur).append('<option  value=""></option>');
-
-$.each(response.data.value, function (index, value) {
-
-if (selectedId === value.id) {
-selected = 'selected';
-} else {
-selected = '';
-}
-$(selecteur).append('<option ' + selected + ' value="' + value.id + '">' + value.name + '</option>');
-});
-}).catch(function (error) {
-console.log(error);
-})
-}
-fillComboboxMP('#cmb_mp', "{{ path('ajax_fill_combobox_mp') }}", true);
+// chainage entre le combo visuel et le combo entité
 $('#cmb_mp').change(function () {
-$('#backpack_new_mProcess').val($('#cmb_mp').val());
+$('#backpack_mProcess').val($('#cmb_mp').val());
+});
+// chainage entre le combo visuel et le combo entité
+
+$('#cmb_p').change(function () {
+$('#backpack_process').val($('#cmb_p').val());
 });
 
+
+// Modification du visuel si la case à cocher mp est checked
 $('#mp').on('ifChecked', function () {
 $('#cmb_mp').prop("required", true)
-$('#backpack_new_process').prop("disabled", true);
-$('#backpack_new_mProcess').prop("disabled", false);
-$("#backpack_new_process").val('0');
+$('#cmb_p').prop("disabled", true);
+$('#cmb_mp').prop("disabled", false);
+$("#cmb_p").val('0');
+$('#backpack_process').val('0');
 })
 
 
-// For onUncheck callback
+// Modification du visuel si la case à cocher mp est unchecked
 $('#mp').on('ifUnchecked', function () {
 $('#cmb_mp').prop("required", false)
-$('#backpack_new_mProcess').prop("disabled", true);
-$('#backpack_new_process').prop("disabled", false);
-$("#backpack_new_mProcess").val('0');
+$('#cmb_mp').prop("disabled", true);
+$('#cmb_p').prop("disabled", false);
+$("#cmb_mp").val('0');
+$('#backpack_mProcess').val('0');
 })
 
+// si le process est présent on coche la case Process
+if (idP != 0) {
+$('#p').iCheck('check');
+	$('#mp').iCheck('uncheck');
+}
 
-$('#backpack_new_updateAt_date_month').val(new Date().getMonth() + 1);
-$('#backpack_new_updateAt_date_day').val(new Date().getDay());
-$('#backpack_new_updateAt_date_year').val(new Date().getFullYear());
-$('#backpack_new_updateAt_time_hour').val(new Date().getHours());
-$('#backpack_new_updateAt_time_minute').val(new Date().getMinutes());
-	</script>
+// nécessaire pour l'update es images
+$('#backpack_updateAt_date_month').val(new Date().getMonth() + 1);
+$('#backpack_updateAt_date_day').val(new Date().getDay());
+$('#backpack_updateAt_date_year').val(new Date().getFullYear());
+$('#backpack_updateAt_time_hour').val(new Date().getHours());
+$('#backpack_updateAt_time_minute').val(new Date().getMinutes());
+</script>
 {% endblock %}

@@ -39,7 +39,7 @@ class BackpackType extends AppTypeAbstract
                 self::CHOICE_LABEL => 'name',
                 self::LABEL => 'Type de porte-document',
                 self::MULTIPLE => false,
-                self::REQUIRED => false,
+                self::REQUIRED => true,
                 self::QUERY_BUILDER => function (EntityRepository $er) {
                     return $er->createQueryBuilder('c')
                         ->select('c')
@@ -54,12 +54,7 @@ class BackpackType extends AppTypeAbstract
                 self::LABEL => 'Macro-processus',
                 self::MULTIPLE => false,
                 self::REQUIRED => false,
-                self::QUERY_BUILDER => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('c')
-                        ->select('c')
-                        ->orderBy('c.ref', 'ASC')
-                        ->addOrderBy('c.name', 'ASC');
-                }
+
             ])
             ->add('process', EntityType::class, [
                 self::CSS_CLASS => Process::class,
@@ -67,13 +62,6 @@ class BackpackType extends AppTypeAbstract
                 self::LABEL => 'Processus',
                 self::MULTIPLE => false,
                 self::REQUIRED => false,
-                self::ATTR => ['disabled' => 'true'],
-                self::QUERY_BUILDER => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('c')
-                        ->select('c')
-                        ->orderBy('c.ref', 'ASC')
-                        ->addOrderBy('c.name', 'ASC');
-                }
             ])
             ->add(
                 'updateAt',

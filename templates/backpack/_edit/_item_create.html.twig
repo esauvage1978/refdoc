@@ -1,0 +1,24 @@
+{% if item is defined %}
+
+	{% import '@AdminLTE/Macros/buttons.html.twig'  as btn %}
+	{% import "macros/delele.html.twig" as del %}
+	{% import "macros/submit.html.twig" as sub %}
+	{{ form_start(form) }}
+
+
+	<div style="width:630px">
+
+		{{ include(domaine ~ '/_edit/__consigne.html.twig') }}
+		{{ include(domaine ~ '/_edit/__process.html.twig') }}
+		{{ include(domaine ~ '/_edit/__name.html.twig') }}
+ 
+
+		<p class="mt-5 mb-5"></p>
+		<p class="mt-5 mb-5"></p>
+	</div>
+	{% import "macros/submit.html.twig" as sub %}<div class="d-none">{{ sub.btn() }}{{form_rest(form)}}</div>
+	{{ form_end(form) }}
+	{% if item.id is not null %}
+		{{ del.delete_form(route_del,item.id, 'show') }}
+	{% endif %}
+{% endif %}

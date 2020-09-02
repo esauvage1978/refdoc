@@ -95,7 +95,6 @@ class Backpack implements EntityInterface
 
     /**
      * @ORM\ManyToOne(targetEntity=MProcess::class, inversedBy="backpacks")
-     * @ORM\JoinColumn(nullable=false)
      */
     private $mProcess;
 

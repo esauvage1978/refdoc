@@ -1,9 +1,11 @@
 {% macro view(item) %}
+    {% if item is null %}
     <a href="{{ path('user_show', {'id': item.id}) }}" class="user user-animate">
         <img class="img-circle img-bordered-sm img-md" src="{{ asset(item.avatar) }}"
              alt="User Image" style="flex-wrap: wrap">
         <span class="">{{ item.name }}</span>
     </a>
+    {% endif %}
 {% endmacro %}
 
 {% macro views(items) %}

@@ -22,7 +22,7 @@
 
         {{ render(controller('App\\Controller\\GPIController::showGPIAction', { 'page': 'backpack_add'})) }}
 
-		{{ include(domaine ~ '/_edit/_item_start.html.twig') }}
+		{{ include(domaine ~ '/_edit/_item_create.html.twig') }}
 	</div>
 </div>
 
@@ -40,8 +40,10 @@
         var nbrP=0;
 
 
-        $('cmb_mp').prop("required",true)
+        $('#cmb_mp').prop("required",true);
         $('#cmb_p').prop( "disabled", true );
+        $('#backpack_new_category').prop("required",true);
+
 
 
 
@@ -67,7 +69,25 @@
         fillComboboxMP('#cmb_mp', "{{ path('ajax_cmb_mp_for_contribute') }}", "");
         fillComboboxMP('#cmb_p', "{{ path('ajax_cmb_p_for_contribute') }}", "");
 
-       
+        $('#backpack_new_category').change(function () {
+            $('#contentofdescription').html('');
+
+            var numCat=$('#backpack_new_category').val();
+            if(numCat!=''){
+
+                var url= '/ajax/getcontentofcategory/' + numCat;
+
+                axios.get(url).then(function (response) {
+                    //alert(response.data);
+                        $('#contentofdescription').html(response.data);
+
+
+                        //alert(response.data.value.content);
+                    }).catch(function (error) {
+                        console.log(error);
+                    })
+                }
+        });
 
         $('#cmb_mp').change(function () {
             $('#backpack_new_mProcess').val($('#cmb_mp').val());

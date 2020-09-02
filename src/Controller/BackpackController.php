@@ -82,6 +82,8 @@ class BackpackController extends AbstractGController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            dump($request);
+            dump($item);
             if ($this->manager->save($item)) {
                 $this->addFlash(self::SUCCESS, self::MSG_MODIFY);
                 //$backpackHistory->compare($itemOld, $item);
