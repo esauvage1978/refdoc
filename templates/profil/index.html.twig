@@ -38,7 +38,7 @@
 
 
 			{% embed 'widgets/card-widget.html.twig' %}
-				{% block card_class %}flat 
+				{% block card_class %}flat
 				{% endblock %}
 
 				{% block card_title %}Habilitations
@@ -80,6 +80,31 @@
 									Utilisateur</span>
 							{% endif %}
 						</div>
+						<div class="list-group-item list-group-item-action">
+							{% if app.user.isDoc %}
+								<span class="text-success">
+									<i class="fas fa-check"></i>
+									Service Documentation</span>
+							{% else %}
+								<span class="text-danger">
+									<i class="fas fa-times"></i>
+									Service Documentation</span>
+
+							{% endif %}
+						</div>
+
+						<div class="list-group-item list-group-item-action">
+							{% if app.user.isControl %}
+								<span class="text-success">
+									<i class="fas fa-check"></i>
+									Service Contrôle</span>
+							{% else %}
+								<span class="text-danger">
+									<i class="fas fa-times"></i>
+									Service Contrôle</span>
+							{% endif %}
+						</div>
+
 					</div>
 				{% endblock %}
 			{% endembed %}
@@ -155,9 +180,9 @@
 					{% if item.mProcessDirValidators | length >0 or  item.mProcessPoleValidators | length >0 or item.mProcessContributors | length >0 %}
 						{% embed 'widgets/card-widget.html.twig' %}
 							{% import "macros/widgets.html.twig" as widgets %}
-{% block card_class %}
-	flat
-{% endblock %}
+							{% block card_class %}
+								flat
+							{% endblock %}
 
 
 							{% block card_body_class %}p-0
@@ -200,9 +225,9 @@
 					{% if  item.processValidators | length >0 or item.processContributors | length >0 %}
 						{% embed 'widgets/card-widget.html.twig' %}
 							{% import "macros/widgets.html.twig" as widgets %}
-{% block card_class %}
-	flat
-{% endblock %}
+							{% block card_class %}
+								flat
+							{% endblock %}
 
 
 							{% block card_body_class %}p-0

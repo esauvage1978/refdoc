@@ -42,4 +42,24 @@ class RoleController extends AbstractController
             'items' => $repo->findAllForContactUtilisateur(),
         ]);
     }
+
+    /**
+     * @Route("/isdoc", name="role_doc")
+     */
+    public function doc(UserRepository $repo)
+    {
+        return $this->render('role/isdoc.html.twig', [
+            'items' => $repo->findAllForContactIsDoc(),
+        ]);
+    }
+
+    /**
+     * @Route("/isControl", name="role_control")
+     */
+    public function control(UserRepository $repo)
+    {
+        return $this->render('role/iscontrol.html.twig', [
+            'items' => $repo->findAllForContactIsControl(),
+        ]);
+    }
 }

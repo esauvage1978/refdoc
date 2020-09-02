@@ -86,6 +86,32 @@ class UserRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * @return User[] Returns an array of User objects
+     */
+    public function findAllForContactIsDoc(): array
+    {
+        return $this->createQueryBuilder(self::ALIAS)
+            ->Where(self::ALIAS . '.isDoc like :val1')
+            ->setParameter('val1', '1')
+            ->orderBy(self::ALIAS . '.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return User[] Returns an array of User objects
+     */
+    public function findAllForContactIsControl(): array
+    {
+        return $this->createQueryBuilder(self::ALIAS)
+            ->Where(self::ALIAS . '.isControl like :val1')
+            ->setParameter('val1', '1')
+            ->orderBy(self::ALIAS . '.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findAllUserSubscription()
     {
         return $this->createQueryBuilder(self::ALIAS)

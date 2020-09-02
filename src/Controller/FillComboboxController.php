@@ -59,6 +59,8 @@ class FillComboboxController extends AbstractGController
             ->setForUpdate(MProcessDto::TRUE)
             ->setVisible(MProcessDto::TRUE);
 
+            if($user->get)
+
             $dto->setUserDto((new UserDto())->setId($this->getUser()->getId()));
 
         return $this->json([

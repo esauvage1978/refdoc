@@ -117,8 +117,20 @@ class User implements UserInterface, EntityInterface
      */
     private $backpacks;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isDoc;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isControl;
+
     public function __construct()
     {
+        $this->setIsDoc(false);
+        $this->setIsControl(false);
         $this->mProcessPoleValidators = new ArrayCollection();
         $this->mProcessDirValidators = new ArrayCollection();
         $this->mProcessContributors = new ArrayCollection();
@@ -567,6 +579,30 @@ class User implements UserInterface, EntityInterface
                 $backpack->setOwner(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getIsDoc(): ?bool
+    {
+        return $this->isDoc;
+    }
+
+    public function setIsDoc(bool $isDoc): self
+    {
+        $this->isDoc = $isDoc;
+
+        return $this;
+    }
+
+    public function getIsControl(): ?bool
+    {
+        return $this->isControl;
+    }
+
+    public function setIsControl(bool $isControl): self
+    {
+        $this->isControl = $isControl;
 
         return $this;
     }

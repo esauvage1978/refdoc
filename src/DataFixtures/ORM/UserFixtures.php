@@ -50,7 +50,23 @@ class UserFixtures extends Fixture
             'emailValidated' => true,
             'isEnamble' => true,
             'subrscription' => true
-        ]
+        ],
+        [
+            'name' => 'contrib_p',
+            'email' => 'contrib_p@live.fr',
+            'password' => 'A123456789',
+            'emailValidated' => true,
+            'isEnamble' => true,
+            'subrscription' => true
+        ],
+        [
+            'name' => 'validator_p',
+            'email' => 'validator_p@live.fr',
+            'password' => 'A123456789',
+            'emailValidated' => true,
+            'isEnamble' => true,
+            'subrscription' => true
+        ],
 
 
     ];
