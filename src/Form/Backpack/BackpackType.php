@@ -39,7 +39,7 @@ class BackpackType extends AppTypeAbstract
                 self::CHOICE_LABEL => 'name',
                 self::LABEL => 'Type de porte-document',
                 self::MULTIPLE => false,
-                self::REQUIRED => true,
+                self::REQUIRED => false,
                 self::QUERY_BUILDER => function (EntityRepository $er) {
                     return $er->createQueryBuilder('c')
                         ->select('c')

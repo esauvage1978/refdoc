@@ -1,12 +1,13 @@
 {% extends 'backpack/layout.html.twig' %}
 
 
-{% block page_subtitle %}Création{% endblock %}
+{% block page_subtitle %}Création
+{% endblock %}
 
 
 {% block breadcrumb %}
-    {% import "backpack/actions.html.twig" as actions %}
-    {{ actions.backpack(
+	{% import "backpack/actions.html.twig" as actions %}
+	{{ actions.backpack(
         'add',
         'draft',
         true,
@@ -17,109 +18,83 @@
 
 
 {% block page_content %}
-<div class="row justify-content-center">
-	<div class="" style="width:960px">
+	<div class="row justify-content-center">
+		<div class="" style="width:960px">
 
-        {{ render(controller('App\\Controller\\GPIController::showGPIAction', { 'page': 'backpack_add'})) }}
+			{{ render(controller('App\\Controller\\GPIController::showGPIAction', { 'page': 'backpack_add'})) }}
 
-		{{ include(domaine ~ '/_edit/_item_create.html.twig') }}
+			{{ include(domaine ~ '/_edit/_item_create.html.twig') }}
+		</div>
 	</div>
-</div>
 
 
 {% endblock %}
 
 {%  block javascripts %}
-    {{ parent() }}
-<script src="{{ absolute_url( asset('/vendor/axios/dist/axios.min.js')) }}"></script>
+	{{ parent() }}
+	<script src="{{ absolute_url( asset('/vendor/axios/dist/axios.min.js')) }}"></script>
 
-    <script type="text/javascript">
-
-
-        var nbrMP=0;
-        var nbrP=0;
+	<script src="{{ absolute_url( asset('/js/es_widget.js')) }}"></script>
+	<script src="{{ absolute_url( asset('/js/es_category.js')) }}"></script>
 
 
-        $('#cmb_mp').prop("required",true);
-        $('#cmb_p').prop( "disabled", true );
-        $('#backpack_new_category').prop("required",true);
+	<script type="text/javascript">
+
+/*##################################
+####################################
+####        MP / P          ########
+####################################
+##################################*/
+
+let mp_less = $('#cmb_mp');
+let mp_radio = $('#mp_radio');
+let mp = $('#backpack_new_mProcess');
 
 
+let p_less = $('#cmb_p');
+let p_radio = $('#p_radio');
+let p = $('#backpack_new_process');
 
 
-                
-        function fillComboboxMP(selecteur, route, selectedId="") {
-            axios.get(route).then(function (response) {
-                $(selecteur).append('<option  value=""></option>');
+let route_mp = "{{ path('ajax_cmb_mp_for_contribute') }}";
+let route_p = "{{ path('ajax_cmb_p_for_contribute') }}";
+	
 
-                $.each(response.data.value, function (index, value) {
-
-                    if(selectedId === value.id ) {
-                        selected='selected';
-                    } else {
-                        selected='';
-                    }
-                    $(selecteur).append('<option ' + selected + ' value="' + value.id + '">'
-                        + value.name + '</option>');
-                });
-            }).catch(function (error) {
-                console.log(error);
-            })
-        }
-        fillComboboxMP('#cmb_mp', "{{ path('ajax_cmb_mp_for_contribute') }}", "");
-        fillComboboxMP('#cmb_p', "{{ path('ajax_cmb_p_for_contribute') }}", "");
-
-        $('#backpack_new_category').change(function () {
-            $('#contentofdescription').html('');
-
-            var numCat=$('#backpack_new_category').val();
-            if(numCat!=''){
-
-                var url= '/ajax/getcontentofcategory/' + numCat;
-
-                axios.get(url).then(function (response) {
-                    //alert(response.data);
-                        $('#contentofdescription').html(response.data);
+	
+fillComboboxMP(mp_less, route_mp);
+fillComboboxMP(p_less, route_p);
 
 
-                        //alert(response.data.value.content);
-                    }).catch(function (error) {
-                        console.log(error);
-                    })
-                }
-        });
-
-        $('#cmb_mp').change(function () {
-            $('#backpack_new_mProcess').val($('#cmb_mp').val());
-        });
-
-        $('#cmb_p').change(function () {
-            $('#backpack_new_process').val($('#cmb_p').val());
-        });
-
-        $('#mp').on('ifChecked', function () { 
-            $('#cmb_mp').prop("required",true)
-            $('#cmb_p').prop( "disabled", true );
-            $('#cmb_mp').prop( "disabled", false );
-            $("#cmb_p").val('0');
-
-         })
+required(mp_less);
+disabled(p_less);
 
 
-        // For onUncheck callback
-        $('#mp').on('ifUnchecked', function () { 
-        $('#cmb_mp').prop("required",false)
-        $('#cmb_mp').prop( "disabled", true );
-        $('#cmb_p').prop( "disabled", false );
-        $("#cmb_mp").val('0');
-         })
+mp_less.change(function () {
+    setVal(mp, getVal(mp_less));
+});
+
+
+p_less.change(function () {
+    setVal(p, getVal(p_less));
+});
+
+
+mp_radio.on('ifChecked', function () {
+    required(mp_less);
+    undisabled(mp_less);
+    disabled(p_less);
+    setVal(p_less, 0);
+});
+
+
+p_radio.on('ifChecked', function () {
+    unrequired(mp_less);
+    disabled(mp_less);
+    undisabled(p_less);
+    setVal(mp_less, 0);
+});
 
 
 
-        $('#backpack_new_updateAt_date_month').val(new Date().getMonth()+1);
-        $('#backpack_new_updateAt_date_day').val(new Date().getDay());
-        $('#backpack_new_updateAt_date_year').val(new Date().getFullYear());
-        $('#backpack_new_updateAt_time_hour').val(new Date().getHours());
-        $('#backpack_new_updateAt_time_minute').val(new Date().getMinutes());
-    </script>
+	</script>
 {% endblock %}

@@ -20,7 +20,7 @@ class UserTest extends KernelTestCase
         $this->loadFixtures([UserFixtures::class]);
         $users=self::$container->get(UserRepository::class)->count([]);
 
-        $this->assertSame(15,$users,"Nombre d'utilisateur dans sqlLite");
+        $this->assertSame(17,$users,"Nombre d'utilisateur dans sqlLite");
     }
 
 }

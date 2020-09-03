@@ -34,7 +34,8 @@ class FillComboboxController extends AbstractGController
             return $this->json(
                 $repository->findAllFillComboboxGrouping(
                     $data
-                ),200
+                ),
+                200
             );
         }
 
@@ -59,16 +60,15 @@ class FillComboboxController extends AbstractGController
             ->setForUpdate(MProcessDto::TRUE)
             ->setVisible(MProcessDto::TRUE);
 
-            if($user->get)
-
+        if (!$user->getIsDoc()) {
             $dto->setUserDto((new UserDto())->setId($this->getUser()->getId()));
+        }
 
         return $this->json([
             'code' => 200,
             'value' => $mProcessDtoRepository->findForCombobox($dto),
             'message' => 'données transmises'
         ], 200);
-                
     }
 
     /**
@@ -89,7 +89,9 @@ class FillComboboxController extends AbstractGController
             ->setForUpdate(ProcessDto::TRUE)
             ->setVisible(ProcessDto::TRUE);
 
-        $dto->setUserDto((new UserDto())->setId($this->getUser()->getId()));
+        if (!$user->getIsDoc()) {
+            $dto->setUserDto((new UserDto())->setId($this->getUser()->getId()));
+        }
 
         return $this->json([
             'code' => 200,
