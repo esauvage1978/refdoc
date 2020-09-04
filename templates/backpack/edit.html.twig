@@ -21,7 +21,39 @@
 
 			{{ render(controller('App\\Controller\\GPIController::showGPIAction', { 'page': 'backpack_add'})) }}
 
-			{{ include(domaine ~ '/_edit/_item_draft.html.twig') }}
+			{% if item is defined %}
+
+				{% import '@AdminLTE/Macros/buttons.html.twig'  as btn %}
+				{% import "macros/delele.html.twig" as del %}
+				{% import "macros/submit.html.twig" as sub %}
+				{{ form_start(form) }}
+
+
+				<div style="width:630px">
+
+					{% if item.currentState == "draft" %}
+
+						{{ include(domaine ~ '/_edit/__consigne.html.twig') }}
+
+						{{ include(domaine ~ '/_edit/__process.html.twig') }}
+						{{ include(domaine ~ '/_show/_process.html.twig') }}
+
+						{{ include(domaine ~ '/_edit/__name.html.twig') }}
+					{% endif %}
+
+
+					<p class="mt-5 mb-5"></p>
+					<p class="mt-5 mb-5"></p>
+				</div>
+
+				{% import "macros/submit.html.twig" as sub %}<div class="d-none">{{ sub.btn() }}{{form_rest(form)}}</div>
+
+				{{ form_end(form) }}
+				{% if item.id is not null %}
+					{{ del.delete_form(route_del,item.id, 'show') }}
+				{% endif %}
+			{% endif %}
+
 
 		</div>
 	</div>
@@ -29,18 +61,17 @@
 {% endblock %}
 
 {%  block javascripts %}
-{{ parent() }}
-<script src="{{ absolute_url( asset('/vendor/axios/dist/axios.min.js')) }}"></script>
+	{{ parent() }}
+	<script src="{{ absolute_url( asset('/vendor/axios/dist/axios.min.js')) }}"></script>
 
-<script src="{{ absolute_url( asset('/js/es_widget.js')) }}"></script>
-<script src="{{ absolute_url( asset('/js/es_category.js')) }}"></script>
-
-
-<script type="text/javascript">
+	<script src="{{ absolute_url( asset('/js/es_widget.js')) }}"></script>
+	<script src="{{ absolute_url( asset('/js/es_category.js')) }}"></script>
 
 
+	<script type="text/javascript">
 
-/*##################################
+
+		/*##################################
 ####################################
 ####        MP / P          ########
 ####################################
@@ -49,22 +80,21 @@
 let mp_less = $('#cmb_mp');
 let mp_radio = $('#mp_radio');
 let mp = $('#backpack_mProcess');
-let idMp={{ item.mProcess is null ?0:item.mProcess.id }};
+let idMp = {{ item.mProcess is null ?0:item.mProcess.id }};
 
 
 let p_less = $('#cmb_p');
 let p_radio = $('#p_radio');
 let p = $('#backpack_process');
-let idP={{ item.process is null ?0:item.process.id }};
+let idP = {{ item.process is null ?0:item.process.id }};
 
 
 let route_mp = "{{ path('ajax_cmb_mp_for_contribute') }}";
 let route_p = "{{ path('ajax_cmb_p_for_contribute') }}";
-	
 
-	
+
 fillComboboxMP(mp_less, route_mp, idMp);
-fillComboboxMP(p_less, route_p,idP);
+fillComboboxMP(p_less, route_p, idP);
 
 
 required(mp_less);
@@ -72,38 +102,37 @@ disabled(p_less);
 
 
 mp_less.change(function () {
-    setVal(mp, getVal(mp_less));
+setVal(mp, getVal(mp_less));
 });
 
 
 p_less.change(function () {
-    setVal(p, getVal(p_less));
+setVal(p, getVal(p_less));
 });
 
 
 mp_radio.on('ifChecked', function () {
-    required(mp_less);
-    undisabled(mp_less);
-    disabled(p_less);
-    setVal(p_less, 0);
-	setVal(p, 0);
+required(mp_less);
+undisabled(mp_less);
+disabled(p_less);
+setVal(p_less, 0);
+setVal(p, 0);
 });
 
 
 p_radio.on('ifChecked', function () {
-    unrequired(mp_less);
-    disabled(mp_less);
-    undisabled(p_less);
-    setVal(mp_less, 0);
-	setVal(mp, 0);
+unrequired(mp_less);
+disabled(mp_less);
+undisabled(p_less);
+setVal(mp_less, 0);
+setVal(mp, 0);
 });
-
 
 
 // si le process est présent on coche la case Process
 if (idP != 0) {
 p_radio.iCheck('check');
-	mp_radio.iCheck('uncheck');
+mp_radio.iCheck('uncheck');
 }
 
 // nécessaire pour l'update es images
@@ -112,5 +141,6 @@ $('#backpack_updateAt_date_day').val(new Date().getDay());
 $('#backpack_updateAt_date_year').val(new Date().getFullYear());
 $('#backpack_updateAt_time_hour').val(new Date().getHours());
 $('#backpack_updateAt_time_minute').val(new Date().getMinutes());
-</script>
+
+	</script>
 {% endblock %}

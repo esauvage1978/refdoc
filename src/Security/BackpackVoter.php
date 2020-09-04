@@ -13,6 +13,7 @@ class BackpackVoter extends Voter
     const READ = 'read';
     const UPDATE = 'update';
     const DELETE = 'delete';
+    const CREATE = 'create';
 
     /**
      * @var User|null $currentUser
@@ -27,13 +28,15 @@ class BackpackVoter extends Voter
     protected function supports($attribute, $subject)
     {
         // if the attribute isn't one we support, return false
-        if (!in_array($attribute, [self::READ, self::UPDATE, self::DELETE])) {
+        if (!in_array($attribute, [self::READ, self::UPDATE, self::DELETE, self::CREATE])) {
             return false;
         }
 
         // only vote on Post objects inside this voter
-        if (null !== $subject and !$subject instanceof Backpack) {
-            return false;
+        if ($attribute != self::CREATE) {
+            if (null !== $subject and !$subject instanceof Backpack) {
+                return false;
+            }
         }
 
         return true;
@@ -56,6 +59,8 @@ class BackpackVoter extends Voter
                 return $this->canUpdate($backpack, $this->user);
             case self::DELETE:
                 return $this->canDelete($backpack, $this->user);
+            case self::CREATE:
+                return $this->canCreate( $this->user);
         }
 
         throw new \LogicException('This code should not be reached!');
@@ -88,4 +93,19 @@ class BackpackVoter extends Voter
         return false;
     }
 
+    public function canCreate(User $user)
+    {
+        if ($user->getIsDoc()) {
+            return true;
+        }
+
+        $nbr_P = count($user->getProcessContributors());
+        $nbr_MP = count($user->getMProcessContributors());
+
+        if ($nbr_MP > 0 or $nbr_P > 0) {
+            return true;
+        }
+
+        return false;
+    }
 }

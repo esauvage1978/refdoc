@@ -75,59 +75,22 @@ class BackpackMakerDto
                     ->setWordSearch($param)
                     ->setVisible(BackpackDto::TRUE);
                 break;
-            case self::PUBLISHED_FOR_RUBRIC:
-                if(null===$param) {
-                    throw new \InvalidArgumentException('Il manque l\'id de la rubrique');
-                }
-                $dto->setRubricDto((new RubricDto())->setId($param));
-                $dto
-                    ->setVisible(BackpackDto::TRUE)
-                    ->setCurrentState(WorkflowData::STATE_PUBLISHED);
-                break;
-            case self::PUBLISHED_FOR_UNDERRUBRIC:
-                if(null===$param) {
-                    throw new \InvalidArgumentException('Il manque l\'id de la sous rubrique');
-                }
-                $dto->setUnderRubricDto((new UnderRubricDto())->setId($param));
-                $dto
-                    ->setVisible(BackpackDto::TRUE)
-                    ->setCurrentState(WorkflowData::STATE_PUBLISHED);
-                break;
+
             case self::NEWS:
                 $dto
                 ->setCurrentState(WorkflowData::STATE_PUBLISHED)
                     ->setIsNew(BackpackDto::TRUE)
                     ->setVisible(BackpackDto::TRUE);
                 break;
-            case self::NEWS_FOR_RUBRIC:
-                if(null===$param) {
-                    throw new \InvalidArgumentException('Il manque l\'id de la rubrique');
-                }
-                $dto->setRubricDto((new RubricDto())->setId($param));
-                $dto
-                    ->setIsNew(BackpackDto::TRUE)
-                    ->setVisible(BackpackDto::TRUE)
-                    ->setCurrentState(WorkflowData::STATE_PUBLISHED);
-                break;
-            case self::NEWS_FOR_UNDERRUBRIC:
-                if(null===$param) {
-                    throw new \InvalidArgumentException('Il manque l\'id de la sous rubrique');
-                }
-                $dto->setUnderRubricDto((new UnderRubricDto())->setId($param));
-                $dto
-                    ->setIsNew(BackpackDto::TRUE)
-                    ->setVisible(BackpackDto::TRUE)
-                    ->setCurrentState(WorkflowData::STATE_PUBLISHED);
-                break;
             case self::ARCHIVED:
                 $dto
-                    ->setVisible(BackpackDto::TRUE)
-                    ->setCurrentState(WorkflowData::STATE_ARCHIVED);
+                    ->setCurrentState(WorkflowData::STATE_ARCHIVED)
+                    ->setVisible(BackpackDto::TRUE);
                 break;
             case self::ABANDONNED:
                 $dto
-                    ->setVisible(BackpackDto::TRUE)
-                    ->setCurrentState(WorkflowData::STATE_ABANDONNED);
+                    ->setCurrentState(WorkflowData::STATE_ABANDONNED)
+                    ->setVisible(BackpackDto::TRUE);
                 break;
             case self::HIDE:
                 $dto

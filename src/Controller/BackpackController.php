@@ -65,6 +65,8 @@ class BackpackController extends AbstractGController
      */
     public function add(Request $request)
     {
+        $this->denyAccessUnlessGranted(BackpackVoter::CREATE, null);
+
         return $this->editAction($request, new Backpack(), BackpackNewType::class, false);
     }
 
@@ -127,6 +129,16 @@ class BackpackController extends AbstractGController
     public function state_draft(Request $request)
     {
         return $this->treeView($request, $this->backpackMakerDto->get(BackpackMakerDto::DRAFT));
+    }
+
+
+    /**
+     * @Route("/backpacks/mydraft", name="backpacks_mydraft", methods={"GET"})
+     * @IsGranted("ROLE_USER")
+     */
+    public function state_mydraft(Request $request)
+    {
+        return $this->treeView($request, $this->backpackMakerDto->get(BackpackMakerDto::MY_DRAFT));
     }
 
     /**
