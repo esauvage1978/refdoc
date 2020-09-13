@@ -68,7 +68,7 @@ final class IconExtension extends AbstractExtension
         'manual' => 'fas fa-book',
         'mobile' => 'fas fa-mobile',
         'money' => 'far fa-money-bill-alt',
-        'mprocess' => 'fas fa-sitemap',
+        'mprocess' => 'fas fa-sitemap', 
         'nocheck_big' => 'far fa-times-circle fa-4x',
         'ods' => 'fas fa-table',
         'off' => 'fas fa-toggle-off',

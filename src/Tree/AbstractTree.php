@@ -104,13 +104,13 @@ abstract class AbstractTree implements InterfaceTree
         return '#';
     }
 
-    protected function addBranche($id, $data_courant, $parent, $opened = true, $isEnable=true)
+    protected function addBranche($id, $data_courant, $parent, $opened = true, $isEnable=true,$icon='')
     {
         $this->tree[] = [
             'id' => $id,
             'parent' => $parent,
             'text' => '<span class="'. ($isEnable?'text-secondary':'text-danger').'">'. $data_courant . "</span>",
-            'icon' => '',
+            'icon' => $icon,
             'state' => [
                 'opened' => $opened,
             ],

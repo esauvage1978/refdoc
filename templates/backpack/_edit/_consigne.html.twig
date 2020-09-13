@@ -2,8 +2,7 @@
 {% embed 'widgets/card-widget.html.twig' %}
 	{% block card_class %}flat
 	{% endblock %}
-	{% block card_body %}
-		{{ form_errors(form) }}
+	{% block card_body %} 
 
 		<div class="form-group row m-2 js-createTip-wrapper">
 			<p>{{ form_label(form.category) }}</p>

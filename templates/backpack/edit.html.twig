@@ -16,6 +16,7 @@
 
 {% block page_content %}
 
+
 	<div class="row justify-content-center">
 		<div class="" style="width:960px">
 
@@ -27,26 +28,33 @@
 				{% import "macros/delele.html.twig" as del %}
 				{% import "macros/submit.html.twig" as sub %}
 				{{ form_start(form) }}
+				{{ form_errors(form) }}
 
 
 				<div style="width:630px">
 
 					{% if item.currentState == "draft" %}
 
-						{{ include(domaine ~ '/_edit/__consigne.html.twig') }}
+						{{ include(domaine ~ '/_edit/_consigne.html.twig') }}
+						{{ include(domaine ~ '/_edit/_process.html.twig') }}
+						{{ include(domaine ~ '/_edit/_arborescence.html.twig') }}
+						{{ include(domaine ~ '/_edit/_name.html.twig') }}
+						{{ include(domaine ~ '/_edit/_files.html.twig') }}
 
-						{{ include(domaine ~ '/_edit/__process.html.twig') }}
-						{{ include(domaine ~ '/_show/_process.html.twig') }}
 
-						{{ include(domaine ~ '/_edit/__name.html.twig') }}
 					{% endif %}
 
 
 					<p class="mt-5 mb-5"></p>
 					<p class="mt-5 mb-5"></p>
 				</div>
+				{% import "macros/submit.html.twig" as sub %}
+				<div class="d-none">
 
-				{% import "macros/submit.html.twig" as sub %}<div class="d-none">{{ sub.btn() }}{{form_rest(form)}}</div>
+
+					{{form_rest(form)}}
+					{{ sub.btn() }}
+				</div>
 
 				{{ form_end(form) }}
 				{% if item.id is not null %}
@@ -58,35 +66,201 @@
 		</div>
 	</div>
 
+	<div class="modal fade" id="addDir" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Ajoute un libellé</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form>
+						<div class="form-group">
+							<label for="addDir_field_new" class="col-form-label">Libellé</label>
+							<input type="text" class="form-control d-none" id="addDir_field">
+							<input type="text" class="form-control" id="addDir_field_new">
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+					<button type="button" id="btn_addDir" class="btn btn-success">Ajouter le libellé</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
 {% endblock %}
 
 {%  block javascripts %}
 	{{ parent() }}
 	<script src="{{ absolute_url( asset('/vendor/axios/dist/axios.min.js')) }}"></script>
-
+	<script src="{{ absolute_url( asset('js/backpack_file.js')) }}"></script>
 	<script src="{{ absolute_url( asset('/js/es_widget.js')) }}"></script>
 	<script src="{{ absolute_url( asset('/js/es_category.js')) }}"></script>
+	<script src="{{ absolute_url( asset('/js/arborescence.js')) }}"></script>
 
 
 	<script type="text/javascript">
 
+$(document).on('change', '.custom-file-input', function () {
+let fileName = $(this).val().replace(/\\/g, '/').replace(/.*\//, '');
+$(this).parent('.custom-file').find('.custom-file-label').text(fileName);
+});
 
-		/*##################################
-####################################
-####        MP / P          ########
-####################################
-##################################*/
+// nécessaire pour l'update es images
+$('#backpack_updateAt_date_month').val(new Date().getMonth() + 1);
+$('#backpack_updateAt_date_day').val(new Date().getDay());
+$('#backpack_updateAt_date_year').val(new Date().getFullYear());
+$('#backpack_updateAt_time_hour').val(new Date().getHours());
+$('#backpack_updateAt_time_minute').val(new Date().getMinutes());
+
+
+let idMp = {{ item.mProcess is null ?0:item.mProcess.id }};
+let idP = {{ item.process is null ?0:item.process.id }};
+
+/*##################################
+		####################################
+		####        Niveaux         ########
+		####################################
+		##################################*/
+
+
+let cmb1 = $('#cmb_dir1');
+let cmb2 = $('#cmb_dir2');
+let cmb3 = $('#cmb_dir3');
+let cmb4 = $('#cmb_dir4');
+let cmb5 = $('#cmb_dir5');
+
+let formcmb1 = $('#backpack_dir1');
+let formcmb2 = $('#backpack_dir2');
+let formcmb3 = $('#backpack_dir3');
+let formcmb4 = $('#backpack_dir4');
+let formcmb5 = $('#backpack_dir5');
+
+let div1 = $('#div_dir1');
+let div2 = $('#div_dir2');
+let div3 = $('#div_dir3');
+let div4 = $('#div_dir4');
+let div5 = $('#div_dir5');
+
+let route1 ="{{ path('ajax_fill_combobox_dir1') }}";
+let route2 ="{{ path('ajax_fill_combobox_dir2') }}";
+let route3 ="{{ path('ajax_fill_combobox_dir3') }}";
+let route4 ="{{ path('ajax_fill_combobox_dir4') }}";
+let route5 ="{{ path('ajax_fill_combobox_dir5') }}";
+
+
+arborescence(cmb1, route1, idMp, idP, true, formcmb1);
+
+
+cmb1.change(function () {
+var data = $('#cmb_dir1  option:selected').text();
+setVal(formcmb1, data);
+if (data === "") {
+hide(div2);
+hide(div3);
+hide(div4);
+hide(div5);
+} else {
+show(div2);
+arborescenceChained(cmb2, route2, idMp, idP, data, true, formcmb2);
+}
+});
+
+
+cmb2.change(function () {
+var data = $('#cmb_dir2  option:selected').text();
+setVal(formcmb2, data);
+
+if (data === "") {
+hide(div3);
+hide(div4);
+hide(div5);
+} else {
+show(div3);
+arborescenceChained(cmb3, route3, idMp, idP, data, true, formcmb3);
+
+}
+});
+
+cmb3.change(function () {
+var data = $('#cmb_dir3  option:selected').text();
+setVal(formcmb3, data);
+
+if (data === "") {
+hide(div4);
+hide(div5);
+} else {
+show(div4);
+arborescenceChained(cmb4, route4, idMp, idP, data, true, formcmb4);
+
+}
+});
+
+cmb4.change(function () {
+var data = $('#cmb_dir4  option:selected').text();
+setVal(formcmb4, data);
+if (data === "") {
+hide(div5);
+} else {
+show(div5);
+arborescenceChained(cmb5, route5, idMp, idP, data, true, formcmb5);
+
+}
+});
+
+cmb5.change(function () {
+var data = $('#cmb_dir5  option:selected').text();
+setVal(formcmb5, data);
+});
+
+
+$('#addDir').on('show.bs.modal', function (event) {
+var button = $(event.relatedTarget) // Button that triggered the modal
+var recipient = button.data('whatever')
+// Extract info from data-* attributes
+// If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+// Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+var modal = $(this)
+
+modal.find('#addDir_field').val(recipient)
+});
+
+
+$(function () {
+$('#btn_addDir').click(function () {
+
+if ($('#addDir_field_new').val() === "") {
+alert('Le libellé est vide');
+return;
+}
+$('#addDir').modal('toggle');
+var selecteurCible = $('#addDir_field').val();
+var data = $('#addDir_field_new').val();
+$('#' + selecteurCible).append('<option selected value="' + data + '">' + data + '</option>');
+$('#addDir_field').val("");
+$('#' + selecteurCible).change();
+
+});
+});
+
+/*##################################
+		####################################
+		####        MP / P          ########
+		####################################
+		##################################*/
 
 let mp_less = $('#cmb_mp');
 let mp_radio = $('#mp_radio');
 let mp = $('#backpack_mProcess');
-let idMp = {{ item.mProcess is null ?0:item.mProcess.id }};
 
 
 let p_less = $('#cmb_p');
 let p_radio = $('#p_radio');
 let p = $('#backpack_process');
-let idP = {{ item.process is null ?0:item.process.id }};
 
 
 let route_mp = "{{ path('ajax_cmb_mp_for_contribute') }}";
@@ -135,12 +309,6 @@ p_radio.iCheck('check');
 mp_radio.iCheck('uncheck');
 }
 
-// nécessaire pour l'update es images
-$('#backpack_updateAt_date_month').val(new Date().getMonth() + 1);
-$('#backpack_updateAt_date_day').val(new Date().getDay());
-$('#backpack_updateAt_date_year').val(new Date().getFullYear());
-$('#backpack_updateAt_time_hour').val(new Date().getHours());
-$('#backpack_updateAt_time_minute').val(new Date().getMinutes());
 
 	</script>
 {% endblock %}

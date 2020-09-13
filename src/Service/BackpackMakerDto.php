@@ -14,7 +14,8 @@ use App\Workflow\WorkflowData;
 class BackpackMakerDto
 {
     Const DRAFT='draft';
-    Const MY_DRAFT='mydraft';
+    Const MY_DRAFT_UPDATABLE= 'mydraft_updatable';
+    const DRAFT_UPDATABLE = 'draft_updatable';
     Const PUBLISHED='published';
     Const SEARCH='search';
     Const PUBLISHED_FOR_RUBRIC='published_for_rubric';
@@ -54,11 +55,21 @@ class BackpackMakerDto
                     ->setCurrentState(WorkflowData::STATE_DRAFT)
                     ->setVisible(BackpackDto::TRUE);
                 break;
-            case self::MY_DRAFT:
+            case self::DRAFT_UPDATABLE:
+                if (!is_null($this->user)) {
+                    $dto->setUserDto((new UserDto())->setId($this->user->getId()));
+                }
+                $dto
+                    ->setCurrentState(WorkflowData::STATE_DRAFT)
+                    ->setIsUpdatable(BackpackDto::TRUE)
+                    ->setVisible(BackpackDto::TRUE);
+                break;                
+            case self::MY_DRAFT_UPDATABLE:
                 if (!is_null($this->user)) {
                     $dto->setOwnerDto((new UserDto())->setId($this->user->getId()));
                 }
                 $dto
+                    ->setIsUpdatable(BackpackDto::TRUE)
                     ->setCurrentState(WorkflowData::STATE_DRAFT)
                     ->setVisible(BackpackDto::TRUE);
                 break;

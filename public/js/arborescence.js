@@ -1,6 +1,6 @@
 
-function fillComboboxChained(selecteurSource, selecteurDestination, route, appelEnCascade, addReference, selectedId="") {
-        var id = $(selecteurSource).val();
+function fillComboboxChained(selecteurSource, selecteurDestination, route, appelEnCascade, addReference, selectedId = "") {
+    var id = $(selecteurSource).val();
     if (id == null) return;
 
     $(selecteurDestination).empty();
@@ -8,15 +8,15 @@ function fillComboboxChained(selecteurSource, selecteurDestination, route, appel
     $.ajax({
         method: "POST",
         url: route,
-        data: {'id': id, 'enable': 'all'},
+        data: { 'id': id, 'enable': 'all' },
         dataType: 'json',
         success: function (json) {
-            var selected='';
+            var selected = '';
             $.each(json, function (index, value) {
-                if(selectedId === value.id ) {
-                    selected='selected';
+                if (selectedId === value.id) {
+                    selected = 'selected';
                 } else {
-                    selected='';
+                    selected = '';
                 }
                 $(selecteurDestination).append('<option ' + selected + ' value="' + value.id + '">' +
                     (addReference ? value.ref + ' - ' : '')
@@ -29,56 +29,68 @@ function fillComboboxChained(selecteurSource, selecteurDestination, route, appel
     });
 }
 
-function arborescence(selecteur, route, mprocessId, appelEnCascade, dataSelecteur) {
-    var data = $(dataSelecteur).val();
+function arborescence(fieldSource, route, idMp, idP, appelEnCascade, fieldForm) {
+    var data = getVal(fieldForm);
 
-    $(selecteur).empty();
+    fieldSource.empty();
+
     $.ajax({
         method: "POST",
         url: route,
-        data: {'id': mprocessId},
+        data: {
+            'idMp': idMp,
+            'idP': idP
+        },
         dataType: 'json',
         success: function (json) {
-            var selected='';
-            $(selecteur).append('<option  value=""></option>');
+            console.log(json);
+            var selected = '';
+            fieldSource.append('<option value=""></option>');
+
             $.each(json, function (index, value) {
-                if(data === value.id ) {
-                    selected='selected';
+                if (data === value.id) {
+                    selected = 'selected';
                 } else {
-                    selected='';
-                }
-                $(selecteur).append('<option ' + selected + ' value="' + value.id + '">'
-                    + value.name + '</option>');
-            });
+                    selected = '';
+                } fieldSource.append('<option ' + selected + ' value="' + value.id + '">' + value.name + '</option > ');
+            }
+            );
             if (appelEnCascade) {
-                $(selecteur).change();
+                fieldSource.change();
+
             }
         }
-    });
-}
-function arborescenceChained(selecteur, route, underRubricId, appelEnCascade, dataSelecteur,selectedValue ) {
-    var data = $(dataSelecteur).val();
 
-    $(selecteur).empty();
+    }
+    );
+}
+
+function arborescenceChained(fieldSource, route, idMp, idP, dataSource, appelEnCascade, fieldForm) {
+    var data = fieldForm.val();
+
+    fieldSource.empty();
     $.ajax({
         method: "POST",
         url: route,
-        data: {'id': underRubricId, 'data':selectedValue},
+        data: {
+            'idMp': idMp,
+            'idP': idP,
+            'data': dataSource
+        },
         dataType: 'json',
         success: function (json) {
-            var selected='';
-            $(selecteur).append('<option  value=""></option>');
+            var selected = '';
+            fieldSource.append('<option  value=""></option>');
             $.each(json, function (index, value) {
-                if(data === value.id ) {
-                    selected='selected';
+                if (data === value.id) {
+                    selected = 'selected';
                 } else {
-                    selected='';
+                    selected = '';
                 }
-                $(selecteur).append('<option ' + selected + ' value="' + value.id + '">'
-                    + value.name + '</option>');
+                fieldSource.append('<option ' + selected + ' value="' + value.id + '">' + value.name + '</option>');
             });
             if (appelEnCascade) {
-                $(selecteur).change();
+                fieldSource.change();
             }
         }
     });

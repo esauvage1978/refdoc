@@ -48,22 +48,34 @@ class MakeDashboard
             'backpacks_' . $state,
             null,
             'info',
-            WorkflowData::getNameOfState($state),
+            'Les brouillons',
             $this->counter->get(BackpackMakerDto::DRAFT)
         );
     }
 
-    public function getMyDraft()
+    public function getMyDraftUpdatable()
     {
         $state = WorkflowData::STATE_DRAFT;
         return $this->getArray
         (
-            'backpacks_mydraft',
+            'backpacks_mydraft_updatable',
             ['state', $state],
             'info',
-            '<strong>Mes</strong> brouillons',
-            $this->counter->get(BackpackMakerDto::MY_DRAFT)
+            '<strong>Mes</strong> brouillons modifiables',
+            $this->counter->get(BackpackMakerDto::MY_DRAFT_UPDATABLE)
         );
+    }
+
+    public function getDraftUpdatable()
+    {
+        $state = WorkflowData::STATE_DRAFT;
+        return $this->getArray(
+                'backpacks_draft_updatable',
+                ['state', $state],
+                'info',
+                'Les brouillons modifiables',
+                $this->counter->get(BackpackMakerDto::DRAFT_UPDATABLE)
+            );
     }
 
     public function getPublished()

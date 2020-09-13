@@ -2,25 +2,28 @@
 
 namespace App\Controller;
 
+use App\Dto\UserDto;
+use App\Security\Role;
+use App\Helper\Slugger;
 use App\Dto\BackpackDto;
 use App\Dto\MProcessDto;
-use App\Dto\UserDto;
 use App\Entity\Backpack;
-use App\Form\Backpack\BackpackNewType;
-use App\Form\Backpack\BackpackType;
+use App\Tree\BackpackTree;
+use App\Security\CurrentUser;
+use App\Security\BackpackVoter;
 use App\Helper\ParamsInServices;
 use App\Manager\BackpackManager;
-use App\Repository\BackpackDtoRepository;
-use App\Repository\BackpackRepository;
-use App\Security\BackpackVoter;
-use App\Security\CurrentUser;
-use App\Security\Role;
 use App\Service\BackpackMakerDto;
-use App\Tree\BackpackTree;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use App\Form\Backpack\BackpackType;
+use App\Form\Backpack\BackpackNewType;
+use App\Repository\BackpackRepository;
+use App\Repository\BackpackDtoRepository;
+use App\Repository\BackpackFileRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * Class ThematicController
@@ -84,8 +87,6 @@ class BackpackController extends AbstractGController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            dump($request);
-            dump($item);
             if ($this->manager->save($item)) {
                 $this->addFlash(self::SUCCESS, self::MSG_MODIFY);
                 //$backpackHistory->compare($itemOld, $item);
@@ -131,14 +132,23 @@ class BackpackController extends AbstractGController
         return $this->treeView($request, $this->backpackMakerDto->get(BackpackMakerDto::DRAFT));
     }
 
-
     /**
-     * @Route("/backpacks/mydraft", name="backpacks_mydraft", methods={"GET"})
+     * @Route("/backpacks/draftupdatable", name="backpacks_draft_updatable", methods={"GET"})
      * @IsGranted("ROLE_USER")
      */
-    public function state_mydraft(Request $request)
+    public function state_draft_updatable(Request $request)
     {
-        return $this->treeView($request, $this->backpackMakerDto->get(BackpackMakerDto::MY_DRAFT));
+        return $this->treeView($request, $this->backpackMakerDto->get(BackpackMakerDto::DRAFT_UPDATABLE));
+    }
+
+
+    /**
+     * @Route("/backpacks/mydraftupdatable", name="backpacks_mydraft_updatable", methods={"GET"})
+     * @IsGranted("ROLE_USER")
+     */
+    public function state_mydraft_updatable(Request $request)
+    {
+        return $this->treeView($request, $this->backpackMakerDto->get(BackpackMakerDto::MY_DRAFT_UPDATABLE));
     }
 
     /**
@@ -216,4 +226,24 @@ class BackpackController extends AbstractGController
 
         return $this->treeView($request, $dto);
     }
+
+
+    /**
+     * @Route("/backpack/{id}/file/{fileId}", name="backpack_file_show", methods={"GET"})
+     * @IsGranted("ROLE_USER")
+     */
+    public function actionFileShowAction(
+        Request $request,
+        Backpack $backpack,
+        string $fileId,
+        BackpackFileRepository $backpackFileRepository
+    ): Response {
+
+        $actionFile = $backpackFileRepository->find($fileId);
+
+        $file = new File($actionFile->getHref());
+
+        return $this->file($file, Slugger::slugify($actionFile->getTitle()) . '.' . $actionFile->getFileExtension());
+    }
+
 }

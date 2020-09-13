@@ -10,6 +10,7 @@ use App\Security\Role;
 use App\Dto\ProcessDto;
 use App\Dto\MProcessDto;
 use App\Repository\ProcessRepository;
+use App\Repository\BackpackRepository;
 use App\Repository\ProcessDtoRepository;
 use App\Repository\MProcessDtoRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,28 +20,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 class FillComboboxController extends AbstractGController
 {
-    /**
-     * @Route("/ajax/getgrouping", name="ajax_fill_combobox_grouping", methods={"POST"})
-     * @IsGranted("ROLE_USER")
-     */
-    public function AjaxGetDir1(Request $request, ProcessRepository $repository): Response
-    {
-        $data = null;
-        if ($request->request->has('id')) {
-            $data = $request->request->get('id');
-        }
 
-        if ($request->isXmlHttpRequest()) {
-            return $this->json(
-                $repository->findAllFillComboboxGrouping(
-                    $data
-                ),
-                200
-            );
-        }
-
-        return new Response("Ce n'est pas une requête Ajax");
-    }
 
     /**
      * @Route("/ajax/getmpforcontribute", name="ajax_cmb_mp_for_contribute", methods={"GET","POST"})
@@ -98,5 +78,111 @@ class FillComboboxController extends AbstractGController
             'value' => $processDtoRepository->findForCombobox($dto),
             'message' => 'données transmises'
         ], 200);
+    }
+
+
+    /**
+     * @Route("/ajax/getdir1", name="ajax_fill_combobox_dir1", methods={"GET","POST"})
+     *
+     * @return Response
+     * @IsGranted("ROLE_USER")
+     */
+    public function AjaxGetDir1(Request $request, BackpackRepository $repository): Response
+    {
+        if ($request->isXmlHttpRequest()) {
+
+            return $this->getDirJson($request, $repository, 1);
+        }
+        return new Response("Ce n'est pas une requête Ajax");
+    }
+
+    private function getDirIdMp(Request $request)
+    {
+        return $request->request->has('idMp') ? $request->request->get('idMp') : null;
+    }
+    private function getDirIdP(Request $request)
+    {
+        return $request->request->has('idP') ? $request->request->get('idP') : null;
+    }
+    private function getDirData(Request $request)
+    {
+        return $request->request->has('data') ? $request->request->get('data') : null;
+    }
+    private function getDirJson(Request $request, BackpackRepository $repository, int $dir )
+    {
+        $idMp = $this->getDirIdMp($request);
+        $idP = $this->getDirIdP($request);
+        $data = $this->getDirData($request);
+
+        if ($dir==1) {
+            return $this->json($repository->findAllFillComboboxDir1($idMp, $idP));
+        } else {
+            return
+                $this->json($repository->findAllFillComboboxDirOther($idMp, $idP, $data, $dir));
+        }
+    }
+
+    /**
+     * @Route("/ajax/getdir2", name="ajax_fill_combobox_dir2", methods={"POST"})
+     *
+     * @return Response
+     * @IsGranted("ROLE_USER")
+     */
+    public function AjaxGetDir2(Request $request, BackpackRepository $repository): Response
+    {
+        if ($request->isXmlHttpRequest()) {
+
+            return $this->getDirJson($request, $repository,2);
+        }
+
+        return new Response("Ce n'est pas une requête Ajax");
+    }
+
+    /**
+     * @Route("/ajax/getdir3", name="ajax_fill_combobox_dir3", methods={"POST"})
+     *
+     * @return Response
+     * @IsGranted("ROLE_USER")
+     */
+    public function AjaxGetDir3(Request $request, BackpackRepository $repository): Response
+    {
+        if ($request->isXmlHttpRequest()) {
+
+            return $this->getDirJson($request, $repository, 3);
+        }
+
+        return new Response("Ce n'est pas une requête Ajax");
+    }
+
+    /**
+     * @Route("/ajax/getdir4", name="ajax_fill_combobox_dir4", methods={"POST"})
+     *
+     * @return Response
+     * @IsGranted("ROLE_USER")
+     */
+    public function AjaxGetDir4(Request $request, BackpackRepository $repository): Response
+    {
+        if ($request->isXmlHttpRequest()) {
+
+            return $this->getDirJson($request, $repository, 4);
+        }
+
+        return new Response("Ce n'est pas une requête Ajax");
+    }
+
+    /**
+     * @Route("/ajax/getdir5", name="ajax_fill_combobox_dir5", methods={"POST"})
+     *
+     * @return Response
+     * @IsGranted("ROLE_USER")
+     */
+    public function AjaxGetDir5(Request $request, BackpackRepository $repository): Response
+    {
+        if ($request->isXmlHttpRequest()) {
+
+            return $this->getDirJson($request, $repository, 5);
+        }
+
+        return new Response("Ce n'est pas une requête Ajax");
     }
 }

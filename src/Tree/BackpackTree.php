@@ -65,11 +65,11 @@ class BackpackTree extends AbstractTree
 
             $this->GetBrancheMprocess($item);
             $this->GetBrancheProcess($item);
-            //$this->Dir1($item);
-           // $this->Dir2($item);
-            //$this->Dir3($item);
-            //$this->Dir4($item);
-            //$this->Dir5($item);
+            $this->Dir1($item);
+            $this->Dir2($item);
+            $this->Dir3($item);
+            $this->Dir4($item);
+            $this->Dir5($item);
 
             $filesNumber = $item->getBackpackFiles()->count() + $item->getBackpackLinks()->count();
             $fileSpan = $filesNumber > 0 ? "&nbsp;<span class=\"small text-info ml-2 pl-1 pr-1 rounded border-bottom border-info\"><i class=\"fas fa-paperclip\"></i> {$filesNumber}</span>&nbsp;" : '';
@@ -78,7 +78,7 @@ class BackpackTree extends AbstractTree
                 'id' => $item->getid(),
                 'parent' => $this->getParent(),
                 'text' => '<span class="text-primary">' . $item->getName() . '</span> ' . $fileSpan . $this->checkNews($item). $this->checkState($item),
-                'icon' => 'fas fa-suitcase text-info ',
+                'icon' => 'fas fa-suitcase text-primary ',
                 'a_attr' => [
                     'href' => $this->generateUrl($item->getId()),
                 ],
@@ -151,7 +151,7 @@ class BackpackTree extends AbstractTree
 
         if ($data_courant != $this->mprocess_last) {
             $parent =  '#';
-            $this->addBranche($this->mprocess_id, $data_courant, $parent, $this->developed, $backpack->getMProcess()->getIsEnable());
+            $this->addBranche($this->mprocess_id, $data_courant, $parent, $this->developed, $backpack->getMProcess()->getIsEnable(), 'fas fa-sitemap text-gray');
             $this->process_id='';
             $this->process_last = '';
             $this->dir1_id = '';
@@ -192,7 +192,7 @@ class BackpackTree extends AbstractTree
 
         if ($data_courant != $this->process_last) {
             $parent =  $this->mprocess_id;
-            $this->addBranche($this->process_id, $data_courant, $parent, $this->developed, $backpack->getProcess()->getIsEnable());
+            $this->addBranche($this->process_id, $data_courant, $parent, $this->developed, $backpack->getProcess()->getIsEnable(), 'fas fa-square text-gray ');
 
             $this->dir1_id = '';
             $this->dir1_last = '';
@@ -232,7 +232,7 @@ class BackpackTree extends AbstractTree
             $this->dir1_i++;
             $this->dir1_id = 'd1_' . $this->dir1_i;
 
-            $parent = $this->underRubric_id;
+            $parent = $this->process_id? $this->process_id: $this->mprocess_id;
             $this->addBranche($this->dir1_id, $data_courant, $parent, $this->developed);
 
             $this->dir1_last = $data_courant;

@@ -20,15 +20,16 @@ class DashboardController extends AbstractController
     {
         $md = new MakeDashboard($backpackDtoRepository, $this->getUser());
 
-        $options = [
+        $dash_options = [
             $md->getDraft(),
-            $md->getMyDraft(),
+            $md->getDraftUpdatable(),
+            $md->getMyDraftUpdatable(),
         ];
         
         //$md->getNews()
         return $this->render(
             'dashboard/index.html.twig',
-            ['options' => $options]
+            ['dash_options' => $dash_options]
         );
     }
 }

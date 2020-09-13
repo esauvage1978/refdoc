@@ -1,9 +1,6 @@
 <?php
 
-
 namespace App\Helper;
-
-
 
 /**
  * @author Emmanuel SAUVAGE <emmanuel.sauvage@live.fr>

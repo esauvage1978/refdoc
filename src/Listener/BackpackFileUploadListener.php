@@ -3,9 +3,10 @@
 namespace App\Listener;
 
 use App\Entity\BackpackFile;
-use App\Helper\FileDirectory;
+use App\Helper\DirectoryTools;
+use App\Helper\FileTools;
 use App\Helper\Slugger;
-use App\Helper\SplitNameFile;
+use App\Helper\SplitNameOfFile;
 use App\Service\Uploader;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -22,16 +23,13 @@ class BackpackFileUploadListener
      */
     private $directory;
 
-    /**
-     * @var SplitNameFile
-     */
-    private $splitNameFile;
+
 
     public function __construct(Uploader $uploader, string $directory)
     {
         $this->uploader = $uploader;
         $this->directory = $directory;
-        $this->splitNameFile = new  SplitNameFile();
+        
     }
 
     /**
@@ -44,11 +42,11 @@ class BackpackFileUploadListener
         $file = $backpackFile->getFile();
         if (!empty($file)) {
 
-            $this->splitNameFile->split($file->getClientOriginalName());
-            $extension = $this->splitNameFile->getExtension();
+            $splitNameFile = new SplitNameOfFile($file->getClientOriginalName());
+            $extension = $splitNameFile->getExtension();
 
             if (empty($backpackFile->getFileName())) {
-                $backpackFile->setFileName(Slugger::slugify($this->splitNameFile->getName()));
+                $backpackFile->setFileName(Slugger::slugify($splitNameFile->getName()));
             }
             if (empty($backpackFile->getTitle())) {
                 $backpackFile->setTitle('Nouveau fichier');
@@ -67,13 +65,14 @@ class BackpackFileUploadListener
     public function postPersistHandler(BackpackFile $backpackFile)
     {
         if (!empty($backpackFile->getFile())) {
-            $fileDirectory = new FileDirectory();
+            $DirectoryTools = new DirectoryTools();
+            $fileTools = new FileTools();
 
-            $fileDirectory->createDir($this->directory, $backpackFile->getBackpack()->getId());
+            $DirectoryTools->create($this->directory, $backpackFile->getBackpack()->getId());
             $targetDir = $this->directory . '/' . $backpackFile->getBackpack()->getId();
 
             if (null !== $backpackFile->getFullName()) {
-                $fileDirectory->removeFile($targetDir, $backpackFile->getFullName());
+                $fileTools->remove($targetDir, $backpackFile->getFullName());
             }
 
             $this->uploader->setTargetDir($targetDir);
@@ -86,8 +85,8 @@ class BackpackFileUploadListener
      */
     public function postRemoveHandler(BackpackFile $backpackFile)
     {
-        $fileDirectory = new FileDirectory();
+        $fileDirectory = new FileTools();
         $targetDir = $this->directory . '/' . $backpackFile->getBackpack()->getId();
-        $fileDirectory->removeFile($targetDir, $backpackFile->getFullName());
+        $fileDirectory->remove($targetDir, $backpackFile->getFullName());
     }
 }

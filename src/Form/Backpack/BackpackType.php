@@ -48,6 +48,26 @@ class BackpackType extends AppTypeAbstract
                         ->orderBy('c.name', 'ASC');
                 }
             ])
+            ->add('dir1', TextType::class, [
+                self::LABEL => 'Niveau 1',
+                self::REQUIRED => false
+            ])
+            ->add('dir2', TextType::class, [
+                self::LABEL => 'Niveau 2',
+                self::REQUIRED => false
+            ])
+            ->add('dir3', TextType::class, [
+                self::LABEL => 'Niveau 3',
+                self::REQUIRED => false
+            ])
+            ->add('dir4', TextType::class, [
+                self::LABEL => 'Niveau 4',
+                self::REQUIRED => false
+            ])
+            ->add('dir5', TextType::class, [
+                self::LABEL => 'Niveau 5',
+                self::REQUIRED => false
+            ])
             ->add('mProcess', EntityType::class, [
                 self::CSS_CLASS => MProcess::class,
                 self::CHOICE_LABEL => 'fullname',
@@ -70,7 +90,17 @@ class BackpackType extends AppTypeAbstract
                     self::LABEL            => 'dater',
                     self::REQUIRED => false
                 ]
-            );
+            )
+            ->add('backpackFiles', CollectionType::class, [
+                'entry_type' => BackpackFileType::class,
+                'allow_add' => true,
+                'allow_delete' => true,
+            ])
+            ->add('backpackLinks', CollectionType::class, [
+                'entry_type' => BackpackLinkType::class,
+                'allow_add' => true,
+                'allow_delete' => true,
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

@@ -23,7 +23,32 @@
 
 			{{ render(controller('App\\Controller\\GPIController::showGPIAction', { 'page': 'backpack_add'})) }}
 
-			{{ include(domaine ~ '/_edit/_item_create.html.twig') }}
+			{% if item is defined %}
+
+				{% import '@AdminLTE/Macros/buttons.html.twig'  as btn %}
+				{% import "macros/delele.html.twig" as del %}
+				{% import "macros/submit.html.twig" as sub %}
+				{{ form_start(form) }}
+
+
+				<div style="width:630px">
+
+					{{ include(domaine ~ '/_edit/_consigne.html.twig') }}
+					{{ include(domaine ~ '/_edit/_process.html.twig') }}
+					{{ include(domaine ~ '/_edit/_name.html.twig') }}
+
+
+					<p class="mt-5 mb-5"></p>
+					<p class="mt-5 mb-5"></p>
+				</div>
+				{% import "macros/submit.html.twig" as sub %}<div class="d-none">{{ sub.btn() }}{{form_rest(form)}}</div>
+				{{ form_end(form) }}
+				{% if item.id is not null %}
+					{{ del.delete_form(route_del,item.id, 'show') }}
+				{% endif %}
+			{% endif %}
+
+
 		</div>
 	</div>
 
@@ -40,7 +65,7 @@
 
 	<script type="text/javascript">
 
-/*##################################
+		/*##################################
 ####################################
 ####        MP / P          ########
 ####################################
@@ -58,9 +83,8 @@ let p = $('#backpack_new_process');
 
 let route_mp = "{{ path('ajax_cmb_mp_for_contribute') }}";
 let route_p = "{{ path('ajax_cmb_p_for_contribute') }}";
-	
 
-	
+
 fillComboboxMP(mp_less, route_mp);
 fillComboboxMP(p_less, route_p);
 
@@ -70,31 +94,29 @@ disabled(p_less);
 
 
 mp_less.change(function () {
-    setVal(mp, getVal(mp_less));
+setVal(mp, getVal(mp_less));
 });
 
 
 p_less.change(function () {
-    setVal(p, getVal(p_less));
+setVal(p, getVal(p_less));
 });
 
 
 mp_radio.on('ifChecked', function () {
-    required(mp_less);
-    undisabled(mp_less);
-    disabled(p_less);
-    setVal(p_less, 0);
+required(mp_less);
+undisabled(mp_less);
+disabled(p_less);
+setVal(p_less, 0);
 });
 
 
 p_radio.on('ifChecked', function () {
-    unrequired(mp_less);
-    disabled(mp_less);
-    undisabled(p_less);
-    setVal(mp_less, 0);
+unrequired(mp_less);
+disabled(mp_less);
+undisabled(p_less);
+setVal(mp_less, 0);
 });
-
-
 
 	</script>
 {% endblock %}

@@ -77,7 +77,24 @@ class BackpackVoter extends Voter
 
     public function canUpdate(Backpack $backpack, User $user)
     {
-        if (Role::isGestionnaire($this->user)) {
+        if($user->getIsDoc()) {
+            return true;
+        }
+
+        if (!Role::isUser($this->user)) {
+            return true;
+        }
+
+
+        $process = $backpack->getProcess();
+        $Mprocess = $backpack->getMProcess();
+
+        $processes = $user->getProcessContributors()->toArray();
+        $Mprocesses = $user->getMProcessContributors()->toArray();
+
+        if ($process !== null && in_array($process, $processes)) {
+            return true;
+        } elseif (in_array($Mprocess, $Mprocesses)) {
             return true;
         }
 
@@ -86,7 +103,7 @@ class BackpackVoter extends Voter
 
     public function canDelete(Backpack $backpack, User $user)
     {
-        if (Role::isUser($this->user)) {
+        if ($user->getIsDoc() || Role::isAdmin($user) ) {
             return true;
         }
 

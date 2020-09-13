@@ -186,6 +186,8 @@ class BackpackDtoRepository extends ServiceEntityRepository implements DtoReposi
 
         $this->initialise_where_new();
 
+        $this->initialise_where_is_updatable();
+
         $this->initialise_where_enable();
 
         $this->initialise_where_state();
@@ -210,6 +212,41 @@ class BackpackDtoRepository extends ServiceEntityRepository implements DtoReposi
 
             $this->addParams('from', $from);
             $this->addParams('to', $to);
+        }
+    }
+
+    private function initialise_where_is_updatable()
+    {
+        if ($this->dto->getIsUpdatable() == BackpackDto::TRUE) {
+            
+            $u = $this->dto->getUserDto();
+            if(empty($u)) {
+                $u = $this->dto->getOwnerDto();
+            }
+            if (!empty($u) && !empty($u->getId())) {
+
+                $qWC = $this->createQueryBuilder(self::ALIAS . '1')
+                    ->select(self::ALIAS . '1.id')
+                    ->join(self::ALIAS .'1.mProcess', MProcessRepository::ALIAS.'1')
+                    ->join(MProcessRepository::ALIAS . '1.contributors', UserRepository:: ALIAS_MP_C . '1')
+                    ->where(UserRepository::ALIAS_MP_C . '1.id= :idUser');
+                $qWC2 = $this->createQueryBuilder(self::ALIAS . '2')
+                    ->select(self::ALIAS . '2.id')
+                    ->join(self::ALIAS . '2.process', ProcessRepository::ALIAS . '2')
+                    ->join(ProcessRepository::ALIAS . '2.contributors', UserRepository::ALIAS_MP_C . '2')
+                    ->where(UserRepository::ALIAS_MP_C . '2.id= :idUser');
+
+                $this->addParams('idUser', $u->getId());
+
+                $this->builder
+                    ->andWhere(
+                        '(( '. self::ALIAS . '.process is null AND '. 
+                        self::ALIAS . '.id IN (' . $qWC->getDQL() . ')) OR ('.
+                        self::ALIAS . '.id IN (' . $qWC2->getDQL() . ')))'
+                    );
+            }
+
+
         }
     }
 

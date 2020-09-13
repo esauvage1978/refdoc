@@ -26,6 +26,14 @@ function setVal(field, value) {
     return field.val(value);
 }
 
+function hide(field) {
+    field.addClass('d-none');
+}
+
+function show(field) {
+    field.removeClass('d-none');
+}
+
 function fillComboboxMP(selecteur, route, selectedId = "") {
     axios.get(route).then(function (response) {
         selecteur.append('<option  value=""></option>');
