@@ -19,6 +19,8 @@
 
 	<div class="row justify-content-center">
 		<div class="" style="width:960px">
+			<h1>Porte-document</h1>
+			<hr/>
 
 			{{ render(controller('App\\Controller\\GPIController::showGPIAction', { 'page': 'backpack_add'})) }}
 
@@ -34,12 +36,17 @@
 				<div style="width:630px">
 
 					{% if item.currentState == "draft" %}
-
-						{{ include(domaine ~ '/_edit/_consigne.html.twig') }}
+						{{ include(domaine ~ '/_edit/_type_doc.html.twig') }}
 						{{ include(domaine ~ '/_edit/_process.html.twig') }}
 						{{ include(domaine ~ '/_edit/_arborescence.html.twig') }}
 						{{ include(domaine ~ '/_edit/_name.html.twig') }}
 						{{ include(domaine ~ '/_edit/_files.html.twig') }}
+					{% elseif item.currentState == "abandonned" %}
+						{{ include(domaine ~ '/_show/_type_doc.html.twig') }}
+						{{ include(domaine ~ '/_show/_process.html.twig') }}
+						{{ include(domaine ~ '/_show/_arborescence.html.twig') }}
+
+						{{ include(domaine ~ '/_show/_item.html.twig') }}
 
 
 					{% endif %}
@@ -61,7 +68,15 @@
 					{{ del.delete_form(route_del,item.id, 'show') }}
 				{% endif %}
 			{% endif %}
+			<h1>Changement d'état</h1>
+			<hr/>
+			{% import "macros/workflow.html.twig" as wfl %}
 
+			{% for transition in workflow_transitions(item) %}
+				{{ include('workflow/_modal_transition.html.twig',{'transition':transition.name,'id':item.id}) }}
+			{% endfor %}
+
+			{{ wfl.cards(item) }}
 
 		</div>
 	</div>
@@ -105,7 +120,7 @@
 
 	<script type="text/javascript">
 
-$(document).on('change', '.custom-file-input', function () {
+		$(document).on('change', '.custom-file-input', function () {
 let fileName = $(this).val().replace(/\\/g, '/').replace(/.*\//, '');
 $(this).parent('.custom-file').find('.custom-file-label').text(fileName);
 });
@@ -308,7 +323,5 @@ if (idP != 0) {
 p_radio.iCheck('check');
 mp_radio.iCheck('uncheck');
 }
-
-
 	</script>
 {% endblock %}

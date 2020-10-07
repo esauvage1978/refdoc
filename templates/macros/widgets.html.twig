@@ -137,3 +137,7 @@
         </div>
     </div>
 {% endmacro %}
+
+{% macro style_bg_color(state) %}
+	style="background-color:{{ state | workflowGetColorOfState }};color:black"
+{% endmacro %}

@@ -13,6 +13,7 @@ use App\Security\CurrentUser;
 use App\Security\BackpackVoter;
 use App\Helper\ParamsInServices;
 use App\Manager\BackpackManager;
+use App\Service\BackpackForTree;
 use App\Service\BackpackMakerDto;
 use App\Form\Backpack\BackpackType;
 use App\Form\Backpack\BackpackNewType;
@@ -32,34 +33,21 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 class BackpackController extends AbstractGController
 {
 
-    /**
-     * @var BackpackMakerDto
-     */
-    private $backpackMakerDto;
 
     /**
-     * @var ParamsInServices
+     * @var BackpackForTree
      */
-    private $paramsInServices;
-
-    /**
-     * @var BackpackDtoRepository
-     */
-    private $backpackDtoRepository;
+    private $backpackForTree;
 
     public function __construct(
         BackpackRepository $repository,
         backpackManager $manager,
-        ParamsInServices $paramsInServices,
-        CurrentUser $currentUser,
-        BackpackDtoRepository $backpackDtoRepository
+        BackpackForTree $backpackForTree
     ) {
         $this->repository = $repository;
         $this->manager = $manager;
         $this->domaine = 'backpack';
-        $this->paramsInServices = $paramsInServices;
-        $this->backpackDtoRepository = $backpackDtoRepository;
-        $this->backpackMakerDto = new BackpackMakerDto($currentUser->getUser());
+        $this->backpackForTree = $backpackForTree;
     }
 
     /**
@@ -120,7 +108,8 @@ class BackpackController extends AbstractGController
      */
     public function home(Request $request)
     {
-        return $this->treeView($request, $this->backpackMakerDto->get(BackpackMakerDto::DRAFT));
+        $renderArray = $this->backpackForTree->getDatas($this->container, $request, BackpackMakerDto::HOME_SUBSCRIPTION);
+        return $this->render('backpack/tree.html.twig', $renderArray);
     }
 
     /**
@@ -129,7 +118,8 @@ class BackpackController extends AbstractGController
      */
     public function state_draft(Request $request)
     {
-        return $this->treeView($request, $this->backpackMakerDto->get(BackpackMakerDto::DRAFT));
+        $renderArray = $this->backpackForTree->getDatas($this->container, $request, BackpackMakerDto::DRAFT);
+        return $this->render('backpack/tree.html.twig', $renderArray);
     }
 
     /**
@@ -138,7 +128,8 @@ class BackpackController extends AbstractGController
      */
     public function state_draft_updatable(Request $request)
     {
-        return $this->treeView($request, $this->backpackMakerDto->get(BackpackMakerDto::DRAFT_UPDATABLE));
+        $renderArray = $this->backpackForTree->getDatas($this->container, $request, BackpackMakerDto::DRAFT_UPDATABLE);
+        return $this->render('backpack/tree.html.twig', $renderArray);
     }
 
 
@@ -148,7 +139,8 @@ class BackpackController extends AbstractGController
      */
     public function state_mydraft_updatable(Request $request)
     {
-        return $this->treeView($request, $this->backpackMakerDto->get(BackpackMakerDto::MY_DRAFT_UPDATABLE));
+        $renderArray = $this->backpackForTree->getDatas($this->container, $request, BackpackMakerDto::MY_DRAFT_UPDATABLE);
+        return $this->render('backpack/tree.html.twig', $renderArray);
     }
 
     /**
@@ -157,51 +149,7 @@ class BackpackController extends AbstractGController
      */
     public function treeView(Request $request, BackpackDto $dto)
     {
-
-        if ($dto->getVisible() === null && $dto->getHide() === null) {
-            $dto->setData($request);
-            if (!is_null($this->getUser()) && !Role::isGestionnaire($this->getUser())) {
-                $dto->setUserDto((new UserDto())->setId($this->getUser()->getId()));
-            }
-        }
-
-        if (null === $dto) {
-
-            $items = null;
-        } else {
-            $items = $this->backpackDtoRepository->findAllForDto($dto, BackpackDtoRepository::FILTRE_DTO_INIT_TREE);
-        }
-
-        $renderArray = $dto->getData();
-
-        $tree = new BackpackTree($this->container, $request, $this->paramsInServices);
-
-        if (!is_null($dto->getId())) {
-            $tree->setItem($this->repository->find($dto->getId()));
-        }
-
-
-        $tree
-            ->initialise($items)
-            ->setRoute('backpacks')
-            ->setParameter($renderArray);
-
-        if (!is_null($dto->getCurrentState())) {
-            $tree->hideState();
-        }
-
-        count($items) <= $this->paramsInServices->get(ParamsInServices::ES_TREE_UNDEVELOPPED_NBR) && $tree->Developed();
-        array_key_exists('underRubric', $renderArray) && $tree->hideUnderThematic();
-
-        $renderArray = array_merge(
-            $renderArray,
-            [
-                'items' => $tree->getTree(),
-                'count' => $tree->getCountItems(),
-                'item' => $tree->getItem()
-            ]
-        );
-
+        $renderArray = $this->backpackForTree->getDatas($this->container, $request, null,$dto);
         return $this->render('backpack/tree.html.twig', $renderArray);
     }
 
@@ -224,7 +172,8 @@ class BackpackController extends AbstractGController
             $this->manager->remove($item);
         }
 
-        return $this->treeView($request, $dto);
+        $renderArray = $this->backpackForTree->getDatas($this->container, $request,null, $dto);
+        return $this->render('backpack/tree.html.twig', $renderArray);
     }
 
 
@@ -245,5 +194,4 @@ class BackpackController extends AbstractGController
 
         return $this->file($file, Slugger::slugify($actionFile->getTitle()) . '.' . $actionFile->getFileExtension());
     }
-
 }

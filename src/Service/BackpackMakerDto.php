@@ -13,6 +13,8 @@ use App\Workflow\WorkflowData;
 
 class BackpackMakerDto
 {
+    const HOME_SUBSCRIPTION = 'home_subscription';
+    const HOME_ALL = 'home_all';
     Const DRAFT='draft';
     Const MY_DRAFT_UPDATABLE= 'mydraft_updatable';
     const DRAFT_UPDATABLE = 'draft_updatable';
@@ -55,6 +57,15 @@ class BackpackMakerDto
                     ->setCurrentState(WorkflowData::STATE_DRAFT)
                     ->setVisible(BackpackDto::TRUE);
                 break;
+            case self::HOME_SUBSCRIPTION:
+                if (!is_null($this->user)) {
+                    $dto->setUserDto((new UserDto())->setId($this->user->getId()));
+                }
+                $dto
+                    ->setCurrentState(WorkflowData::STATE_DRAFT)
+                    ->setIsForSubscription(BackpackDto::TRUE)
+                    ->setVisible(BackpackDto::TRUE);
+                break;                 
             case self::DRAFT_UPDATABLE:
                 if (!is_null($this->user)) {
                     $dto->setUserDto((new UserDto())->setId($this->user->getId()));

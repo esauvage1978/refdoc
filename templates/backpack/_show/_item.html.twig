@@ -6,7 +6,7 @@
         {% import "macros/file.html.twig" as file %}
         {% block card_class %} card-light  card-outline shadow{% endblock %}
         {% block card_title_class %} text-bold{% endblock %}
-        {% block card_title %} {{ widgets.icon('backpack') }} {{ item.name }}{% endblock %}
+        {% block card_title %} {{ bpk.icone(item) }} {{ item.name }}{% endblock %}
         {% block card_tools %}
             {{ widgets.badge_state(item.currentState) }}
             {{ new.isNew(item.updateAt) }}

@@ -38,6 +38,8 @@
         <tr>
             <td class="align-middle text-center ">{{ item.ref }}</td>
             <td class="align-middle">
+
+
                 <a href="{{ path(route_show,{id:item.id}) }}"
                    class="text-{{ item.isEnable ? 'primary' : 'danger text-bold' }}">
                     {{ item.name }}

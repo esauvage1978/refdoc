@@ -38,6 +38,8 @@
 	{% for item in items %}
 		<tr>
 			<td class="align-middle">
+<i class="{{item.icone}} " style="background-color:{{item.bgcolor}};color:{{item.forecolor}};"></i>
+
 				<a href="{{ path(route_show,{id:item.id}) }}" class="text-{{ item.isEnable ? 'primary' : 'danger text-bold' }}">
 					{{ item.name }}
 				</a>

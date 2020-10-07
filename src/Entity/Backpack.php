@@ -94,6 +94,11 @@ class Backpack implements EntityInterface
 
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\BackpackState", mappedBy="backpack")
+     */
+    private $backpackStates;
+
+    /**
      * @ORM\ManyToOne(targetEntity=MProcess::class, inversedBy="backpacks")
      */
     private $mProcess;
@@ -117,7 +122,7 @@ class Backpack implements EntityInterface
     {
         $this->currentState= WorkflowData::STATE_DRAFT;
         $this->stateAt=new \DateTime();
-
+        $this->backpackStates = new ArrayCollection();
         $this->backpackFiles = new ArrayCollection();
         $this->backpackLinks = new ArrayCollection();
     }
@@ -320,6 +325,37 @@ class Backpack implements EntityInterface
     }
 
 
+
+    /**
+     * @return Collection|BackpackState[]
+     */
+    public function getBackpackStates(): Collection
+    {
+        return $this->backpackStates;
+    }
+
+    public function addBackpackState(BackpackState $backpackState): self
+    {
+        if (!$this->backpackStates->contains($backpackState)) {
+            $this->backpackStates[] = $backpackState;
+            $backpackState->setBackpack($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBackpackState(BackpackState $backpackState): self
+    {
+        if ($this->backpackStates->contains($backpackState)) {
+            $this->backpackStates->removeElement($backpackState);
+            // set the owning side to null (unless already changed)
+            if ($backpackState->getBackpack() === $this) {
+                $backpackState->setBackpack(null);
+            }
+        }
+
+        return $this;
+    }
 
     /**
      * @return Collection|BackpackFile[]

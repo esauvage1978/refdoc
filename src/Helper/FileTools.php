@@ -69,4 +69,21 @@ class FileTools extends AbstractFsObject
         }
         return 0;
     }
+
+    public function write(string $path, string $file, string $content,bool $append=false)
+    {
+        $fullFile= $path . '/' . $file;
+
+        
+        if( !$this->exist($path,$file)) {
+            dump('existe pas');
+            $this->fsObject->touch($fullFile);
+            dump('creation');
+        } else if(!$append) {
+            $this->remove($path,$file);
+        }
+
+        $this->fsObject->appendToFile($fullFile,$content);
+    }
+
 }

@@ -36,7 +36,7 @@ class BackpackManager extends AbstractManager
 
         if (empty($entity->getId())) {
 
-            null !== $this->currentUser->getUser() ?? $bp->setOwner($this->currentUser->getUser());
+            $bp->setOwner($this->currentUser->getUser());
 
             $bp->setCreatedAt(new \DateTime());
             

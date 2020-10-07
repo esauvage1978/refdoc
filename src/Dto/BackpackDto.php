@@ -46,6 +46,11 @@ class BackpackDto extends AbstractDto
     private $isUpdatable;
 
     /**
+     * @var ?string
+     */
+    private $isForSubscription;
+
+    /**
      * @return mixed
      */
     public function getMProcessDto()
@@ -171,10 +176,30 @@ class BackpackDto extends AbstractDto
         return $this;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getIsForSubscription()
+    {
+        return $this->isForSubscription;
+    }
+
+    /**
+     * @param mixed $isForSubscription
+     * @return BackpackDto
+     */
+    public function setIsForSubscription($isForSubscription)
+    {
+        $this->checkBool($isForSubscription);
+        $this->isForSubscription = $isForSubscription;
+        return $this;
+    }
+
     public function getData(): array
     {
         $d = [];
         isset($this->wordSearch) && $d = array_merge($d, ['wordSearch' => $this->wordSearch]);
+        isset($this->visible) && $d = array_merge($d, ['isForSubscription' => $this->isForSubscription]);
         isset($this->visible) && $d = array_merge($d, ['isNew' => $this->isNew]);
         isset($this->visible) && $d = array_merge($d, ['isUpdatable' => $this->isUpdatable]);
         isset($this->visible) && $d = array_merge($d, ['visible' => $this->visible]);
@@ -182,13 +207,12 @@ class BackpackDto extends AbstractDto
         isset($this->hide) && $d = array_merge($d, ['hide' => $this->hide]);
         isset($this->ownerDto) && isset($this->ownerDto->id) && $d = array_merge($d, ['owner' => $this->ownerDto->id]);
         isset($this->userDto) && isset($this->userDto->id) && $d = array_merge($d, ['user' => $this->userDto->id]);
-        //isset($this->underRubricDto) && isset($this->underRubricDto->id) && $d=array_merge($d,['underRubric'=>$this->underRubricDto->id]);
-        //isset($this->rubricDto) && isset($this->rubricDto->id) && $d=array_merge($d,['rubric'=>$this->rubricDto->id]);
         return $d;
     }
     public function setData(Request $datas)
     {
         null !== $datas->get('wordSearch') && $this->wordSearch = $datas->get('wordSearch');
+        null !== $datas->get('isForSubscription') && $this->isForSubscription = $datas->get('isForSubscription');
         null !== $datas->get('isNew') && $this->isNew = $datas->get('isNew');
         null !== $datas->get('isUpdatable') && $this->isUpdatable = $datas->get('isUpdatable');
         null !== $datas->get('visible') && $this->visible = $datas->get('visible');
@@ -196,7 +220,6 @@ class BackpackDto extends AbstractDto
         null !== $datas->get('owner') && $this->ownerDto = (new UserDto())->setId($datas->get('owner'));
         null !== $datas->get('user') && $this->userDto = (new UserDto())->setId($datas->get('user'));
         null !== $datas->get('currentState') && $this->currentState = $datas->get('currentState');
-        //null!==$datas->get('underRubric') && $this->underRubricDto=(new UnderRubricDto())->setId($datas->get('underRubric'));
-        //null!==$datas->get('rubric') && $this->rubricDto=(new RubricDto())->setId($datas->get('rubric'));
     }
+
 }

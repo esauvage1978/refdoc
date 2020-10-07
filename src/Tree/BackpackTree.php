@@ -78,7 +78,7 @@ class BackpackTree extends AbstractTree
                 'id' => $item->getid(),
                 'parent' => $this->getParent(),
                 'text' => '<span class="text-primary">' . $item->getName() . '</span> ' . $fileSpan . $this->checkNews($item). $this->checkState($item),
-                'icon' => 'fas fa-suitcase text-primary ',
+                'icon' => $item->getCategory()->getIcone() . ' category_' . $item->getCategory()->getId(),
                 'a_attr' => [
                     'href' => $this->generateUrl($item->getId()),
                 ],

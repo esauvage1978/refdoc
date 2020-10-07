@@ -20,6 +20,7 @@ class ParamsInServices
 {
     public const ES_APP_NAME = 'es.app.name';
     public const ES_DIRECTORY_AVATAR = 'es.directory.avatar';
+    public const ES_DIRECTORY_CSS = 'es.directory.css';
     public const ES_DIRECTORY_UPLOAD_BACKPACK = 'es.directory.upload.backpack';
     public const ES_MAILER_OBJECT_PREFIXE = 'mailer.object.prefixe';
     public const ES_MAILER_USER_NAME = 'es.mailer.user.name';
@@ -43,6 +44,7 @@ class ParamsInServices
         $this->datas = [
             self::ES_APP_NAME,
             self::ES_DIRECTORY_AVATAR,
+            self::ES_DIRECTORY_CSS,
             self::ES_DIRECTORY_UPLOAD_BACKPACK,
             self::ES_MAILER_OBJECT_PREFIXE,
             self::ES_MAILER_USER_NAME,

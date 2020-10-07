@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=CategoryRepository::class)
- */
+ * */
 class Category implements EntityInterface
 {
     /**
@@ -53,6 +53,21 @@ class Category implements EntityInterface
      * @ORM\OneToMany(targetEntity=Backpack::class, mappedBy="category")
      */
     private $backpacks;
+
+    /**
+     * @ORM\Column(type="string", length=50, nullable=true)
+     */
+    private $icone;
+
+    /**
+     * @ORM\Column(type="string", length=7, nullable=true)
+     */
+    private $bgcolor;
+
+    /**
+     * @ORM\Column(type="string", length=7, nullable=true)
+     */
+    private $forecolor;
 
     public function __construct()
      {
@@ -167,6 +182,42 @@ class Category implements EntityInterface
                 $backpack->setCategory(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getIcone(): ?string
+    {
+        return $this->icone;
+    }
+
+    public function setIcone(?string $icone): self
+    {
+        $this->icone = $icone;
+
+        return $this;
+    }
+
+    public function getBgcolor(): ?string
+    {
+        return $this->bgcolor;
+    }
+
+    public function setBgcolor(?string $bgcolor): self
+    {
+        $this->bgcolor = $bgcolor;
+
+        return $this;
+    }
+
+    public function getForecolor(): ?string
+    {
+        return $this->forecolor;
+    }
+
+    public function setForecolor(?string $forecolor): self
+    {
+        $this->forecolor = $forecolor;
 
         return $this;
     }

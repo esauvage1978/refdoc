@@ -99,7 +99,7 @@ class User implements UserInterface, EntityInterface
 
     /** @ORM\OneToMany(targetEntity=Subscription::class, mappedBy="user", orphanRemoval=true) */
     private $subscriptions;
-
+ 
     /**
      * @ORM\ManyToMany(targetEntity=Process::class, mappedBy="validators")
      * @ORM\JoinTable("processvalidators_user")
@@ -123,6 +123,11 @@ class User implements UserInterface, EntityInterface
     private $isDoc;
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\BackpackState", mappedBy="user")
+     */
+    private $backpackStates;
+
+    /**
      * @ORM\Column(type="boolean")
      */
     private $isControl;
@@ -138,6 +143,7 @@ class User implements UserInterface, EntityInterface
         $this->processValidators = new ArrayCollection();
         $this->processContributors = new ArrayCollection();
         $this->backpacks = new ArrayCollection();
+        $this->backpackStates = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -603,6 +609,38 @@ class User implements UserInterface, EntityInterface
     public function setIsControl(bool $isControl): self
     {
         $this->isControl = $isControl;
+
+        return $this;
+    }
+
+
+    /**
+     * @return Collection|backpackState[]
+     */
+    public function getbackpackStates(): Collection
+    {
+        return $this->backpackStates;
+    }
+
+    public function addbackpackState(backpackState $backpackState): self
+    {
+        if (!$this->backpackStates->contains($backpackState)) {
+            $this->backpackStates[] = $backpackState;
+            $backpackState->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removebackpackState(backpackState $backpackState): self
+    {
+        if ($this->backpackStates->contains($backpackState)) {
+            $this->backpackStates->removeElement($backpackState);
+            // set the owning side to null (unless already changed)
+            if ($backpackState->getUser() === $this) {
+                $backpackState->setUser(null);
+            }
+        }
 
         return $this;
     }
