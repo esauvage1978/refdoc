@@ -19,6 +19,18 @@ class CategoryManager extends AbstractManager
 
     public function initialise(EntityInterface $entity): void
     {
-
+        /**
+         * @var Category
+         */
+        $cat=$entity;
+        if ($cat->getIcone()==null) {
+            $cat->setIcone("far fa-sticky-note");
+        }
+        if ($cat->getBgcolor() == null) {
+            $cat->setBgcolor("#ffffff");
+        }
+        if ($cat->getForecolor() == null) {
+            $cat->setForecolor("#ff0000");
+        }
     }
 }

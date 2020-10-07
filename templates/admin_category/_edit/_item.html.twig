@@ -26,7 +26,8 @@
 						</p>
 						<p>
 							Si les documents de ce type doivent être validé, le titre devra avoir la mention
-							<b>+&nbsp;validation&nbsp;du&nbsp;contrôle</b>
+<b>validé par le service contrôle</b>
+
 							et il faudra cocher la case validation
 
 						</p>
@@ -39,7 +40,7 @@
 					</div>
 					<div class="createTip">
 						<div class="createTip__title">
-Rendre ce type de document utilisable
+							Rendre ce type de document utilisable
 
 						</div>
 						<p>
@@ -48,7 +49,7 @@ Rendre ce type de document utilisable
 						</p>
 						<p>
 							<b>décoché</b>
-: Il ne sera plus possible de créer de nouveau porte-document de ce type. Cependant les anciens porte-documents restent accessibles
+							: Il ne sera plus possible de créer de nouveau porte-document de ce type. Cependant les anciens porte-documents restent accessibles
 
 						</p>
 
@@ -144,18 +145,17 @@ Rendre ce type de document utilisable
 
 				<div class="form-group row m-2  js-createTip-wrapper">
 
-<div class="col mt-4">
-
+					<div class="col mt-4">
 
 
 						{{ form_label(form.timeBeforeRevision) }}
 					</div>
-<div class="col mt-4">
+					<div class="col mt-4">
 
 
 						{{ form_widget(form.timeBeforeRevision) }}
 					</div>
-<div class="col mt-4">
+					<div class="col mt-4">
 
 						<span class='js-value'></span>
 
@@ -179,7 +179,6 @@ link.addEventListener('input', onClickShowValue);
 
 })
 					</script>
-					{{ form_rest(form) }}
 
 
 					<div class="createTip ">
@@ -191,9 +190,90 @@ link.addEventListener('input', onClickShowValue);
 						</p>
 					</div>
 				</div>
-			</div>
-		{% endblock %}
-	{% endembed %}
+
+			{% endblock %}
+		{% endembed %}
+
+		{% embed 'widgets/card-widget.html.twig' %}
+			{% block card_class %}flat mt-5
+			{% endblock %}
+			{% block card_body %}
+
+				<div class="row js-createTip-wrapper">
+					<div class="createTip ">
+						<div class="createTip__title">
+							Icône de présentation
+						</div>
+						<p>
+							Permet d'afficher une icône au niveau de la liste des porte-documents
+						</p>
+					</div>
+					<div class=" col-12 ">
+
+						<div class="form-group row">
+							{{ form_label(form.icone,'', { 'label_attr': {'class':'col-sm-3 col-form-label' }}) }}
+
+							<div class="col">
+								{{ form_errors(form.icone) }}
+
+								{{ form_widget(form.icone) }}
+
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row js-createTip-wrapper">
+
+					<div class="createTip ">
+						<div class="createTip__title">
+							Couleur de fond
+						</div>
+						<p>
+							Permet de modifier la couleur de l'icône
+						</p>
+					</div>
+
+					<div class=" col-12">
+						<div class="form-group row">
+							{{ form_label(form.bgcolor,'', { 'label_attr': {'class':'col-sm-3 col-form-label' }}) }}
+							<div class="col">
+								{{ form_errors(form.bgcolor) }}
+								{{ form_widget(form.bgcolor) }}
+							</div>
+						</div>
+
+					</div>
+				</div>
+				<div class="row js-createTip-wrapper">
+					<div class="createTip ">
+						<div class="createTip__title">
+							Couleur de l'icône
+						</div>
+						<p>
+							Permet de modifier la couleur de l'icône
+						</p>
+					</div>
+
+					<div class=" col-12">
+						<div class="form-group row">
+							{{ form_label(form.forecolor,'', { 'label_attr': {'class':'col-sm-3 col-form-label' }}) }}
+							<div class="col">
+								{{ form_errors(form.forecolor) }}
+								{{ form_widget(form.forecolor) }}
+							</div>
+						</div>
+
+					</div>
+				</div>
+
+
+			{% endblock %}
+		{% endembed %}
+	</div>
+
+	{{ form_rest(form) }}
+
 	<p class="mt-5 mb-5"></p>
 	<p class="mt-5 mb-5"></p>
 </div>

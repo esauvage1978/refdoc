@@ -2,28 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Functional;
+namespace App\Tests\Smockz;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class ApplicationAvailabilityFunctional30xTest extends WebTestCase
 {
-    /**
-     * @dataProvider urlProvider301
-     */
-    public function testPageIs301($url): void
-    {
-        $client = self::createClient();
-        $client->request('GET', $url);
 
-        $this->assertResponseStatusCodeSame(301);
-    }
-
-    public function urlProvider301()
-    {
-        yield ['/profil'];
-        yield ['/profil/avatar'];
-    }
 
     /**
      * @dataProvider urlProvider302
@@ -38,6 +23,7 @@ class ApplicationAvailabilityFunctional30xTest extends WebTestCase
 
     public function urlProvider302()
     {
+        yield ['/'];
         yield ['/dashboard'];
 
         yield ['/admin'];
@@ -45,6 +31,5 @@ class ApplicationAvailabilityFunctional30xTest extends WebTestCase
 
         yield ['/profil'];
         yield ['/profil/avatar'];
-        yield ['/profil/update'];
     }
 }

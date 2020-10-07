@@ -107,6 +107,10 @@
     {% endapply %}
 {% endmacro %}
 
+{% macro badge_state(state) %}
+	{%- import _self as macro -%}
+	{{ macro.badge( (state | workflowGetIconOfState) ~ ' ' ~ (state | workflowGetNameOfState) , state | workflowGetColorOfState) }}
+{% endmacro %}
 
 
 {% macro badge(title, color) %}
@@ -125,11 +129,15 @@
                 class="{{ options.icon }}"></i></span>
         <div class="info-box-content">
             {% if not url is empty %}<a href="{{ url }}" class="small-box-footer">{% endif %}
-                <span class="info-box-text">{{ options.title }}</span>
+                <span class="info-box-text">{{ options.title | raw }}</span>
                 <span class="info-box-number">
                 {{ options.data }}
         </span>
                 {% if not url is empty %}</a>{% endif %}
         </div>
     </div>
+{% endmacro %}
+
+{% macro style_bg_color(state) %}
+	style="background-color:{{ state | workflowGetColorOfState }};color:black"
 {% endmacro %}

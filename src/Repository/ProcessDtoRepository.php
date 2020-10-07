@@ -162,7 +162,7 @@ class ProcessDtoRepository extends ServiceEntityRepository implements DtoReposit
     private function initialise_selectCombobox(): void
     {
         $this->builder = $this->createQueryBuilder(self::ALIAS)
-            ->select('distinct ' . self::ALIAS . '.id, ' . self::ALIAS . '.name')
+            ->select('distinct ' . self::ALIAS .'.id, concat(' . self::ALIAS . '.ref,\' - \',' . self::ALIAS . '.name) as name')
             ->innerJoin(self::ALIAS . '.mProcess', MProcessRepository::ALIAS);
     }
 
@@ -184,6 +184,8 @@ class ProcessDtoRepository extends ServiceEntityRepository implements DtoReposit
 
         $this->initialise_where_search();
 
+        $this->initialise_where_user_can_update();
+
         $this->initialise_where_subscription();
 
         if (count($this->params) <= 0) {
@@ -191,6 +193,28 @@ class ProcessDtoRepository extends ServiceEntityRepository implements DtoReposit
         }
 
         $this->builder->setParameters($this->params);
+    }
+
+
+    private function initialise_where_user_can_update()
+    {
+        if (!empty($this->dto->getForUpdate())) {
+            $u = $this->dto->getUserDto();
+            if (!empty($u) && !empty($u->getId())) {
+
+                $qWC = $this->createQueryBuilder(self::ALIAS . '1')
+                    ->select(self::ALIAS . '1.id')
+                    ->join(self::ALIAS . '1.contributors', UserRepository::ALIAS_MP_C)
+                    ->where(UserRepository::ALIAS_MP_C . '.id= :idUser');
+
+                $this->addParams('idUser', $u->getId());
+
+                $this->builder
+                    ->andWhere(
+                        self::ALIAS . '.id IN (' . $qWC->getDQL() . ')'
+                    );
+            }
+        }
     }
 
     private function initialise_where_subscription(): void

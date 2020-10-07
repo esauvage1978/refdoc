@@ -54,6 +54,14 @@ class AdminController extends AbstractController
                 'name' => 'Liste des utilisateurs',
                 'route' => 'role_utilisateur',
             ],
+            [
+                'name' => 'Liste des utilisateurs du service documentation',
+                'route' => 'role_doc',
+            ],
+            [
+                'name' => 'Liste des utilisateurs du service contrôle',
+                'route' => 'role_control',
+            ],            
         ];
 
 

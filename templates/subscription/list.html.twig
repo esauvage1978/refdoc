@@ -41,10 +41,9 @@
 		<div class="col-sm-12 col-xl-7">
 			{% embed 'widgets/card-widget.html.twig' %}
 				{% import "macros/widgets.html.twig" as widgets %}
-{% block card_class %}flat
-{% endblock %}
-{% block card_body_class %}p-0
-
+				{% block card_class %}flat
+				{% endblock %}
+				{% block card_body_class %}p-0
 				{% endblock %}
 				{% block card_body %}
 					<div class="list-group">
@@ -72,8 +71,6 @@
 										<span class="js-title-icone {{ p in abosP ? 'text-success':'text-warning' }} ">
 											{{ widgets.icon('process') }}
 										</span>
-
-
 										{{ p.fullname | raw}}
 									</span>
 									<span class='js-toggle'>
@@ -105,57 +102,54 @@
 
 
 		function onClickToggleSubscription(event) {
-            event.preventDefault();
+event.preventDefault();
 
-            const url = this.href;
-            const spanToggle = this.querySelector('span.js-toggle');
-            const spanMessage = spanToggle.querySelector('span');
-            const icone = spanToggle.querySelector('i');
-            const title_icone = this.querySelector('.js-title-icone');
-            const subscription = document.querySelector('.js-subscription-nbr h3');
-            const subscription_title = document.querySelector('.js-subscription-nbr p');
+const url = this.href;
+const spanToggle = this.querySelector('span.js-toggle');
+const spanMessage = spanToggle.querySelector('span');
+const icone = spanToggle.querySelector('i');
+const title_icone = this.querySelector('.js-title-icone');
+const subscription = document.querySelector('.js-subscription-nbr h3');
+const subscription_title = document.querySelector('.js-subscription-nbr p');
 
-            let nbr = parseInt(subscription.innerHTML);
+let nbr = parseInt(subscription.innerHTML);
 
-            console.log(nbr);
-
-
-            axios.get(url).then(function (response) {
-            spanMessage.textContent = response.data.message;
-            if (! response.data.value) {
-                title_icone.classList = "js-title-icone text-warning";
-                nbr = nbr - 1;
+console.log(nbr);
 
 
-                icone.classList = "fa fa-times text-warning";
-                spanMessage.classList = "text-warning";
-            } else {
-            title_icone.classList = "js-title-icone text-success";
-
-                nbr = nbr + 1;
-                icone.classList = "fa fa-check text-success";
-                spanMessage.classList = "text-success";
-            }
-                        console.log(nbr);
-
-            subscription.innerHTML = nbr;
-
-            if (nbr > 1) {
-            subscription_title.innerHTML = "Abonnements";
-
-            } else {
-            subscription_title.innerHTML = "Abonnement";
-            }
-            }).catch(function (error) {
-                if (error.response.status === 403) {
-                    windows.alert('Vous n\'êtes pas connecté');
-                } else {
-                    windows.alert('Une erreur s\'est produite, merci de contacter l\'administrateur : '.error.response.status);
-                }
-            })
+axios.get(url).then(function (response) {
+spanMessage.textContent = response.data.message;
+if (! response.data.value) {
+title_icone.classList = "js-title-icone text-warning";
+nbr = nbr - 1;
 
 
+icone.classList = "fa fa-times text-warning";
+spanMessage.classList = "text-warning";
+} else {
+title_icone.classList = "js-title-icone text-success";
 
+nbr = nbr + 1;
+icone.classList = "fa fa-check text-success";
+spanMessage.classList = "text-success";
+}
+console.log(nbr);
+
+subscription.innerHTML = nbr;
+
+if (nbr > 1) {
+subscription_title.innerHTML = "Abonnements";
+
+} else {
+subscription_title.innerHTML = "Abonnement";
+}
+}).catch(function (error) {
+if (error.response.status === 403) {
+windows.alert('Vous n\'êtes pas connecté');
+} else {
+windows.alert('Une erreur s\'est produite, merci de contacter l\'administrateur : '.error.response.status);
+}
+})
 
 
 }

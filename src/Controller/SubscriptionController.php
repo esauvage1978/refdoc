@@ -53,6 +53,7 @@ class SubscriptionController extends AbstractController
 
     /**
      * @Route("/subscription", name="mySubscription")
+     * @IsGranted("ROLE_USER")
      */
     public function mySubscription(): Response
     {
@@ -61,6 +62,7 @@ class SubscriptionController extends AbstractController
 
     /**
      * @Route("/subscription/{id}", name="subscription")
+     * @IsGranted("ROLE_USER")
      */
     public function subscription(User $user): Response
     {

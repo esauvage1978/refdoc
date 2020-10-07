@@ -10,6 +10,7 @@ use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 use function json_encode;
 
@@ -19,6 +20,7 @@ class AvatarController extends AbstractGController
 
     /**
      * @Route("/profil/avatar", name="avatar")
+     * @IsGranted("ROLE_USER")
      */
     public function show(Request $request, UserRepository $userRepository): Response
     {
