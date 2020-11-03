@@ -14,6 +14,7 @@ class DocumentationController extends AbstractController
      */
     public function index()
     {
+
         //les fichiers sont à déposer dans public/doc
         $docs = [
             [

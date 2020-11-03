@@ -21,15 +21,21 @@ class DashboardController extends AbstractController
         $md = new MakeDashboard($backpackDtoRepository, $this->getUser());
 
         $dash_options = [
-            $md->getDraft(),
-            $md->getDraftUpdatable(),
-            $md->getMyDraftUpdatable(),
+            $md->getData(MakeDashboard::DRAFT),
+            $md->getData(MakeDashboard::DRAFT_UPDATABLE),
+            $md->getData(MakeDashboard::MY_DRAFT_UPDATABLE),
         ];
+        $to_validate_options = [
+            $md->getData(MakeDashboard::TO_VALIDATE),
+        ];        
         
         //$md->getNews()
         return $this->render(
             'dashboard/index.html.twig',
-            ['dash_options' => $dash_options]
+            [
+                'dash_options' => $dash_options,
+                'to_validate_options' => $to_validate_options
+            ]
         );
     }
 }

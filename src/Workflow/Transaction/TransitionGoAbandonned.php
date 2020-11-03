@@ -4,7 +4,7 @@
 namespace App\Workflow\Transaction;
 
 
-class TransitionToAbandonne extends TransitionAbstract
+class TransitionGoAbandonned extends TransitionAbstract
 {
     public function getExplains(): array
     {

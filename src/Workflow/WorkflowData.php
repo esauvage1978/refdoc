@@ -7,20 +7,32 @@ namespace App\Workflow;
 class WorkflowData
 {
     const STATE_DRAFT = 'draft';
-    const STATE_ABANDONNED = 'abandonned';
+    const STATE_TO_VALIDATE = 'toValidate';
+    const STATE_TO_CONTROL = 'toControl';
+    const STATE_TO_CHECK = 'ToCheck';
     const STATE_PUBLISHED = 'published';
+    const STATE_TO_REVISE = 'toRevise';
+    const STATE_IN_REVIEW = 'inReview';
+    const STATE_TO_RESUME = 'toResume';
     const STATE_ARCHIVED = 'archived';
+    const STATE_ABANDONNED = 'abandonned';
 
 
-    const TRANSITION_TO_PUBLISH = 'toPublish';
-    const TRANSITION_TO_ABANDONNE = 'toAbandonne';
-    const TRANSITION_TO_ARCHIVE = 'toArchive';
-    const TRANSITION_TO_DRAFT = 'toTheDraft';
+    const TRANSITION_GO_TO_VALIDATE = 'goToValidate';
+    const TRANSITION_GO_TO_CONTROL = 'goToControl';
+    const TRANSITION_GO_TO_CHECK = 'goToCheck';
+    const TRANSITION_GO_PUBLISHED = 'goPublished';
+    const TRANSITION_GO_TO_REVISE = 'goToRevise';
+    const TRANSITION_GO_IN_REVIEW = 'goInReview';
+    const TRANSITION_GO_TO_RESUME = 'goToResume';
+    const TRANSITION_GO_ABANDONNED = 'goAbandonned';
+    const TRANSITION_GO_ARCHIVED = 'goArchived';
 
     private const NAME = 'name';
     private const ICON = 'icon';
     private const TITLE_MAIL = 'title_mail';
-    private const COLOR = 'color';
+    private const BGCOLOR = 'bgcolor';
+    private const FORECOLOR = 'forecolor';
     private const TRANSITIONS = 'transitions';
 
     private static function getStates(): array
@@ -29,46 +41,113 @@ class WorkflowData
             self::STATE_DRAFT =>
                 [
                     self::NAME => ' Brouillon',
-                    self::ICON => '<i class="fab fa-firstdraft text-info"></i>',
+                    self::ICON => 'fab fa-firstdraft',
                     self::TITLE_MAIL => ' Un porte-document est passé à l\'état brouillon',
-                    self::COLOR => '#beebff',
+                    self::BGCOLOR => '#440155',
+                    self::FORECOLOR => '#ffffff',
                     self::TRANSITIONS => [
-                        self::TRANSITION_TO_PUBLISH,
-                        self::TRANSITION_TO_ABANDONNE,
-                        self::TRANSITION_TO_ARCHIVE
+                        self::TRANSITION_GO_TO_VALIDATE,
+                        self::TRANSITION_GO_ABANDONNED
                     ]
                 ],
+            self::STATE_TO_VALIDATE =>
+            [
+                self::NAME => ' A valider',
+                self::ICON => 'fas fa-stamp',
+                self::TITLE_MAIL => ' Un porte-document est à valider par les responsables hiérarchiques',
+                self::BGCOLOR => '#5b0570',
+                self::FORECOLOR => '#ffffff',
+                self::TRANSITIONS => [
+                    self::TRANSITION_GO_TO_CONTROL,
+                    self::TRANSITION_GO_TO_RESUME,
+                    self::TRANSITION_GO_ABANDONNED
+                ]
+            ],
+            self::STATE_TO_CONTROL =>
+            [
+                self::NAME => ' A contrôler',
+                self::ICON => '<i class="fab fa-product-hunt text-success"></i>',
+                self::TITLE_MAIL => ' Un porte-document est à valider par le service contrôle',
+                self::BGCOLOR => '#794A8D',
+                self::FORECOLOR => '#ffffff',
+                self::TRANSITIONS => [
+                    self::TRANSITION_GO_TO_CHECK,
+                    self::TRANSITION_GO_TO_RESUME,
+                    self::TRANSITION_GO_ABANDONNED
+                ]
+            ],
+            self::STATE_TO_CHECK =>
+            [
+                self::NAME => ' A vérifier',
+                self::ICON => '<i class="fab fa-product-hunt text-success"></i>',
+                self::TITLE_MAIL => ' Un porte-document est à valider par le service documentation',
+                self::BGCOLOR => '#9974AA',
+                self::FORECOLOR => '#ffffff',
+                self::TRANSITIONS => [
+                    self::TRANSITION_GO_PUBLISHED,
+                    self::TRANSITION_GO_TO_RESUME,
+                    self::TRANSITION_GO_ABANDONNED
+                ]
+            ],                                                  
             self::STATE_PUBLISHED =>
                 [
                     self::NAME => ' Publié',
                     self::ICON => '<i class="fab fa-product-hunt text-success"></i>',
                     self::TITLE_MAIL => ' Un porte-document est publié',
-                    self::COLOR => '#d4edda',
+                self::BGCOLOR => '#297B48',
+                self::FORECOLOR => '#ffffff',
                     self::TRANSITIONS => [
-                        self::TRANSITION_TO_DRAFT,
-                        self::TRANSITION_TO_ARCHIVE,
-                        self::TRANSITION_TO_ABANDONNE
+                        self::TRANSITION_GO_TO_REVISE,
+                        self::TRANSITION_GO_ARCHIVED,
+                        self::TRANSITION_GO_ABANDONNED
                     ]
                 ],
+            self::STATE_TO_REVISE =>
+            [
+                self::NAME => ' A révision',
+                self::ICON => '<i class="fab fa-product-hunt text-success"></i>',
+                self::TITLE_MAIL => ' Un porte-document est à réviser',
+                self::BGCOLOR => '#49D96A',
+                self::FORECOLOR => '#ffffff',
+                self::TRANSITIONS => [
+                    self::TRANSITION_GO_TO_RESUME,
+                    self::TRANSITION_GO_ARCHIVED,
+                    self::TRANSITION_GO_ABANDONNED
+                ]
+            ],                
             self::STATE_ABANDONNED =>
                 [
                     self::NAME => ' Abandonné',
                     self::ICON => '<i class="far fa-trash-alt text-danger"></i>',
                     self::TITLE_MAIL => ' Un porte-document est abandonné',
-                    self::COLOR => '#f8d7da',
+                self::BGCOLOR => '#AA0C0C',
+                self::FORECOLOR => '#ffffff',
                     self::TRANSITIONS => [
-                        self::TRANSITION_TO_DRAFT
+                        self::TRANSITION_GO_TO_RESUME
                     ]
                 ],
-            self::STATE_ARCHIVED =>
+            self::STATE_TO_RESUME =>
+            [
+                self::NAME => ' A repprendre',
+                self::ICON => '<i class="far fa-edit text-success"></i>',
+                self::TITLE_MAIL => ' Un porte-document est à repprendre',
+                self::BGCOLOR => '#5B2971',
+                self::FORECOLOR => '#ffffff',
+                self::TRANSITIONS => [
+                    self::TRANSITION_GO_TO_VALIDATE,
+                    self::TRANSITION_GO_ABANDONNED
+                ]
+            ],
+                self::STATE_ARCHIVED =>
                 [
                     self::NAME => ' Archivé',
                     self::ICON => '<i class="fas fa-archive text-warning"></i>',
                     self::TITLE_MAIL => ' Un porte-document est archivé',
-                    self::COLOR => '#fff3cd',
+                self::BGCOLOR => '#003E17',
+                self::FORECOLOR => '#ffffff',
                     self::TRANSITIONS => [
-                        self::TRANSITION_TO_ABANDONNE,
-                        self::TRANSITION_TO_DRAFT
+                        self::TRANSITION_GO_ABANDONNED,
+                        self::TRANSITION_GO_TO_RESUME
                     ]
                 ],
         ];
@@ -83,8 +162,14 @@ class WorkflowData
     {
         $datas = [
             self::STATE_DRAFT,
-            self::STATE_ABANDONNED,
+            self::STATE_TO_VALIDATE,
+            self::STATE_TO_CONTROL,
+            self::STATE_TO_CHECK,
             self::STATE_PUBLISHED,
+            self::STATE_TO_REVISE,
+            self::STATE_IN_REVIEW,
+            self::STATE_TO_RESUME,
+            self::STATE_ABANDONNED,
             self::STATE_ARCHIVED,
         ];
 
@@ -97,10 +182,15 @@ class WorkflowData
     public static function hasTransition(string $data): bool
     {
         $datas = [
-            self::TRANSITION_TO_PUBLISH,
-            self::TRANSITION_TO_ABANDONNE,
-            self::TRANSITION_TO_ARCHIVE,
-            self::TRANSITION_TO_DRAFT,
+            self::TRANSITION_GO_TO_VALIDATE,
+            self::TRANSITION_GO_TO_CONTROL,
+            self::TRANSITION_GO_TO_CHECK,
+            self::TRANSITION_GO_PUBLISHED,
+            self::TRANSITION_GO_TO_REVISE,
+            self::TRANSITION_GO_IN_REVIEW,
+            self::TRANSITION_GO_ARCHIVED,
+            self::TRANSITION_GO_ABANDONNED,
+            self::TRANSITION_GO_TO_RESUME
         ];
 
         if (in_array($data, $datas)) {
@@ -112,7 +202,7 @@ class WorkflowData
     private static function  getStatesValue($state, $data)
     {
         if (!self::hasState($state)) {
-            throw new \InvalidArgumentException('cet état n\'existe pas');
+            throw new \InvalidArgumentException('cet état n\'existe pas : ' . $state);
         }
         return self::getStates()[$state][$data];
     }
@@ -141,15 +231,18 @@ class WorkflowData
         return self::getStatesValue($state, self::NAME);
     }
 
-    public static function getColorOfState(string $state)
+    public static function getBGColorOfState(string $state)
     {
-        return self::getStatesValue($state, self::COLOR);
+        return self::getStatesValue($state, self::BGCOLOR);
     }
-
+    public static function getForeColorOfState(string $state)
+    {
+        return self::getStatesValue($state, self::FORECOLOR);
+    }
     public static function getModalDataForTransition(string $transition)
     {
         if (!self::hasTransition($transition)) {
-            throw new \InvalidArgumentException('Cette transition n\'existe pas');
+            throw new \InvalidArgumentException('Cette transition n\'existe pas : ' . $transition);
         }
         $data = [
             'state' => '',
@@ -159,24 +252,39 @@ class WorkflowData
         ];
 
         switch ($transition) {
-            case self::TRANSITION_TO_DRAFT:
-                $data['state'] = self::STATE_DRAFT;
-                $data['titre'] = 'Remettre en brouillon';
-                $data['btn_label'] = 'Basculer';
+            case self::TRANSITION_GO_TO_VALIDATE:
+                $data['state'] = self::STATE_TO_VALIDATE;
+                $data['titre'] = 'Mettre à la validation hiérarchique';
+                $data['btn_label'] = 'A valider';
                 break;
-            case self::TRANSITION_TO_PUBLISH:
+            case self::TRANSITION_GO_TO_CONTROL:
+                $data['state'] = self::STATE_TO_CONTROL;
+                $data['titre'] = 'Mettre à la validation du service contrôle';
+                $data['btn_label'] = 'Contrôler';
+                break;
+            case self::TRANSITION_GO_TO_RESUME:
+                $data['state'] = self::STATE_TO_RESUME;
+                $data['titre'] = 'Retourner à l\'émetteur';
+                $data['btn_label'] = 'Retourner';
+                break;                
+            case self::TRANSITION_GO_TO_CHECK:
+                $data['state'] = self::STATE_TO_CHECK;
+                $data['titre'] = 'Vérifier la forme des documents';
+                $data['btn_label'] = 'Vérifier';
+                break;
+            case self::TRANSITION_GO_PUBLISHED:
                 $data['state'] = self::STATE_PUBLISHED;
-                $data['titre'] = 'Publier de porte document';
+                $data['titre'] = 'Publier le document';
                 $data['btn_label'] = 'Publier';
                 break;
-            case self::TRANSITION_TO_ABANDONNE:
+            case self::TRANSITION_GO_ABANDONNED:
                 $data['state'] = self::STATE_ABANDONNED;
-                $data['titre'] = 'Abandonner l\'action';
+                $data['titre'] = 'Abandonner le document';
                 $data['btn_label'] = 'Abandonner';
                 break;
-            case self::TRANSITION_TO_ARCHIVE:
+            case self::TRANSITION_GO_ARCHIVED:
                 $data['state'] = self::STATE_ARCHIVED;
-                $data['titre'] = 'Archiver le porte document';
+                $data['titre'] = 'Archiver le document';
                 $data['btn_label'] = 'Archiver';
                 break;
 

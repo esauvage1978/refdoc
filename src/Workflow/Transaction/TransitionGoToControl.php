@@ -4,14 +4,14 @@
 namespace App\Workflow\Transaction;
 
 
-class TransitionToTheDraft  extends TransitionAbstract
+class TransitionGoToControl  extends TransitionAbstract
 {
 
     public function getExplains(): array
     {
         return
             [
-                'Vous pouvez passer ce porte-document à l\'état de brouillon.'
+                'Vous envoyez ce porte-document à la validation du service contrôle.'
             ];
     }
 

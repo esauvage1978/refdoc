@@ -18,6 +18,7 @@ class BackpackMakerDto
     Const DRAFT='draft';
     Const MY_DRAFT_UPDATABLE= 'mydraft_updatable';
     const DRAFT_UPDATABLE = 'draft_updatable';
+    const TO_VALIDATE = 'to_validate';
     Const PUBLISHED='published';
     Const SEARCH='search';
     Const PUBLISHED_FOR_RUBRIC='published_for_rubric';
@@ -84,6 +85,11 @@ class BackpackMakerDto
                     ->setCurrentState(WorkflowData::STATE_DRAFT)
                     ->setVisible(BackpackDto::TRUE);
                 break;
+            case self::TO_VALIDATE:
+                $dto
+                    ->setCurrentState(WorkflowData::STATE_TO_VALIDATE)
+                    ->setVisible(BackpackDto::TRUE);
+                break;                
             case self::PUBLISHED:
                 $dto
                     ->setCurrentState(WorkflowData::STATE_PUBLISHED)

@@ -144,6 +144,16 @@ class BackpackController extends AbstractGController
     }
 
     /**
+     * @Route("/backpacks/to_validate", name="backpacks_to_validate", methods={"GET"})
+     * @IsGranted("ROLE_USER")
+     */
+    public function state_to_validate(Request $request)
+    {
+        $renderArray = $this->backpackForTree->getDatas($this->container, $request, BackpackMakerDto::TO_VALIDATE);
+        return $this->render('backpack/tree.html.twig', $renderArray);
+    }
+
+    /**
      * @Route("/backpacks", name="backpacks", methods={"GET"})
      * @IsGranted("ROLE_USER")
      */

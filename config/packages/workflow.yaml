@@ -13,22 +13,42 @@ framework:
             initial_marking: draft
             places:
                 - draft
-                - validated
-                - controled
-                - resumed
+                - toValidate
+                - toControl
+                - toCheck
                 - published
-                - abandonned
+                - toRevise
+                - inReview
                 - archived
+                - toResume
+                - abandonned
             transitions:
-                toValide:
-                    from: draft
-                    to:   validated
-                toResume:
-                    from: [validated, abandonned, archived]
-                    to:   resumed
-                toAbandonne:
-                    from: [draft, resumed, validated, archived]
-                    to:   abandonned
-                toArchive:
-                    from: [draft, published]
-                    to:   archived
+                goToValidate:
+                    from: [draft, toResume]
+                    to: toValidate
+                goToControl:
+                    from: toValidate
+                    to: toControl
+                goToCheck:
+                    from: toControl
+                    to: toCheck
+                goPublished:
+                    from: toCheck
+                    to: published
+                goToRevise:
+                    from: published
+                    to: toRevise
+                goInReview:
+                    from: toRevise
+                    to: inReview
+                goArchived:
+                    from: [published, toRevise, inReview]
+                    to: archived
+                goToResume:
+                    from: [toValidate, toControl, toCheck, toRevise, abandonned, archived]
+                    to: toResume
+                goAbandonned:
+                    from: [draft, toValidate, toControl, toCheck, published, toRevise, archived, inReview, toResume]
+                    to: abandonned
+
+

@@ -21,7 +21,8 @@ class WorkflowExtension extends AbstractExtension
         return [
             new TwigFilter('workflowGetNameOfState', [$this, 'workflowGetNameOfState']),
             new TwigFilter('workflowGetShortNameOfState', [$this, 'workflowGetShortNameOfState']),
-            new TwigFilter('workflowGetColorOfState', [$this, 'workflowGetColorOfState']),
+            new TwigFilter('workflowGetForeColorOfState', [$this, 'workflowGetForeColorOfState']),
+            new TwigFilter('workflowGetBGColorOfState', [$this, 'workflowGetBGColorOfState']),
             new TwigFilter('workflowGetModalDataForTransition', [$this, 'workflowGetModalDataForTransition']),
             new TwigFilter('workflowGetTransitionsForState', [$this, 'workflowGetTransitionsForState']),
             new TwigFilter('workflowGetExplains', [$this, 'workflowGetExplains']),
@@ -40,11 +41,14 @@ class WorkflowExtension extends AbstractExtension
     {
         return WorkflowData::getShortNameOfState($state);
     }
-    public function workflowGetColorOfState(string $state)
+    public function workflowGetBGColorOfState(string $state)
     {
-        return WorkflowData::getColorOfState($state);
+        return WorkflowData::getBGColorOfState($state);
     }
-
+    public function workflowGetForeColorOfState(string $state)
+    {
+        return WorkflowData::getForeColorOfState($state);
+    }
     public function workflowGetModalDataForTransition(string $transition)
     {
         return WorkflowData::getModalDataForTransition($transition);

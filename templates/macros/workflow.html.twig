@@ -1,14 +1,16 @@
 {% macro cards(item,choice) %}
 	<div class="row justify-content-center mt-4">
-			{% import "macros/workflow.html.twig" as macro %}
-				{{ macro.current_card(item) }}
-				{% for transition in item.currentState | workflowGetTransitionsForState %}
-					{{ macro.card(item,transition,choice) }}
-				{% endfor %}
+		{% import "macros/workflow.html.twig" as macro %}
+		{{ macro.current_card(item) }}
+		{% for transition in item.currentState | workflowGetTransitionsForState %}
+			{{ macro.card(item,transition,choice) }}
+		{% endfor %}
 	</div>
 {% endmacro %}
 
 {% macro current_card(item) %}
+	{%- import _self as macro -%}
+
 	<div class="col-sm-12 col-md-6  mb-4 ">
 		{% embed 'widgets/card-widget.html.twig' %}
 			{% import "macros/widgets.html.twig" as widgets %}
@@ -20,7 +22,7 @@
 			{% block card_body_ribbon_class %}ribbon-lg
 			{% endblock %}
 			{% block card_body_ribbon_attr %}
-				{{ widgets.style_bg_color(item.currentState) }}
+				{{ macro.get_style_color(item.currentState) }}
 			{% endblock %}
 			{% block card_body %}
 				<h4>Etat actuel de l'action</h4>
@@ -170,4 +172,14 @@
 			</div>
 		{% endblock %}
 	{% endembed %}
+{% endmacro %}
+
+{% macro get_style_color(state) %}
+	style="background-color:{{ state | workflowGetBGColorOfState }};color:{{ state | workflowGetForeColorOfState }}"
+{% endmacro %}
+
+{% macro badge_state(state) %}
+	{% import "macros/widgets.html.twig" as widgets %}
+{{ widgets.badge( '<i class="' ~ (state | workflowGetIconOfState) ~ '"></i> ' ~ (state | workflowGetNameOfState) , state | workflowGetBGColorOfState, state | workflowGetForeColorOfState) }}
+
 {% endmacro %}
