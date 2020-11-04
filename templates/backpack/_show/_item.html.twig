@@ -7,21 +7,23 @@
 		{% import "macros/default.html.twig" as new %}
 		{% import "macros/file.html.twig" as file %}
 		{% block card_class %}
-			card-light  card-outline shadow
+flat-shadow
+
+
 		{% endblock %}
 		{% block card_title_class %}
-			text-bold
+			d-flex align-items-center
 		{% endblock %}
 		{% block card_title %}
 			{{ bpk.icone(item) }}
-			{{ item.name }}
+			<span class="ml-2">{{ item.name }}</span>
 		{% endblock %}
 		{% block card_tools %}
 			{{ workflow.badge_state(item.currentState) }}
 
 			{{ new.isNew(item.updateAt) }}
 		{% endblock %}
-		{% block card_body_class %}card-light  card-outline shadow
+		{% block card_body_class %}
 		{% endblock %}
 		{% block card_body %}
 			{{ bpk.identification(item) }}

@@ -9,11 +9,13 @@
 {% endmacro %}
 
 {% macro current_card(item) %}
-	{%- import _self as macro -%}
+
 
 	<div class="col-sm-12 col-md-6  mb-4 ">
 		{% embed 'widgets/card-widget.html.twig' %}
-			{% import "macros/widgets.html.twig" as widgets %}
+
+			{% import "macros/workflow.html.twig" as wkf %}
+
 			{% block card_class %}h-100 bg-gray
 			{% endblock %}
 			{% block card_body_ribbon_text %}
@@ -22,7 +24,7 @@
 			{% block card_body_ribbon_class %}ribbon-lg
 			{% endblock %}
 			{% block card_body_ribbon_attr %}
-				{{ macro.get_style_color(item.currentState) }}
+				{{ wkf.get_style_color(item.currentState) }}
 			{% endblock %}
 			{% block card_body %}
 				<h4>Etat actuel de l'action</h4>
@@ -40,6 +42,7 @@
 	<div class="col-sm-12 col-md-6   mb-4">
 		{% set data = (transition | workflowGetModalDataForTransition) %}
 		{% embed 'widgets/card-widget.html.twig' %}
+			{% import "macros/workflow.html.twig" as wkf %}
 			{% import "macros/widgets.html.twig" as widgets %}
 			{% block card_class %}h-100 bg-gray
 			{% endblock %}
@@ -49,7 +52,7 @@
 			{% block card_body_ribbon_class %}ribbon-lg
 			{% endblock %}
 			{% block card_body_ribbon_attr %}
-				{{ widgets.style_bg_color(data.state) }}
+				{{ wkf.get_style_color(data.state) }}
 			{% endblock %}
 			{% block card_body %}
 				{% if workflow_can(item, data.transition ) %}
@@ -106,7 +109,8 @@
 
 				{% if workflow_can(item, data.transition ) %}
 					<div class="col text-center">
-						<button type="button" class="btn {{ css | default('') }}" {{ widgets.style_bg_color(data.state) }} data-toggle="modal" data-target="#modal-{{ transition }}">
+						<button type="button" class="btn {{ css | default('') }}" {{ wkf.get_style_color(data.state) }} data-toggle="modal" data-target="#modal-{{ transition }}">
+
 							<i class="fas fa-external-link-alt "></i>
 							{{ data.btn_label }}
 						</button>
@@ -180,6 +184,6 @@
 
 {% macro badge_state(state) %}
 	{% import "macros/widgets.html.twig" as widgets %}
-{{ widgets.badge( '<i class="' ~ (state | workflowGetIconOfState) ~ '"></i> ' ~ (state | workflowGetNameOfState) , state | workflowGetBGColorOfState, state | workflowGetForeColorOfState) }}
+	{{ widgets.badge( '<i class="' ~ (state | workflowGetIconOfState) ~ '"></i> ' ~ (state | workflowGetNameOfState) , state | workflowGetBGColorOfState, state | workflowGetForeColorOfState) }}
 
 {% endmacro %}
