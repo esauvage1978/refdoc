@@ -11,7 +11,7 @@ class TransitionGoToValidate  extends TransitionAbstract
     {
         return
             [
-                'Vous envoyez ce porte-document à la validation hiérarchique.'
+                'En cliquant sur le bouton ci-dessous, Vous envoyez ce porte-document à la validation hiérarchique.'
             ];
     }
 

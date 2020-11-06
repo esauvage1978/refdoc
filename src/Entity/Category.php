@@ -69,6 +69,11 @@ class Category implements EntityInterface
      */
     private $forecolor;
 
+    /**
+     * @ORM\Column(type="string", length=30)
+     */
+    private $workflow_name;
+
     public function __construct()
      {
          $this->isEnable=true;
@@ -133,7 +138,7 @@ class Category implements EntityInterface
 
     public function getIsValidateByDoc(): bool
     {
-        return $this->isValidateByDoc;
+        return $this->isValidateByDoc; 
     }
 
     public function setIsValidateByDoc(bool $isValidateByDoc): self
@@ -218,6 +223,18 @@ class Category implements EntityInterface
     public function setForecolor(?string $forecolor): self
     {
         $this->forecolor = $forecolor;
+
+        return $this;
+    }
+
+    public function getWorkflowName(): ?string
+    {
+        return $this->workflow_name;
+    }
+
+    public function setWorkflowName(string $workflow_name): self
+    {
+        $this->workflow_name = $workflow_name;
 
         return $this;
     }

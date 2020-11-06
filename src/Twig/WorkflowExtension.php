@@ -54,22 +54,22 @@ class WorkflowExtension extends AbstractExtension
         return WorkflowData::getModalDataForTransition($transition);
     }
 
-    public function workflowGetTransitionsForState(string $state)
+    public function workflowGetTransitionsForState(string $workflow, string $state)
     {
-        return WorkflowData::getTransitionsForState($state);
+        return WorkflowData::getTransitionsForState($workflow, $state);
     }
 
-    public function workflowGetExplains(Backpack $backpack,string $transition)
+    public function workflowGetExplains(Backpack $backpack, string $transition)
     {
-        $object =  'App\Workflow\Transaction\Transition' . ucfirst( $transition);
-        $instance=new $object($backpack);
+        $object =  'App\Workflow\Transaction\Transition' . ucfirst($transition);
+        $instance = new $object($backpack);
         return $instance->getExplains();
     }
 
-    public function workflowGetCheckMessages(Backpack $backpack,string $transition)
+    public function workflowGetCheckMessages(Backpack $backpack, string $transition)
     {
-        $object =  'App\Workflow\Transaction\Transition' . ucfirst( $transition);
-        $instance=new $object($backpack);
+        $object =  'App\Workflow\Transaction\Transition' . ucfirst($transition);
+        $instance = new $object($backpack);
         return $instance->getCheckMessages();
     }
 

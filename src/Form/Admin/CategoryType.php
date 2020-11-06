@@ -6,6 +6,7 @@ namespace App\Form\Admin;
 
 use App\Entity\Category;
 use App\Form\AppTypeAbstract;
+use App\Workflow\WorkflowData;
 use Symfony\Component\Form\Extension\Core\Type\ColorType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;

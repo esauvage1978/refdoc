@@ -41,4 +41,13 @@ class BackpackCheck
         }
     }
 
+    public function checkContent()
+    {
+        if (empty($this->backpack->getContent())) {
+            $this->backpackCheckMessage->addMessageError('Vous devez saisir une description');
+        } else {
+            $this->backpackCheckMessage->addMessageSuccess('Description');
+        }
+    }
+
 }

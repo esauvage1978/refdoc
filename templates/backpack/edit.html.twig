@@ -18,95 +18,133 @@
 
 
 	<div class="row justify-content-center">
+
+
 		<div class="" style="width:960px">
-			<h1>Porte-document</h1>
-			<hr/>
-
-			{{ render(controller('App\\Controller\\GPIController::showGPIAction', { 'page': 'backpack_add'})) }}
-
-			{% if item is defined %}
-
-				{% import '@AdminLTE/Macros/buttons.html.twig'  as btn %}
-				{% import "macros/delele.html.twig" as del %}
-				{% import "macros/submit.html.twig" as sub %}
-				{{ form_start(form) }}
-				{{ form_errors(form) }}
 
 
-				<div style="width:630px">
+			<div class="card card-primary card-tabs">
+				<div class="card-header p-0 pt-1">
+					<ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
+						<li class="nav-item">
+							<a class="nav-link active" id="custom-tabs-one-home-tab" data-toggle="pill" href="#custom-tabs-one-home" role="tab" aria-controls="custom-tabs-one-home" aria-selected="true">
+								Général
+							</a>
+						</li>
 
-					{% if item.currentState == "draft" %}
-						{{ include(domaine ~ '/_edit/_type_doc.html.twig') }}
-						{{ include(domaine ~ '/_edit/_process.html.twig') }}
-						{{ include(domaine ~ '/_edit/_arborescence.html.twig') }}
-						{{ include(domaine ~ '/_edit/_name.html.twig') }}
-						{{ include(domaine ~ '/_edit/_files.html.twig') }}
-					{% elseif item.currentState == "abandonned" %}
-						{{ include(domaine ~ '/_show/_type_doc.html.twig') }}
-						{{ include(domaine ~ '/_show/_process.html.twig') }}
-						{{ include(domaine ~ '/_show/_arborescence.html.twig') }}
+						<li class="nav-item">
+							<a class="nav-link" id="custom-tabs-one-profile-tab" data-toggle="pill" href="#custom-tabs-one-profile" role="tab" aria-controls="custom-tabs-one-profile" aria-selected="false">
+								Changement d'état</a>
+						</li>
 
-						{{ include(domaine ~ '/_show/_item.html.twig') }}
+					</ul>
+				</div>
+
+				<!-- /.card -->
+			</div>
 
 
+			<div class="tab-content " id="custom-tabs-one-tabContent">
+
+				<div class="tab-pane fade active show " id="custom-tabs-one-home" role="tabpanel" aria-labelledby="custom-tabs-one-home-tab">
+
+
+					{{ render(controller('App\\Controller\\GPIController::showGPIAction', { 'page': 'backpack_add'})) }}
+
+					{% if item is defined %}
+
+						{% import '@AdminLTE/Macros/buttons.html.twig'  as btn %}
+						{% import "macros/delele.html.twig" as del %}
+						{% import "macros/submit.html.twig" as sub %}
+						{{ form_start(form) }}
+						{{ form_errors(form) }}
+
+
+						{% if item.currentState == "draft" %}
+							<div style="width:630px">
+
+								{{ include(domaine ~ '/_edit/_type_doc.html.twig') }}
+								{{ include(domaine ~ '/_edit/_process.html.twig') }}
+								{{ include(domaine ~ '/_edit/_arborescence.html.twig') }}
+								{{ include(domaine ~ '/_edit/_name.html.twig') }}
+								{{ include(domaine ~ '/_edit/_files.html.twig') }}
+							</div>
+						{% elseif item.currentState == "abandonned" %}
+							{{ include(domaine ~ '/_show/_type_doc.html.twig') }}
+							{{ include(domaine ~ '/_show/_process.html.twig') }}
+							{{ include(domaine ~ '/_show/_arborescence.html.twig') }}
+							{{ include(domaine ~ '/_show/_item.html.twig') }}
+						{% elseif item.currentState=="toValidate" %}
+							{{ include(domaine ~ '/_show/_type_doc.html.twig') }}
+							{{ include(domaine ~ '/_show/_process.html.twig') }}
+							{{ include(domaine ~ '/_show/_arborescence.html.twig') }}
+							{{ include(domaine ~ '/_show/_item.html.twig') }}
+						{% endif %}
+
+
+						<p class="mt-5 mb-5">&nbsp;</p>
+						<p class="mt-5 mb-5">&nbsp;</p>
+						<p class="mt-5 mb-5">&nbsp;</p>
+						<p class="mt-5 mb-5">&nbsp;</p>
+						<p class="mt-5 mb-5">&nbsp;</p>
+						<p class="mt-5 mb-5">&nbsp;</p>
+						{% import "macros/submit.html.twig" as sub %}
+						<div class="d-none">
+
+
+							{{form_rest(form)}}
+							{{ sub.btn() }}
+						</div>
+
+						{{ form_end(form) }}
+						{% if item.id is not null %}
+							{{ del.delete_form(route_del,item.id, 'show') }}
+						{% endif %}
 					{% endif %}
 
 
-					<p class="mt-5 mb-5"></p>
-					<p class="mt-5 mb-5"></p>
-				</div>
-				{% import "macros/submit.html.twig" as sub %}
-				<div class="d-none">
-
-
-					{{form_rest(form)}}
-					{{ sub.btn() }}
 				</div>
 
-				{{ form_end(form) }}
-				{% if item.id is not null %}
-					{{ del.delete_form(route_del,item.id, 'show') }}
-				{% endif %}
-			{% endif %}
-			<h1>Changement d'état</h1>
-			<hr/>
-			{% import "macros/workflow.html.twig" as wfl %}
+				<div class="tab-pane fade" id="custom-tabs-one-profile" role="tabpanel" aria-labelledby="custom-tabs-one-profile-tab">
 
-			{% for transition in workflow_transitions(item) %}
-				{{ include('workflow/_modal_transition.html.twig',{'transition':transition.name,'id':item.id}) }}
-			{% endfor %}
+					{% import "macros/workflow.html.twig" as wfl %}
 
-			{{ wfl.cards(item) }}
+					{% for transition in workflow_transitions(item,item.category.workflowName) %}
+						{{ include('workflow/_modal_transition.html.twig',{'transition':transition.name,'id':item.id}) }}
+					{% endfor %}
 
+					{{ wfl.cards(item) }}
+
+				</div>
+
+			</div>
 		</div>
-	</div>
-
-	<div class="modal fade" id="addDir" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalLabel">Ajoute un libellé</h5>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body">
-					<form>
-						<div class="form-group">
-							<label for="addDir_field_new" class="col-form-label">Libellé</label>
-							<input type="text" class="form-control d-none" id="addDir_field">
-							<input type="text" class="form-control" id="addDir_field_new">
-						</div>
-					</form>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-					<button type="button" id="btn_addDir" class="btn btn-success">Ajouter le libellé</button>
+		<div class="modal fade" id="addDir" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">Ajoute un libellé</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<form>
+							<div class="form-group">
+								<label for="addDir_field_new" class="col-form-label">Libellé</label>
+								<input type="text" class="form-control d-none" id="addDir_field">
+								<input type="text" class="form-control" id="addDir_field_new">
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+						<button type="button" id="btn_addDir" class="btn btn-success">Ajouter le libellé</button>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-
 {% endblock %}
 
 {%  block javascripts %}

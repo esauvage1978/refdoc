@@ -66,7 +66,7 @@ class WorkflowBackpackManager
     private function initialiseStateMachine(Backpack $item)
     {
         if (null == $this->stateMachine) {
-            $this->stateMachine = $this->workflow->get($item, 'backpack_publishing');
+            $this->stateMachine = $this->workflow->get($item, $item->getCategory()->getWorkflowName());
         }
     }
 

@@ -6,6 +6,14 @@ namespace App\Workflow;
 
 class WorkflowData
 {
+    const WORKFLOW_ALL = 'wkf_all';
+    const WORKFLOW_WITHOUT_CONTROLCHECK = 'wkf_without_controlcheck';
+    const WORKFLOW_WITHOUT_CONTROL = 'wkf_without_control';
+    const WORKFLOW_WITHOUT_CHECK = 'wkf_without_check';
+
+    const WORKFLOW_IS_SAME = 'same';
+
+
     const STATE_DRAFT = 'draft';
     const STATE_TO_VALIDATE = 'toValidate';
     const STATE_TO_CONTROL = 'toControl';
@@ -39,17 +47,19 @@ class WorkflowData
     {
         return [
             self::STATE_DRAFT =>
-                [
-                    self::NAME => ' Brouillon',
-                    self::ICON => 'fab fa-firstdraft',
-                    self::TITLE_MAIL => ' Un porte-document est passé à l\'état brouillon',
-                    self::BGCOLOR => '#440155',
-                    self::FORECOLOR => '#ffffff',
-                    self::TRANSITIONS => [
+            [
+                self::NAME => ' Brouillon',
+                self::ICON => 'fab fa-firstdraft',
+                self::TITLE_MAIL => ' Un porte-document est passé à l\'état brouillon',
+                self::BGCOLOR => '#440155',
+                self::FORECOLOR => '#ffffff',
+                self::TRANSITIONS => [
+                    self::WORKFLOW_IS_SAME => [
                         self::TRANSITION_GO_TO_VALIDATE,
                         self::TRANSITION_GO_ABANDONNED
                     ]
-                ],
+                ]
+            ],
             self::STATE_TO_VALIDATE =>
             [
                 self::NAME => ' A valider',
@@ -58,9 +68,26 @@ class WorkflowData
                 self::BGCOLOR => '#5b0570',
                 self::FORECOLOR => '#ffffff',
                 self::TRANSITIONS => [
-                    self::TRANSITION_GO_TO_CONTROL,
-                    self::TRANSITION_GO_TO_RESUME,
-                    self::TRANSITION_GO_ABANDONNED
+                    self::WORKFLOW_ALL => [
+                        self::TRANSITION_GO_TO_CONTROL,
+                        self::TRANSITION_GO_TO_RESUME,
+                        self::TRANSITION_GO_ABANDONNED
+                    ],
+                    self::WORKFLOW_WITHOUT_CONTROLCHECK => [
+                        self::TRANSITION_GO_PUBLISHED,
+                        self::TRANSITION_GO_TO_RESUME,
+                        self::TRANSITION_GO_ABANDONNED
+                    ],
+                    self::WORKFLOW_WITHOUT_CONTROL => [
+                        self::TRANSITION_GO_TO_CHECK,
+                        self::TRANSITION_GO_TO_RESUME,
+                        self::TRANSITION_GO_ABANDONNED
+                    ],
+                    self::WORKFLOW_WITHOUT_CHECK => [
+                        self::TRANSITION_GO_TO_CONTROL,
+                        self::TRANSITION_GO_TO_RESUME,
+                        self::TRANSITION_GO_ABANDONNED
+                    ],
                 ]
             ],
             self::STATE_TO_CONTROL =>
@@ -71,9 +98,23 @@ class WorkflowData
                 self::BGCOLOR => '#794A8D',
                 self::FORECOLOR => '#ffffff',
                 self::TRANSITIONS => [
-                    self::TRANSITION_GO_TO_CHECK,
-                    self::TRANSITION_GO_TO_RESUME,
-                    self::TRANSITION_GO_ABANDONNED
+                    self::WORKFLOW_ALL => [
+                        self::TRANSITION_GO_TO_CHECK,
+                        self::TRANSITION_GO_TO_RESUME,
+                        self::TRANSITION_GO_ABANDONNED
+                    ],
+                    self::WORKFLOW_WITHOUT_CONTROLCHECK => [
+                        self::TRANSITION_GO_ABANDONNED
+                    ],
+                    self::WORKFLOW_WITHOUT_CONTROL => [
+                        self::TRANSITION_GO_ABANDONNED
+                    ],
+                    self::WORKFLOW_WITHOUT_CHECK => [
+                        self::TRANSITION_GO_PUBLISHED,
+                        self::TRANSITION_GO_TO_RESUME,
+                        self::TRANSITION_GO_ABANDONNED
+                    ],
+
                 ]
             ],
             self::STATE_TO_CHECK =>
@@ -84,24 +125,39 @@ class WorkflowData
                 self::BGCOLOR => '#9974AA',
                 self::FORECOLOR => '#ffffff',
                 self::TRANSITIONS => [
-                    self::TRANSITION_GO_PUBLISHED,
-                    self::TRANSITION_GO_TO_RESUME,
-                    self::TRANSITION_GO_ABANDONNED
+                    self::WORKFLOW_ALL => [
+                        self::TRANSITION_GO_PUBLISHED,
+                        self::TRANSITION_GO_TO_RESUME,
+                        self::TRANSITION_GO_ABANDONNED
+                    ],
+                    self::WORKFLOW_WITHOUT_CONTROLCHECK => [
+                        self::TRANSITION_GO_ABANDONNED
+                    ],
+                    self::WORKFLOW_WITHOUT_CONTROL => [
+                        self::TRANSITION_GO_PUBLISHED,
+                        self::TRANSITION_GO_TO_RESUME,
+                        self::TRANSITION_GO_ABANDONNED
+                    ],
+                    self::WORKFLOW_WITHOUT_CHECK => [
+                        self::TRANSITION_GO_ABANDONNED
+                    ],
                 ]
-            ],                                                  
+            ],
             self::STATE_PUBLISHED =>
-                [
-                    self::NAME => ' Publié',
-                    self::ICON => '<i class="fab fa-product-hunt text-success"></i>',
-                    self::TITLE_MAIL => ' Un porte-document est publié',
+            [
+                self::NAME => ' Publié',
+                self::ICON => '<i class="fab fa-product-hunt text-success"></i>',
+                self::TITLE_MAIL => ' Un porte-document est publié',
                 self::BGCOLOR => '#297B48',
                 self::FORECOLOR => '#ffffff',
-                    self::TRANSITIONS => [
+                self::TRANSITIONS => [
+                    self::WORKFLOW_IS_SAME => [
                         self::TRANSITION_GO_TO_REVISE,
                         self::TRANSITION_GO_ARCHIVED,
                         self::TRANSITION_GO_ABANDONNED
                     ]
-                ],
+                ]
+            ],
             self::STATE_TO_REVISE =>
             [
                 self::NAME => ' A révision',
@@ -110,22 +166,26 @@ class WorkflowData
                 self::BGCOLOR => '#49D96A',
                 self::FORECOLOR => '#ffffff',
                 self::TRANSITIONS => [
-                    self::TRANSITION_GO_TO_RESUME,
-                    self::TRANSITION_GO_ARCHIVED,
-                    self::TRANSITION_GO_ABANDONNED
+                    self::WORKFLOW_IS_SAME => [
+                        self::TRANSITION_GO_TO_RESUME,
+                        self::TRANSITION_GO_ARCHIVED,
+                        self::TRANSITION_GO_ABANDONNED
+                    ]
                 ]
-            ],                
+            ],
             self::STATE_ABANDONNED =>
-                [
-                    self::NAME => ' Abandonné',
-                    self::ICON => '<i class="far fa-trash-alt text-danger"></i>',
-                    self::TITLE_MAIL => ' Un porte-document est abandonné',
+            [
+                self::NAME => ' Abandonné',
+                self::ICON => '<i class="far fa-trash-alt text-danger"></i>',
+                self::TITLE_MAIL => ' Un porte-document est abandonné',
                 self::BGCOLOR => '#AA0C0C',
                 self::FORECOLOR => '#ffffff',
-                    self::TRANSITIONS => [
+                self::TRANSITIONS => [
+                    self::WORKFLOW_IS_SAME => [
                         self::TRANSITION_GO_TO_RESUME
                     ]
-                ],
+                ]
+            ],
             self::STATE_TO_RESUME =>
             [
                 self::NAME => ' A repprendre',
@@ -134,22 +194,26 @@ class WorkflowData
                 self::BGCOLOR => '#5B2971',
                 self::FORECOLOR => '#ffffff',
                 self::TRANSITIONS => [
-                    self::TRANSITION_GO_TO_VALIDATE,
-                    self::TRANSITION_GO_ABANDONNED
+                    self::WORKFLOW_IS_SAME => [
+                        self::TRANSITION_GO_TO_VALIDATE,
+                        self::TRANSITION_GO_ABANDONNED
+                    ]
                 ]
             ],
-                self::STATE_ARCHIVED =>
-                [
-                    self::NAME => ' Archivé',
-                    self::ICON => '<i class="fas fa-archive text-warning"></i>',
-                    self::TITLE_MAIL => ' Un porte-document est archivé',
+            self::STATE_ARCHIVED =>
+            [
+                self::NAME => ' Archivé',
+                self::ICON => '<i class="fas fa-archive text-warning"></i>',
+                self::TITLE_MAIL => ' Un porte-document est archivé',
                 self::BGCOLOR => '#003E17',
                 self::FORECOLOR => '#ffffff',
-                    self::TRANSITIONS => [
+                self::TRANSITIONS => [
+                    self::WORKFLOW_IS_SAME => [
                         self::TRANSITION_GO_ABANDONNED,
                         self::TRANSITION_GO_TO_RESUME
                     ]
-                ],
+                ]
+            ],
         ];
     }
 
@@ -206,9 +270,20 @@ class WorkflowData
         }
         return self::getStates()[$state][$data];
     }
-    public static function getTransitionsForState($state)
+    private static function  getStatesValueForWorkfow($workflow, $state, $data)
     {
-        return self::getStatesValue($state, self::TRANSITIONS);
+        if (!self::hasState($state)) {
+            throw new \InvalidArgumentException('cet état n\'existe pas : ' . $state);
+        }
+        if (array_key_exists(self::WORKFLOW_IS_SAME,  self::getStates()[$state][$data])) {
+            return self::getStates()[$state][$data][self::WORKFLOW_IS_SAME];
+        } else {
+            return self::getStates()[$state][$data][$workflow];
+        }
+    }
+    public static function getTransitionsForState($workflow, $state)
+    {
+        return self::getStatesValueForWorkfow($workflow, $state, self::TRANSITIONS);
     }
 
     public static function getNameOfState(string $state)
@@ -266,7 +341,7 @@ class WorkflowData
                 $data['state'] = self::STATE_TO_RESUME;
                 $data['titre'] = 'Retourner à l\'émetteur';
                 $data['btn_label'] = 'Retourner';
-                break;                
+                break;
             case self::TRANSITION_GO_TO_CHECK:
                 $data['state'] = self::STATE_TO_CHECK;
                 $data['titre'] = 'Vérifier la forme des documents';
@@ -287,10 +362,8 @@ class WorkflowData
                 $data['titre'] = 'Archiver le document';
                 $data['btn_label'] = 'Archiver';
                 break;
-
         }
 
         return $data;
     }
-
 }

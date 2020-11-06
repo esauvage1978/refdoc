@@ -6,6 +6,7 @@ use App\Entity\EntityInterface;
 use App\Entity\User;
 use App\Security\CurrentUser;
 use App\Validator\CategoryValidator;
+use App\Workflow\WorkflowData;
 use Doctrine\ORM\EntityManagerInterface;
 
 class CategoryManager extends AbstractManager
@@ -32,5 +33,17 @@ class CategoryManager extends AbstractManager
         if ($cat->getForecolor() == null) {
             $cat->setForecolor("#ff0000");
         }
+
+
+        if($cat->getIsValidateByDoc() && $cat->getIsValidateByControl()) {
+            $cat->setWorkflowName(WorkflowData::WORKFLOW_ALL);
+        } else if(!$cat->getIsValidateByDoc() && !$cat->getIsValidateByControl()) {
+            $cat->setWorkflowName(WorkflowData::WORKFLOW_WITHOUT_CONTROLCHECK);
+        } else if (!$cat->getIsValidateByDoc() && $cat->getIsValidateByControl()) {
+            $cat->setWorkflowName(WorkflowData::WORKFLOW_WITHOUT_CHECK);
+        } else  {
+            $cat->setWorkflowName(WorkflowData::WORKFLOW_WITHOUT_CONTROL);
+        }
+
     }
 }

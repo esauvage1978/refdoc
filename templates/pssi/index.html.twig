@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+{% import "macros/widgets.html.twig" as widgets %}
+
+{% block title %}
+	{{ app_name }}
+	- Documentation
+{% endblock %}
+{% block page_title %}
+	{{widgets.icon('permissions')}}
+	Documentation
+{% endblock %}
+
+{% block page_content %}
+	<div class="row">
+		<div class="col-md-6 offset-md-3">
+			<h2>Administrateurs</h2>
+
+
+			{# ... box widget with defaults ... #}
+			{% embed 'widgets/card-widget.html.twig'%}
+				{% block card_title % }Les administrateurs{% endblock %}
+				{% block card_body %}
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th>Nom</th>
+								<th>Date de dernière connexion</th>
+							</tr>
+						</thead>
+						<tbody></tbody>
+						{% for user in admins %}
+							<tr>
+								<td></td>
+								<td></td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+
+			{% endblock %}
+		{% endembed %}
+	</div>
+</div>{% endblock %}
