@@ -11,7 +11,7 @@ use App\Repository\UserRepository;
 use App\Repository\ProcessRepository;
 use App\Repository\MProcessRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 
 class AppFixtures extends Fixture
 {

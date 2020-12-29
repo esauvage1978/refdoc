@@ -22,7 +22,7 @@ class ParamsInServices
     public const ES_DIRECTORY_AVATAR = 'es.directory.avatar';
     public const ES_DIRECTORY_CSS = 'es.directory.css';
     public const ES_DIRECTORY_UPLOAD_BACKPACK = 'es.directory.upload.backpack';
-    public const ES_MAILER_OBJECT_PREFIXE = 'mailer.object.prefixe';
+    public const ES_MAILER_OBJECT_PREFIXE = 'es.mailer.object.prefixe';
     public const ES_MAILER_USER_NAME = 'es.mailer.user.name';
     public const ES_MAILER_USER_MAIL = 'es.mailer.user.mail';
     public const ES_MAILER_USER_PASSWORD = 'es.mailer.user.password';

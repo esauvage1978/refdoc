@@ -27,9 +27,8 @@
 		</span>
 
 
-		{% if item.contentstate is defined %}
+		{% if item.contentstate  %}
 			<div class="callout callout-info bg-white mt-4 mb-4">
-
 				{{ item.contentstate | raw }}
 			</div>
 		{% endif %}
@@ -184,5 +183,4 @@
 {% macro badge_state(state) %}
 	{% import "macros/widgets.html.twig" as widgets %}
 	{{ widgets.badge( '<i class="' ~ (state | workflowGetIconOfState) ~ '"></i> ' ~ (state | workflowGetNameOfState) , state | workflowGetBGColorOfState, state | workflowGetForeColorOfState) }}
-
 {% endmacro %}
